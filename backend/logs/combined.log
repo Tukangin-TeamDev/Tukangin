@@ -1,0 +1,7 @@
+2025-05-05 13:43:42 [32minfo[39m: Registering/logging in user with Google, email: test@example.com
+2025-05-05 13:43:42 [31merror[39m: Google registration error: Cannot read properties of undefined (reading 'CUSTOMER')
+2025-05-05 13:43:42 [32minfo[39m: Registering/logging in user with Google, email: test@example.com
+2025-05-05 13:43:42 [32minfo[39m: Updated existing user with Google ID: test@example.com
+2025-05-05 13:43:42 [32minfo[39m: Registering/logging in user with Google, email: test@example.com
+2025-05-05 13:43:42 [32minfo[39m: User logged in with Google: test@example.com
+2025-05-05 13:43:42 [31merror[39m: Google login error: Akun Google tidak ditemukan. Silakan register terlebih dahulu.

@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Tolong buat file tsconfig.json untuk proyek Next.js dengan konfigurasi strict, serta file tsconfig.json khusus untuk server Express. Pastikan settingan module, target, dan moduleResolution sudah disesuaikan.
+
+
+Pastikan bahwa setiap fungsi dan variabel sudah dideklarasikan dengan tipe yang benar. Jangan menghasilkan kode yang menimbulkan error TS terkait tipe, seperti kesalahan pada interface atau props.

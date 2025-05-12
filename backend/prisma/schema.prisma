@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Enum untuk mendefinisikan peran user
+enum UserRole {
+  ADMIN
+  PROVIDER
+  CUSTOMER
+}
+
+/// Enum untuk menentukan metode autentikasi
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+}
+
+/// Enum untuk tipe layanan: FIXED atau CONSULTATIVE
+enum ServiceType {
+  FIXED
+  CONSULTATIVE
+}
+
+/// Enum untuk status order
+enum OrderStatus {
+  PENDING // Order dibuat, menunggu konfirmasi atau proses negosiasi (jika konsultatif)
+  NEGOTIATION // (Konsultatif) Sedang dalam proses konsultasi/penawaran
+  ACCEPTED // Order telah diterima dan disetujui
+  IN_PROGRESS // Sedang dikerjakan oleh provider
+  COMPLETED // Order selesai dan diverifikasi customer
+  DISPUTED // Terdapat sengketa yang sedang diproses
+  CANCELLED // Order dibatalkan
+}
+
+model User {
+  id               Int          @id @default(autoincrement())
+  email            String       @unique
+  password         String? // Opsional jika menggunakan Google
+  googleId         String?      @unique // Disimpan jika login dengan akun Google
+  authProvider     AuthProvider @default(LOCAL)
+  name             String
+  role             UserRole
+  phone            String? // Nomor telepon untuk verifikasi/2FA
+  twoFactorEnabled Boolean      @default(false)
+  otpSecret        String? // Secret untuk 2FA jika diaktifkan
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  /// Relasi ke profil provider (jika role PROVIDER)
+  providerProfile  ProviderProfile?
+  /// Order yang dibuat sebagai customer
+  customerOrders   Order[]          @relation("CustomerOrders")
+  /// Ulasan yang diberikan oleh user (customer)
+  customerReviews  Review[]         @relation("CustomerReviews")
+  /// Pesan yang dikirim oleh user
+  sentMessages     ChatMessage[]    @relation("SentMessages")
+  /// Log audit milik user
+  auditLogs        AuditLog[]
+  /// Notifikasi yang diterima user
+  notifications    Notification[]
+  /// Dispute yang diajukan oleh customer
+  customerDisputes Dispute[]        @relation("CustomerDisputes")
+}
+
+model ProviderProfile {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+  about     String? // Deskripsi profil/keahlian
+  portfolio String? // URL atau JSON string portofolio
+  rating    Float    @default(0.0) // Rata-rata ulasan
+  verified  Boolean  @default(false) // Status verifikasi manual oleh admin
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// Layanan yang ditawarkan oleh provider
+  services       Service[]
+  /// Order yang diterima oleh provider
+  providerOrders Order[]   @relation("ProviderOrders")
+  /// Review yang diterima provider
+  reviews        Review[]  @relation("ProviderReviews")
+  /// Dispute yang melibatkan provider
+  disputes       Dispute[] @relation("ProviderDisputes")
+}
+
+model Service {
+  id              Int             @id @default(autoincrement())
+  providerId      Int
+  providerProfile ProviderProfile @relation(fields: [providerId], references: [id])
+  name            String // Nama layanan
+  description     String // Deskripsi layanan
+  serviceType     ServiceType // FIXED atau CONSULTATIVE
+  fixedPrice      Float? // Ditetapkan jika tipe FIXED
+  media           String? // URL media (foto/video) atau JSON string
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  /// Order yang terkait dengan layanan ini
+  orders Order[]
+}
+
+model Order {
+  id              Int             @id @default(autoincrement())
+  customerId      Int
+  customer        User            @relation("CustomerOrders", fields: [customerId], references: [id])
+  providerId      Int
+  provider        ProviderProfile @relation("ProviderOrders", fields: [providerId], references: [id])
+  serviceId       Int
+  service         Service         @relation(fields: [serviceId], references: [id])
+  orderType       ServiceType // Diturunkan dari service (FIXED atau CONSULTATIVE)
+  status          OrderStatus     @default(PENDING)
+  scheduledAt     DateTime? // Jadwal kunjungan atau survei (jika ada)
+  description     String? // Keterangan tambahan dari customer (khusus konsultatif)
+  escrowAmount    Float // Dana yang ditahan dalam escrow
+  negotiationNote String? // Catatan negosiasi/penawaran untuk layanan konsultatif
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  /// Relasi ke data pembayaran
+  payment      Payment?
+  /// Riwayat chat terkait order
+  chatMessages ChatMessage[]
+  /// Review dari customer terhadap order
+  review       Review?
+  /// Dispute jika terjadi sengketa
+  dispute      Dispute?
+}
+
+model Payment {
+  id            Int      @id @default(autoincrement())
+  orderId       Int      @unique
+  order         Order    @relation(fields: [orderId], references: [id])
+  amount        Float // Jumlah pembayaran
+  status        String // Contoh: "PENDING", "COMPLETED", "FAILED"
+  transactionId String? // ID transaksi dari gateway pembayaran, jika ada
+  createdAt     DateTime @default(now())
+}
+
+model ChatMessage {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id])
+  senderId  Int
+  sender    User     @relation("SentMessages", fields: [senderId], references: [id])
+  content   String // Isi pesan
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id              Int             @id @default(autoincrement())
+  orderId         Int             @unique
+  order           Order           @relation(fields: [orderId], references: [id])
+  customerId      Int
+  customer        User            @relation("CustomerReviews", fields: [customerId], references: [id])
+  providerId      Int
+  providerProfile ProviderProfile @relation("ProviderReviews", fields: [providerId], references: [id])
+  rating          Int // Nilai rating, misalnya 1 sampai 5
+  comment         String? // Komentar ulasan
+  createdAt       DateTime        @default(now())
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  action    String // Aksi yang dilakukan (LOGIN, CREATE_ORDER, dll.)
+  details   String? // Rincian tambahan dalam format JSON
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  message   String // Isi notifikasi
+  type      String // Tipe notifikasi, contoh: "ORDER_STATUS", "NEW_MESSAGE"
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Dispute {
+  id              Int             @id @default(autoincrement())
+  orderId         Int             @unique
+  order           Order           @relation(fields: [orderId], references: [id])
+  customerId      Int
+  customer        User            @relation("CustomerDisputes", fields: [customerId], references: [id])
+  providerId      Int
+  providerProfile ProviderProfile @relation("ProviderDisputes", fields: [providerId], references: [id])
+  description     String // Deskripsi sengketa dari customer
+  status          String // Contoh: "OPEN", "RESOLVED", "REJECTED"
+  resolutionNote  String? // Catatan resolusi atau tindak lanjut admin
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}

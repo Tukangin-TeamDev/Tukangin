@@ -1,0 +1,19 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+5. Rendering Frontend dengan Next.js
+5.1. Strategi Rendering
+•	SSR dengan App Router:
+o	Halaman dinamis (dashboard, profil, order) ditangani dengan server-side rendering melalui Next.js App Router (app/ directory).
+o	Data diambil secara server-side menggunakan getServerSideProps atau pendekatan App Router data fetching (React Server Components) untuk memastikan data terkini saat page load.
+•	SSG/ISR:
+o	Halaman statis (tentang, FAQ, kebijakan) dapat menggunakan SSG dan secara berkala di-regenerate dengan ISR.
+•	Client-Side Fetching:
+o	Untuk data yang berubah sangat cepat (notifikasi, chat), gunakan SWR untuk revalidasi data di client-side.
+5.2. Komunikasi Frontend-Backend
+•	API Client: Buat helper utilitas (misalnya lib/api.js) untuk mengkonsumsi REST API Express. Gunakan SWR untuk caching dan revalidasi otomatis.
+•	Auth Handling: Data autentikasi (JWT) dikelola dengan HttpOnly cookies. Gunakan React Context atau state management (misal, Redux atau Zustand) untuk menyimpan status user.
+•	Routing dan Proteksi Halaman: Rute Next.js dilindungi dengan middleware (bisa menggunakan NextAuth atau custom route guarding) berdasarkan status autentikasi dan peran pengguna.
+

@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+8. Komponen Teknis Tambahan
+•	Notifikasi: Modul notifikasi real-time melalui email, SMS, dan push notification (misalnya, Firebase Cloud Messaging) untuk update status order, penawaran, dan reminder jadwal.
+•	Sistem Escrow: Implementasi modul escrow di mana pembayaran pelanggan ditahan sampai pekerjaan diselesaikan dan diverifikasi. Fungsi ini terintegrasi dalam alur order pada API pembayaran.
+•	Manajemen Dispute: Modul untuk mengelola sengketa antara pelanggan dan provider, dengan kemampuan admin untuk memantau, meninjau, dan memutuskan.
+•	Chat Internal: Real-time chat engine untuk komunikasi antara pelanggan dan provider. Chat disimpan (dengan enkripsi) untuk referensi sebagai bukti jika terjadi sengketa.
+•	Sistem Ulasan & Rating: Modul untuk mengelola ulasan, rating, dan sistem reputasi, dengan opsi moderasi oleh admin.
+•	Manajemen Komisi & Fee: Modul penghitungan otomatis fee platform pada setiap transaksi yang berhasil, serta laporan keuangan terintegrasi.
+
