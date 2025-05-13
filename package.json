@@ -2,27 +2,33 @@
   "name": "tukangin",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "frontend_baru",
-    "backend"
-  ],
+  "workspaces": {
+    "packages": [
+      "frontend_baru",
+      "backend"
+    ]
+  },
   "scripts": {
-    "fe:dev": "cd frontend ; npm run dev",
-    "be:dev": "cd backend ; npm run dev",
-    "fe:build": "cd frontend ; npm run build",
-    "be:build": "cd backend ; npm run build",
-    "fe:start": "cd frontend ; npm run start",
-    "be:start": "cd backend ; npm run start",
-    "lint": "npm run lint:fe ; npm run lint:be",
-    "lint:fe": "cd frontend ; npm run lint",
-    "lint:be": "cd backend ; npm run lint",
+    "fe:dev": "cd frontend_baru && npm run dev",
+    "be:dev": "cd backend && npm run dev",
+    "fe:build": "cd frontend_baru && npm run build",
+    "be:build": "cd backend && npm run build",
+    "fe:start": "cd frontend_baru && npm run start",
+    "be:start": "cd backend && npm run start",
+    "lint": "npm run lint:fe && npm run lint:be",
+    "lint:fe": "cd frontend_baru && npm run lint",
+    "lint:be": "cd backend && npm run lint",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "fe:add": "npm install --workspace=frontend_baru",
+    "be:add": "npm install --workspace=backend",
+    "fe:add:dev": "npm install --workspace=frontend_baru --save-dev",
+    "be:add:dev": "npm install --workspace=backend --save-dev",
     "prepare": "husky",
     "postinstall": "npm run setup:husky",
     "setup:husky": "husky install"
   },
   "devDependencies": {
-    "husky": "^9.0.7",
+    "husky": "^9.1.7",
     "lint-staged": "^15.2.0",
     "prettier": "^3.1.1"
   },
