@@ -22,7 +22,8 @@ passport.use(
     (_, __, profile, done) => {
       // Profile dari Google berisi informasi pengguna
       // kita bisa menggunakan done(null, profile) karena data ini akan diproses di callback handler
-      return done(null, profile);
+      // Disini kita perlu menambahkan type any untuk compatibility dengan Express.User
+      return done(null, profile as any);
     }
   )
 );

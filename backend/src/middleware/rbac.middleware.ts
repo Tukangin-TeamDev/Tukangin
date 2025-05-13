@@ -1,19 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { UserRole } from '../types/user.types';
+import { UserRole } from '@prisma/client';
 import { ApiResponse } from '../types/common.types';
 
-// Diperluas dari interface Request express untuk menambahkan properties custom
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: number;
-        role: UserRole;
-        email: string;
-      };
-    }
-  }
-}
+// Tipe User sudah didefinisikan di types/express.d.ts
 
 /**
  * Middleware untuk memeriksa apakah user memiliki peran yang diizinkan

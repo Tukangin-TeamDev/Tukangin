@@ -308,10 +308,10 @@ export const enable2FA = async (req: Request, res: Response, next: NextFunction)
     // Generate OTP secret dan QR code
     const { otpSecret, qrCodeUrl } = await authService.generateOTPSecret(req.user.email);
     // Simpan OTP secret ke database (tidak diaktifkan sampai verifikasi)
-    await authService.saveOTPSecret(req.user._id, otpSecret);
+    await authService.saveOTPSecret(req.user.id, otpSecret);
     
     // Log aktivitas
-    await createAdminAuditLog('2FA_SETUP_INITIATED', {}, req.user._id);
+    await createAdminAuditLog('2FA_SETUP_INITIATED', {}, req.user.id);
     // Response
     const response: ApiResponse<{qrCodeUrl: string}> = {
       success: true,

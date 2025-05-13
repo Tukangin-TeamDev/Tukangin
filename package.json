@@ -9,6 +9,7 @@
     ]
   },
   "scripts": {
+    "check:all": "npm run lint && cd backend && npx tsc --noEmit && cd ../frontend_baru && npm run build",
     "fe:dev": "cd frontend_baru && npm run dev",
     "be:dev": "cd backend && npm run dev",
     "fe:build": "cd frontend_baru && npm run build",
