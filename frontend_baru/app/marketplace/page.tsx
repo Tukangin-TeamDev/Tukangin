@@ -21,7 +21,7 @@ import {
 } from "lucide-react"
 import { CustomerNavbar } from "@/components/customer-navbar"
 import { Footer } from "@/components/footer"
-import { FilterBar } from "@/components/filter-bar"
+import { FilterBar, ActiveFilter } from "@/components/filter-bar"
 
 // Types for our service data
 interface ServiceProvider {
@@ -43,12 +43,30 @@ interface Service {
   rating: number
 }
 
+interface FilterState {
+  category: string
+  location: string
+  priceRange: [number, number]
+  minRating: number
+}
+
 export default function MarketplacePage() {
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("all")
-  const [showFilters, setShowFilters] = useState(false)
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([
+    { type: "category", value: "Peralatan" },
+    { type: "location", value: "Jakarta Pusat" },
+    { type: "price", value: "Rp0 - Rp1,000,000" },
+    { type: "rating", value: "4.5+" },
+  ])
+  const [filters, setFilters] = useState<FilterState>({
+    category: "all",
+    location: "Jakarta Pusat",
+    priceRange: [0, 1000000],
+    minRating: 4.5
+  })
 
   // Simulate fetching services data
   useEffect(() => {
@@ -254,16 +272,89 @@ export default function MarketplacePage() {
     { id: "moving", name: "Moving", icon: "moving" },
   ]
 
-  // Filter services based on search query and active tab
+  // Handle filters change from FilterBar
+  const handleFilterChange = (newFilters: ActiveFilter[]) => {
+    setActiveFilters(newFilters)
+    
+    // Update the filters state based on the active filters
+    const newFiltersState = { ...filters }
+    
+    // Reset filters first
+    newFiltersState.category = "all"
+    newFiltersState.location = ""
+    newFiltersState.priceRange = [0, 1000000]
+    newFiltersState.minRating = 0
+    
+    // Apply each filter
+    newFilters.forEach(filter => {
+      if (filter.type === "category") {
+        // Map category label back to category ID
+        const categoryOption = getCategoryIdByLabel(filter.value)
+        if (categoryOption) {
+          newFiltersState.category = categoryOption
+        }
+      } else if (filter.type === "location") {
+        newFiltersState.location = filter.value
+      } else if (filter.type === "price") {
+        // Parse price range from string like "Rp0 - Rp1,000,000"
+        const priceRange = filter.value.split(" - ")
+        if (priceRange.length === 2) {
+          const min = parseInt(priceRange[0].replace(/[^\d]/g, ""))
+          const max = parseInt(priceRange[1].replace(/[^\d]/g, ""))
+          newFiltersState.priceRange = [min, max]
+        }
+      } else if (filter.type === "rating") {
+        // Parse rating from string like "4.5+"
+        const rating = parseFloat(filter.value.replace("+", ""))
+        if (!isNaN(rating)) {
+          newFiltersState.minRating = rating
+        }
+      }
+    })
+    
+    setFilters(newFiltersState)
+  }
+  
+  // Handle category change from category buttons
+  const handleCategoryChange = (categoryId: string) => {
+    setActiveTab(categoryId)
+  }
+  
+  // Map category label to category ID
+  const getCategoryIdByLabel = (label: string): string => {
+    const categories: {[key: string]: string} = {
+      "Kelistrikan": "electrical",
+      "Ledeng": "plumbing",
+      "Rumah": "home",
+      "Keamanan": "security",
+      "Peralatan": "equipment",
+      "Semua": "all"
+    }
+    return categories[label] || "all"
+  }
+
+  // Filter services based on search query and active filters
   const filteredServices = services.filter((service) => {
+    // Search filter
     const matchesSearch =
       service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       service.provider.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       service.provider.location.toLowerCase().includes(searchQuery.toLowerCase())
 
-    const matchesTab = activeTab === "all" || service.category === activeTab
+    // Category filter
+    const matchesCategory = activeTab === "all" || service.category === activeTab
+    
+    // Rating filter
+    const matchesRating = service.rating >= filters.minRating
+    
+    // Location filter (if applied)
+    const matchesLocation = !filters.location || service.provider.location === filters.location
+    
+    // Price filter
+    const matchesPrice = service.price >= filters.priceRange[0] && 
+                        service.price <= filters.priceRange[1]
 
-    return matchesSearch && matchesTab
+    return matchesSearch && matchesCategory && matchesRating && matchesLocation && matchesPrice
   })
 
   const handleSearch = (e: React.FormEvent) => {
@@ -277,9 +368,9 @@ export default function MarketplacePage() {
       <CustomerNavbar userName="Dono" />
 
       {/* Hero Banner */}
-      <section className="bg-gradient-to-b from-blue-500/60 to-white py-16">
+      <section className="bg-gradient-to-b from-blue-500/60 to-white py-12">
         <div className="container mx-auto px-4 md:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">Temukan Layanan Tukang Profesional</h1>
+          <h1 className="text-4xl md:text-6xl font-bold text-black mb-4">Temukan Layanan Tukang Profesional</h1>
           <p className="text-lg text-black/75 mb-8 max-w-4xl mx-auto">
             Berbagai layanan jasa tukang berkualitas untuk membantu kebutuhan rumah dan bisnis Anda
           </p>
@@ -303,8 +394,12 @@ export default function MarketplacePage() {
       </section>
 
       {/* Filter Section */}
-      <section className="container mx-auto px-4 md:px-8 -mt-16 mb-8">
-        <FilterBar />
+      <section className="container mx-auto px-4 md:px-8 mt-6 mb-8">
+        <FilterBar 
+          filters={activeFilters} 
+          onFilterChange={handleFilterChange}
+          onCategoryChange={handleCategoryChange}
+        />
       </section>
 
       {/* Service Categories */}
@@ -322,7 +417,16 @@ export default function MarketplacePage() {
             {serviceCategories.map((category) => (
               <button
                 key={category.id}
-                onClick={() => setActiveTab(category.id)}
+                onClick={() => {
+                  setActiveTab(category.id)
+                  // Update active filters to match selected category
+                  const categoryLabel = serviceCategories.find(c => c.id === category.id)?.name || ""
+                  const updatedFilters = activeFilters.filter(f => f.type !== "category")
+                  if (category.id !== "all") {
+                    updatedFilters.push({ type: "category", value: categoryLabel })
+                  }
+                  setActiveFilters(updatedFilters)
+                }}
                 className={`flex flex-col items-center justify-center p-4 bg-white rounded-xl shadow-sm hover:shadow-md border ${
                   activeTab === category.id ? "border-green-500 bg-green-50/10" : "border-gray-200/80"
                 } h-full transition-all duration-300 group`}
@@ -342,7 +446,11 @@ export default function MarketplacePage() {
         <div className="flex justify-between items-center mb-6">
           <div className="flex space-x-2">
             <button
-              onClick={() => setActiveTab("all")}
+              onClick={() => {
+                setActiveTab("all")
+                // Remove category filter
+                setActiveFilters(activeFilters.filter(f => f.type !== "category"))
+              }}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
                 activeTab === "all" ? "bg-blue-600 text-white" : "bg-white text-gray-500"
               }`}
@@ -374,7 +482,7 @@ export default function MarketplacePage() {
               <div key={i} className="rounded-lg bg-gray-100 h-[398px] animate-pulse"></div>
             ))}
           </div>
-        ) : (
+        ) : filteredServices.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredServices.map((service) => (
               <div
@@ -455,6 +563,11 @@ export default function MarketplacePage() {
                 </div>
               </div>
             ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="text-2xl font-semibold mb-2">Tidak ada layanan yang ditemukan</div>
+            <p className="text-gray-500">Silakan ubah filter pencarian Anda</p>
           </div>
         )}
       </section>

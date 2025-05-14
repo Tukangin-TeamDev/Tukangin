@@ -6,7 +6,7 @@ import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle } from "lucide-react"
-import { validateEmail } from "@/lib/validation"
+import { validateEmail } from "../../lib/validation"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")

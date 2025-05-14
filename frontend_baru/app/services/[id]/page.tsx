@@ -42,13 +42,22 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
   const [selectedOption, setSelectedOption] = useState<string>("standard")
   const [loading, setLoading] = useState(true)
   const [serviceData, setServiceData] = useState<any>(null)
+  const [serviceId, setServiceId] = useState<string>("")
 
   useEffect(() => {
+    // Store params.id in state
+    setServiceId(params.id)
+  }, [params])
+
+  useEffect(() => {
+    // Only run this effect when serviceId is set
+    if (!serviceId) return
+
     // In a real app, this would fetch the specific service by ID
     const fetchServiceData = async () => {
       // Simulated API response
       const data = {
-        id: params.id,
+        id: serviceId,
         title: "Perbaikan Atap Bocor Profesional",
         rating: 4.8,
         reviewCount: 124,
@@ -176,7 +185,7 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
     }
 
     fetchServiceData()
-  }, [params.id])
+  }, [serviceId])
 
   // Format price to IDR
   const formatPrice = (price: number) => {
