@@ -131,7 +131,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex flex-col md:flex-row w-full h-screen overflow-hidden bg-gray-50">
       {/* Left side - Branding and Info */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[rgba(30,131,155,0.25)] to-[rgba(22,163,74,0.25)] relative overflow-hidden">
         <div className="relative h-full w-full flex flex-col items-center justify-center px-12">
@@ -197,12 +197,13 @@ export default function RegisterPage() {
       </div>
 
       {/* Right side - Registration Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8 relative">
-        <div className="absolute -bottom-40 -right-40 w-[30rem] h-[30rem] rounded-full opacity-60 bg-gradient-to-tl from-blue-100/30 via-blue-50/30 to-blue-200/30 blur-3xl"></div>
-        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full opacity-60 bg-gradient-to-br from-blue-100 via-blue-50 to-blue-200/80 blur-3xl"></div>
+      <div className="w-full md:w-1/2 flex flex-col justify-center p-6 md:p-10 lg:p-12 relative overflow-y-auto">
+        {/* Background gradients - subtle and not overwhelming */}
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 rounded-full opacity-30 bg-gradient-to-tl from-blue-100 via-blue-50 to-blue-200 blur-2xl"></div>
+        <div className="absolute -top-40 -left-40 w-80 h-80 rounded-full opacity-30 bg-gradient-to-br from-blue-50 via-blue-100 to-green-100 blur-2xl"></div>
 
-        <div className="w-full max-w-xl z-10">
-          <div className="bg-white/50 backdrop-blur-md rounded-3xl shadow-xl p-8 border border-gray-200/50">
+        <div className="w-full max-w-xl z-10 mx-auto">
+          <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100">
             <div className="space-y-8">
               <div className="space-y-2">
                 <h1 className="text-2xl font-bold">Daftar Sekarang</h1>
@@ -254,9 +255,9 @@ export default function RegisterPage() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Masukkan E-mail"
-                        className={`flex h-12 w-full rounded-xl border bg-white/50 pl-10 pr-4 py-2 text-sm shadow-sm transition-all duration-300 hover:shadow-md focus:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                          errors.email ? "border-red-500" : "border-gray-300 hover:border-blue-500/50"
+                        placeholder="Masukkan email Anda"
+                        className={`w-full h-11 pl-10 pr-3 py-2 rounded-lg border focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${
+                          errors.email ? "border-red-500" : "border-gray-300"
                         }`}
                       />
                     </div>
@@ -445,9 +446,9 @@ export default function RegisterPage() {
                         type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Masukkan Password"
-                        className={`flex h-12 w-full rounded-xl border bg-white/50 pl-10 pr-10 py-2 text-sm shadow-sm transition-all duration-300 hover:shadow-md focus:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                          errors.password ? "border-red-500" : "border-gray-300 hover:border-blue-500/50"
+                        placeholder="Minimal 8 karakter"
+                        className={`w-full h-11 pl-10 pr-10 py-2 rounded-lg border focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${
+                          errors.password ? "border-red-500" : "border-gray-300"
                         }`}
                       />
                       <button
@@ -478,7 +479,7 @@ export default function RegisterPage() {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Konfirmasi Password"
-                        className={`flex h-12 w-full rounded-xl border bg-white/50 pl-10 pr-10 py-2 text-sm shadow-sm transition-all duration-300 hover:shadow-md focus:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        className={`w-full h-11 pl-10 pr-10 py-2 rounded-lg border focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${
                           errors.confirmPassword ? "border-red-500" : "border-gray-300 hover:border-blue-500/50"
                         }`}
                       />
@@ -524,7 +525,7 @@ export default function RegisterPage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="inline-flex items-center justify-center w-full h-12 px-4 py-2 rounded-xl text-base font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center justify-center w-full h-12 px-4 py-2 rounded-lg text-base font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "Memproses..." : "Daftar"}
                 </button>

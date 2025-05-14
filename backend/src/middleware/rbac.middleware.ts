@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { UserRole } from '@prisma/client';
-import { ApiResponse } from '../types/common.types';
+import { ApiResponse } from '../types';
 
 // Tipe User sudah didefinisikan di types/express.d.ts
 

@@ -46,10 +46,10 @@ export function NavbarGuest() {
 
           {/* Auth Buttons */}
           <div className="flex items-center gap-2">
-            <Link href="#" className="px-4 py-2 border border-gray-800 rounded-lg hover:bg-gray-50">
+            <Link href="/login" className="px-4 py-2 border border-gray-800 rounded-lg hover:bg-gray-50 transition-colors">
               Masuk
             </Link>
-            <Link href="#" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            <Link href="/register" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               Daftar
             </Link>
           </div>
