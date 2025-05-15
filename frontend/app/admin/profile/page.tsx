@@ -1,63 +1,63 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import Image from "next/image"
-import { Mail, Phone, MapPin, Edit, Star, Calendar, Users, Award, Clock } from "lucide-react"
+import { useState } from 'react';
+import Image from 'next/image';
+import { Mail, Phone, MapPin, Edit, Star, Calendar, Users, Award, Clock } from 'lucide-react';
 
 export default function AdminProfilePage() {
   const [profile, setProfile] = useState({
-    name: "Bengkel Jaya",
-    email: "bengkeljaya@example.com",
-    phone: "+62 812-3456-7890",
-    address: "Jl. Raya Bogor No. 123, Jakarta Timur",
+    name: 'Bengkel Jaya',
+    email: 'bengkeljaya@example.com',
+    phone: '+62 812-3456-7890',
+    address: 'Jl. Raya Bogor No. 123, Jakarta Timur',
     description:
-      "Bengkel Jaya adalah penyedia jasa perbaikan rumah terpercaya dengan pengalaman lebih dari 5 tahun. Kami menawarkan berbagai layanan perbaikan dan renovasi dengan kualitas terbaik dan harga terjangkau.",
-    established: "2018",
-    employees: "8",
+      'Bengkel Jaya adalah penyedia jasa perbaikan rumah terpercaya dengan pengalaman lebih dari 5 tahun. Kami menawarkan berbagai layanan perbaikan dan renovasi dengan kualitas terbaik dan harga terjangkau.',
+    established: '2018',
+    employees: '8',
     rating: 4.8,
     reviews: 35,
     completedProjects: 127,
-    responseTime: "< 1 jam",
-  })
+    responseTime: '< 1 jam',
+  });
 
   const [services, setServices] = useState([
     {
-      id: "s1",
-      name: "Perbaikan Atap",
-      description: "Perbaikan kebocoran dan kerusakan pada atap rumah",
+      id: 's1',
+      name: 'Perbaikan Atap',
+      description: 'Perbaikan kebocoran dan kerusakan pada atap rumah',
       price: 350000,
-      image: "/placeholder.svg?height=120&width=120",
+      image: '/placeholder.svg?height=120&width=120',
       isActive: true,
     },
     {
-      id: "s2",
-      name: "Instalasi Listrik",
-      description: "Pemasangan dan perbaikan instalasi listrik rumah",
+      id: 's2',
+      name: 'Instalasi Listrik',
+      description: 'Pemasangan dan perbaikan instalasi listrik rumah',
       price: 750000,
-      image: "/placeholder.svg?height=120&width=120",
+      image: '/placeholder.svg?height=120&width=120',
       isActive: true,
     },
     {
-      id: "s3",
-      name: "Pengecatan",
-      description: "Pengecatan interior dan eksterior rumah",
+      id: 's3',
+      name: 'Pengecatan',
+      description: 'Pengecatan interior dan eksterior rumah',
       price: 250000,
-      image: "/placeholder.svg?height=120&width=120",
+      image: '/placeholder.svg?height=120&width=120',
       isActive: true,
     },
-  ])
+  ]);
 
   // Format price to IDR
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     })
       .format(price)
-      .replace("IDR", "Rp")
-  }
+      .replace('IDR', 'Rp');
+  };
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -206,10 +206,18 @@ export default function AdminProfilePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {services.map((service) => (
-            <div key={service.id} className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
+          {services.map(service => (
+            <div
+              key={service.id}
+              className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200"
+            >
               <div className="relative h-40 bg-gray-100">
-                <Image src={service.image || "/placeholder.svg"} alt={service.name} fill className="object-cover" />
+                <Image
+                  src={service.image || '/placeholder.svg'}
+                  alt={service.name}
+                  fill
+                  className="object-cover"
+                />
                 {service.isActive ? (
                   <span className="absolute top-2 right-2 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
                     Aktif
@@ -224,7 +232,9 @@ export default function AdminProfilePage() {
                 <h3 className="font-semibold text-lg">{service.name}</h3>
                 <p className="text-gray-600 text-sm mt-1">{service.description}</p>
                 <div className="flex justify-between items-center mt-4">
-                  <span className="font-bold text-lg text-green-600">{formatPrice(service.price)}</span>
+                  <span className="font-bold text-lg text-green-600">
+                    {formatPrice(service.price)}
+                  </span>
                   <button className="text-blue-600 hover:text-blue-800">Edit</button>
                 </div>
               </div>
@@ -233,5 +243,5 @@ export default function AdminProfilePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

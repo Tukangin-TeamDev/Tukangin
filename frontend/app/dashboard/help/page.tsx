@@ -1,93 +1,95 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Search, ChevronDown, MessageSquare, Mail, Phone, FileText } from "lucide-react"
+import { useState } from 'react';
+import { Search, ChevronDown, MessageSquare, Mail, Phone, FileText } from 'lucide-react';
 
 interface FAQ {
-  question: string
-  answer: string
-  category: string
+  question: string;
+  answer: string;
+  category: string;
 }
 
 export default function HelpPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [activeCategory, setActiveCategory] = useState<string | null>(null)
-  const [expandedFAQs, setExpandedFAQs] = useState<string[]>([])
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [expandedFAQs, setExpandedFAQs] = useState<string[]>([]);
 
   const categories = [
-    { id: "general", name: "Umum" },
-    { id: "account", name: "Akun" },
-    { id: "orders", name: "Pesanan" },
-    { id: "payment", name: "Pembayaran" },
-    { id: "services", name: "Layanan" },
-  ]
+    { id: 'general', name: 'Umum' },
+    { id: 'account', name: 'Akun' },
+    { id: 'orders', name: 'Pesanan' },
+    { id: 'payment', name: 'Pembayaran' },
+    { id: 'services', name: 'Layanan' },
+  ];
 
   const faqs: FAQ[] = [
     {
-      question: "Apa itu Tukangin?",
+      question: 'Apa itu Tukangin?',
       answer:
-        "Tukangin adalah platform yang menghubungkan pelanggan dengan jasa tukang profesional untuk berbagai kebutuhan perbaikan dan renovasi rumah. Kami menyediakan berbagai layanan seperti perbaikan listrik, pipa air, AC, dan renovasi rumah.",
-      category: "general",
+        'Tukangin adalah platform yang menghubungkan pelanggan dengan jasa tukang profesional untuk berbagai kebutuhan perbaikan dan renovasi rumah. Kami menyediakan berbagai layanan seperti perbaikan listrik, pipa air, AC, dan renovasi rumah.',
+      category: 'general',
     },
     {
-      question: "Bagaimana cara mendaftar di Tukangin?",
+      question: 'Bagaimana cara mendaftar di Tukangin?',
       answer:
         "Untuk mendaftar di Tukangin, klik tombol 'Daftar' di pojok kanan atas halaman. Isi formulir pendaftaran dengan informasi yang diminta seperti nama, email, dan nomor telepon. Setelah itu, Anda akan menerima email verifikasi untuk mengaktifkan akun Anda.",
-      category: "account",
+      category: 'account',
     },
     {
-      question: "Bagaimana cara memesan layanan?",
+      question: 'Bagaimana cara memesan layanan?',
       answer:
         "Untuk memesan layanan, pilih kategori layanan yang Anda butuhkan di halaman utama atau gunakan fitur pencarian. Pilih penyedia jasa yang sesuai dengan kebutuhan Anda, lalu klik tombol 'Pesan'. Isi detail pesanan dan konfirmasi pemesanan Anda.",
-      category: "orders",
+      category: 'orders',
     },
     {
-      question: "Metode pembayaran apa saja yang tersedia?",
+      question: 'Metode pembayaran apa saja yang tersedia?',
       answer:
-        "Tukangin menerima berbagai metode pembayaran seperti transfer bank, kartu kredit/debit, e-wallet (OVO, GoPay, DANA), dan pembayaran tunai setelah layanan selesai (COD). Pilih metode pembayaran yang paling nyaman untuk Anda saat checkout.",
-      category: "payment",
+        'Tukangin menerima berbagai metode pembayaran seperti transfer bank, kartu kredit/debit, e-wallet (OVO, GoPay, DANA), dan pembayaran tunai setelah layanan selesai (COD). Pilih metode pembayaran yang paling nyaman untuk Anda saat checkout.',
+      category: 'payment',
     },
     {
-      question: "Bagaimana jika saya tidak puas dengan layanan?",
+      question: 'Bagaimana jika saya tidak puas dengan layanan?',
       answer:
-        "Kepuasan pelanggan adalah prioritas kami. Jika Anda tidak puas dengan layanan yang diberikan, silakan hubungi tim dukungan kami dalam waktu 48 jam setelah layanan selesai. Kami akan meninjau kasus Anda dan memberikan solusi terbaik, termasuk kemungkinan pengerjaan ulang atau pengembalian dana.",
-      category: "services",
+        'Kepuasan pelanggan adalah prioritas kami. Jika Anda tidak puas dengan layanan yang diberikan, silakan hubungi tim dukungan kami dalam waktu 48 jam setelah layanan selesai. Kami akan meninjau kasus Anda dan memberikan solusi terbaik, termasuk kemungkinan pengerjaan ulang atau pengembalian dana.',
+      category: 'services',
     },
     {
-      question: "Apakah layanan Tukangin tersedia di semua kota?",
+      question: 'Apakah layanan Tukangin tersedia di semua kota?',
       answer:
-        "Saat ini, layanan Tukangin tersedia di kota-kota besar di Indonesia seperti Jakarta, Surabaya, Bandung, Medan, dan Makassar. Kami terus memperluas jangkauan layanan kami ke kota-kota lain. Silakan periksa ketersediaan layanan di area Anda melalui fitur pencarian lokasi di aplikasi atau website kami.",
-      category: "general",
+        'Saat ini, layanan Tukangin tersedia di kota-kota besar di Indonesia seperti Jakarta, Surabaya, Bandung, Medan, dan Makassar. Kami terus memperluas jangkauan layanan kami ke kota-kota lain. Silakan periksa ketersediaan layanan di area Anda melalui fitur pencarian lokasi di aplikasi atau website kami.',
+      category: 'general',
     },
     {
-      question: "Bagaimana cara mengubah password akun saya?",
+      question: 'Bagaimana cara mengubah password akun saya?',
       answer:
         "Untuk mengubah password, masuk ke akun Anda dan klik pada 'Profil' di menu navigasi. Pilih tab 'Keamanan' dan klik tombol 'Ubah Password'. Masukkan password lama Anda, kemudian masukkan dan konfirmasi password baru Anda.",
-      category: "account",
+      category: 'account',
     },
     {
-      question: "Bagaimana cara membatalkan pesanan?",
+      question: 'Bagaimana cara membatalkan pesanan?',
       answer:
         "Untuk membatalkan pesanan, masuk ke akun Anda dan klik 'Pesanan Saya'. Temukan pesanan yang ingin dibatalkan dan klik tombol 'Batalkan'. Perlu diingat bahwa pembatalan mungkin dikenakan biaya tergantung pada waktu pembatalan dan kebijakan penyedia jasa.",
-      category: "orders",
+      category: 'orders',
     },
-  ]
+  ];
 
   const toggleFAQ = (question: string) => {
-    setExpandedFAQs((prev) => (prev.includes(question) ? prev.filter((q) => q !== question) : [...prev, question]))
-  }
+    setExpandedFAQs(prev =>
+      prev.includes(question) ? prev.filter(q => q !== question) : [...prev, question]
+    );
+  };
 
   const toggleCategory = (categoryId: string) => {
-    setActiveCategory(activeCategory === categoryId ? null : categoryId)
-  }
+    setActiveCategory(activeCategory === categoryId ? null : categoryId);
+  };
 
-  const filteredFAQs = faqs.filter((faq) => {
+  const filteredFAQs = faqs.filter(faq => {
     const matchesSearch =
       faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = !activeCategory || faq.category === activeCategory
-    return matchesSearch && matchesCategory
-  })
+      faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = !activeCategory || faq.category === activeCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -100,7 +102,7 @@ export default function HelpPage() {
             type="text"
             placeholder="Cari pertanyaan atau kata kunci..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="w-full py-3 px-6 pr-12 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-white"
           />
           <Search className="absolute right-4 top-3 h-6 w-6 text-gray-500" />
@@ -113,12 +115,14 @@ export default function HelpPage() {
           <div className="bg-white rounded-lg shadow-sm p-4">
             <h2 className="font-semibold mb-4">Kategori</h2>
             <ul className="space-y-2">
-              {categories.map((category) => (
+              {categories.map(category => (
                 <li key={category.id}>
                   <button
                     onClick={() => toggleCategory(category.id)}
                     className={`w-full text-left px-3 py-2 rounded-md ${
-                      activeCategory === category.id ? "bg-blue-100 text-blue-700" : "hover:bg-gray-100"
+                      activeCategory === category.id
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'hover:bg-gray-100'
                     }`}
                   >
                     {category.name}
@@ -166,8 +170,11 @@ export default function HelpPage() {
 
             {filteredFAQs.length > 0 ? (
               <div className="space-y-4">
-                {filteredFAQs.map((faq) => (
-                  <div key={faq.question} className="border border-gray-200 rounded-lg overflow-hidden">
+                {filteredFAQs.map(faq => (
+                  <div
+                    key={faq.question}
+                    className="border border-gray-200 rounded-lg overflow-hidden"
+                  >
                     <button
                       onClick={() => toggleFAQ(faq.question)}
                       className="w-full flex justify-between items-center p-4 text-left bg-gray-50 hover:bg-gray-100"
@@ -175,7 +182,7 @@ export default function HelpPage() {
                       <h3 className="font-medium">{faq.question}</h3>
                       <ChevronDown
                         className={`h-5 w-5 text-gray-500 transition-transform ${
-                          expandedFAQs.includes(faq.question) ? "rotate-180" : ""
+                          expandedFAQs.includes(faq.question) ? 'rotate-180' : ''
                         }`}
                       />
                     </button>
@@ -193,7 +200,9 @@ export default function HelpPage() {
                   <Search className="h-8 w-8 text-gray-400" />
                 </div>
                 <h3 className="text-lg font-medium mb-2">Tidak ada hasil ditemukan</h3>
-                <p className="text-gray-500">Coba gunakan kata kunci yang berbeda atau hubungi tim dukungan kami</p>
+                <p className="text-gray-500">
+                  Coba gunakan kata kunci yang berbeda atau hubungi tim dukungan kami
+                </p>
               </div>
             )}
           </div>
@@ -210,5 +219,5 @@ export default function HelpPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

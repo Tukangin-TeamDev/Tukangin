@@ -1,13 +1,22 @@
-import { PrismaClient, OrderStatus as PrismaOrderStatus, Order, Payment, Service, Dispute, User, ProviderProfile } from '@prisma/client';
-import { 
-  CreateOrderDto, 
-  CreateConsultativeOrderDto, 
-  OrderResponseDto, 
+import {
+  PrismaClient,
+  OrderStatus as PrismaOrderStatus,
+  Order,
+  Payment,
+  Service,
+  Dispute,
+  User,
+  ProviderProfile,
+} from '@prisma/client';
+import {
+  CreateOrderDto,
+  CreateConsultativeOrderDto,
+  OrderResponseDto,
   UpdateOrderDto,
   OrderFilterDto,
-  OrderStatus
-} from "../types/order.types";
-import { ServiceType } from "../types/service.types";
+  OrderStatus,
+} from '../types/order.types';
+import { ServiceType } from '../types/service.types';
 import { logger } from '../utils/logger';
 import { ApiError } from '../utils/api-error';
 
@@ -38,7 +47,7 @@ export class OrderService {
               name: true,
               email: true,
               phone: true,
-            }
+            },
           },
           provider: {
             include: {
@@ -47,14 +56,14 @@ export class OrderService {
                   name: true,
                   email: true,
                   phone: true,
-                }
-              }
-            }
+                },
+              },
+            },
           },
           service: true,
           payment: true,
           dispute: true,
-        }
+        },
       });
 
       if (!order) {
@@ -72,54 +81,54 @@ export class OrderService {
   /**
    * Mendapatkan daftar order dengan filter
    */
-  async getOrders(filter: OrderFilterDto): Promise<{ 
-    orders: OrderResponseDto[]; 
-    meta: { page: number; limit: number; totalItems: number; totalPages: number; };
+  async getOrders(filter: OrderFilterDto): Promise<{
+    orders: OrderResponseDto[];
+    meta: { page: number; limit: number; totalItems: number; totalPages: number };
   }> {
     try {
-      const { 
-        customerId, 
-        providerId, 
-        status, 
-        orderType, 
-        startDate, 
-        endDate, 
-        page = 1, 
-        limit = 10 
+      const {
+        customerId,
+        providerId,
+        status,
+        orderType,
+        startDate,
+        endDate,
+        page = 1,
+        limit = 10,
       } = filter;
 
       const skip = (page - 1) * limit;
-      
+
       const where: Record<string, any> = {};
-      
+
       if (customerId) {
         where.customerId = customerId;
       }
-      
+
       if (providerId) {
         where.providerId = providerId;
       }
-      
+
       if (status) {
         where.status = status;
       }
-      
+
       if (orderType) {
         where.orderType = orderType;
       }
-      
+
       if (startDate || endDate) {
         where.createdAt = {};
-        
+
         if (startDate) {
           where.createdAt.gte = new Date(startDate);
         }
-        
+
         if (endDate) {
           where.createdAt.lte = new Date(endDate);
         }
       }
-      
+
       const [orders, total] = await Promise.all([
         prisma.order.findMany({
           where,
@@ -127,28 +136,28 @@ export class OrderService {
             customer: {
               select: {
                 name: true,
-              }
+              },
             },
             provider: {
               include: {
                 user: {
                   select: {
                     name: true,
-                  }
-                }
-              }
+                  },
+                },
+              },
             },
             service: {
               select: {
                 name: true,
                 serviceType: true,
-              }
+              },
             },
             payment: {
               select: {
                 status: true,
                 amount: true,
-              }
+              },
             },
           },
           skip,
@@ -157,9 +166,9 @@ export class OrderService {
         }),
         prisma.order.count({ where }),
       ]);
-      
+
       return {
-        orders: orders.map((order) => ({
+        orders: orders.map(order => ({
           id: order.id,
           customerId: order.customerId,
           customerName: order.customer.name,
@@ -193,14 +202,16 @@ export class OrderService {
   /**
    * Membuat order baru (fixed-price atau konsultatif)
    */
-  async createOrder(orderData: CreateOrderDto | CreateConsultativeOrderDto): Promise<OrderResponseDto> {
+  async createOrder(
+    orderData: CreateOrderDto | CreateConsultativeOrderDto
+  ): Promise<OrderResponseDto> {
     try {
       // Cek apakah layanan ada
       const service = await prisma.service.findUnique({
         where: { id: orderData.serviceId },
         include: {
           providerProfile: true,
-        }
+        },
       });
 
       if (!service) {
@@ -209,7 +220,7 @@ export class OrderService {
 
       // Cek apakah customer ada
       const customer = await prisma.user.findUnique({
-        where: { id: orderData.customerId }
+        where: { id: orderData.customerId },
       });
 
       if (!customer) {
@@ -245,9 +256,14 @@ export class OrderService {
           status: initialStatus,
           escrowAmount,
           description: 'description' in orderData ? orderData.description : undefined,
-          scheduledAt: 'scheduledAt' in orderData && orderData.scheduledAt ? 
-            new Date(orderData.scheduledAt instanceof Date ? orderData.scheduledAt.toISOString() : orderData.scheduledAt) : 
-            undefined,
+          scheduledAt:
+            'scheduledAt' in orderData && orderData.scheduledAt
+              ? new Date(
+                  orderData.scheduledAt instanceof Date
+                    ? orderData.scheduledAt.toISOString()
+                    : orderData.scheduledAt
+                )
+              : undefined,
         },
         include: {
           customer: {
@@ -255,7 +271,7 @@ export class OrderService {
               name: true,
               email: true,
               phone: true,
-            }
+            },
           },
           provider: {
             include: {
@@ -264,12 +280,12 @@ export class OrderService {
                   name: true,
                   email: true,
                   phone: true,
-                }
-              }
-            }
+                },
+              },
+            },
           },
           service: true,
-        }
+        },
       });
 
       logger.info(`Order baru berhasil dibuat dengan ID: ${newOrder.id}`);
@@ -288,7 +304,7 @@ export class OrderService {
     try {
       // Cek apakah order ada
       const order = await prisma.order.findUnique({
-        where: { id }
+        where: { id },
       });
 
       if (!order) {
@@ -297,7 +313,10 @@ export class OrderService {
 
       // Jika mengubah status, validasi transisi status
       if (updateData.status && updateData.status !== order.status) {
-        this.validateStatusTransition(order.status as PrismaOrderStatus, updateData.status as unknown as PrismaOrderStatus);
+        this.validateStatusTransition(
+          order.status as PrismaOrderStatus,
+          updateData.status as unknown as PrismaOrderStatus
+        );
       }
 
       // Update order
@@ -305,7 +324,13 @@ export class OrderService {
         where: { id },
         data: {
           status: updateData.status as PrismaOrderStatus,
-          scheduledAt: updateData.scheduledAt ? new Date(updateData.scheduledAt instanceof Date ? updateData.scheduledAt.toISOString() : updateData.scheduledAt) : undefined,
+          scheduledAt: updateData.scheduledAt
+            ? new Date(
+                updateData.scheduledAt instanceof Date
+                  ? updateData.scheduledAt.toISOString()
+                  : updateData.scheduledAt
+              )
+            : undefined,
           escrowAmount: updateData.escrowAmount,
           negotiationNote: updateData.negotiationNote,
           description: updateData.description,
@@ -316,7 +341,7 @@ export class OrderService {
               name: true,
               email: true,
               phone: true,
-            }
+            },
           },
           provider: {
             include: {
@@ -325,14 +350,14 @@ export class OrderService {
                   name: true,
                   email: true,
                   phone: true,
-                }
-              }
-            }
+                },
+              },
+            },
           },
           service: true,
           payment: true,
           dispute: true,
-        }
+        },
       });
 
       logger.info(`Order ID: ${id} berhasil diupdate`);
@@ -357,7 +382,7 @@ export class OrderService {
         },
         include: {
           payment: true,
-        }
+        },
       });
 
       if (!order) {
@@ -366,7 +391,10 @@ export class OrderService {
 
       // Cek apakah status order valid (harus IN_PROGRESS)
       if (order.status !== PrismaOrderStatus.IN_PROGRESS) {
-        throw new ApiError(400, 'Hanya order dengan status IN_PROGRESS yang dapat dikonfirmasi selesai');
+        throw new ApiError(
+          400,
+          'Hanya order dengan status IN_PROGRESS yang dapat dikonfirmasi selesai'
+        );
       }
 
       // Update status order menjadi COMPLETED
@@ -381,7 +409,7 @@ export class OrderService {
               name: true,
               email: true,
               phone: true,
-            }
+            },
           },
           provider: {
             include: {
@@ -390,14 +418,14 @@ export class OrderService {
                   name: true,
                   email: true,
                   phone: true,
-                }
-              }
-            }
+                },
+              },
+            },
           },
           service: true,
           payment: true,
           dispute: true,
-        }
+        },
       });
 
       logger.info(`Order ID: ${id} telah dikonfirmasi selesai oleh customer`);
@@ -412,11 +440,7 @@ export class OrderService {
   /**
    * Membuat dispute untuk order
    */
-  async createDispute(
-    orderId: number, 
-    customerId: number, 
-    description: string
-  ): Promise<any> {
+  async createDispute(orderId: number, customerId: number, description: string): Promise<any> {
     try {
       // Cek apakah order ada dan dimiliki oleh customer yang benar
       const order = await prisma.order.findFirst({
@@ -427,7 +451,7 @@ export class OrderService {
         include: {
           dispute: true,
           provider: true,
-        }
+        },
       });
 
       if (!order) {
@@ -441,13 +465,16 @@ export class OrderService {
 
       // Cek status order (harus ACCEPTED, IN_PROGRESS, atau COMPLETED)
       const validStatus: PrismaOrderStatus[] = [
-        PrismaOrderStatus.ACCEPTED, 
-        PrismaOrderStatus.IN_PROGRESS, 
-        PrismaOrderStatus.COMPLETED
+        PrismaOrderStatus.ACCEPTED,
+        PrismaOrderStatus.IN_PROGRESS,
+        PrismaOrderStatus.COMPLETED,
       ];
-      
+
       if (!validStatus.includes(order.status as PrismaOrderStatus)) {
-        throw new ApiError(400, 'Dispute hanya dapat dibuat untuk order dengan status ACCEPTED, IN_PROGRESS, atau COMPLETED');
+        throw new ApiError(
+          400,
+          'Dispute hanya dapat dibuat untuk order dengan status ACCEPTED, IN_PROGRESS, atau COMPLETED'
+        );
       }
 
       // Buat dispute baru
@@ -458,7 +485,7 @@ export class OrderService {
           providerId: order.providerId,
           description,
           status: 'OPEN',
-        }
+        },
       });
 
       // Update status order menjadi DISPUTED
@@ -466,7 +493,7 @@ export class OrderService {
         where: { id: orderId },
         data: {
           status: PrismaOrderStatus.DISPUTED,
-        }
+        },
       });
 
       logger.info(`Dispute baru dibuat untuk order ID: ${orderId}`);
@@ -485,7 +512,7 @@ export class OrderService {
     try {
       // Cek apakah order ada
       const order = await prisma.order.findUnique({
-        where: { id }
+        where: { id },
       });
 
       if (!order) {
@@ -500,7 +527,7 @@ export class OrderService {
         where: { id },
         data: {
           status: newStatus,
-        }
+        },
       });
 
       logger.info(`Status order ID: ${id} diubah menjadi ${newStatus}`);
@@ -515,20 +542,30 @@ export class OrderService {
   /**
    * Validasi transisi status order
    */
-  private validateStatusTransition(currentStatus: PrismaOrderStatus, newStatus: PrismaOrderStatus): void {
+  private validateStatusTransition(
+    currentStatus: PrismaOrderStatus,
+    newStatus: PrismaOrderStatus
+  ): void {
     // Validasi transisi status berdasarkan state machine
     const validTransitions: Record<PrismaOrderStatus, PrismaOrderStatus[]> = {
       [PrismaOrderStatus.PENDING]: [PrismaOrderStatus.ACCEPTED, PrismaOrderStatus.CANCELLED],
       [PrismaOrderStatus.NEGOTIATION]: [PrismaOrderStatus.ACCEPTED, PrismaOrderStatus.CANCELLED],
-      [PrismaOrderStatus.ACCEPTED]: [PrismaOrderStatus.IN_PROGRESS, PrismaOrderStatus.CANCELLED, PrismaOrderStatus.DISPUTED],
+      [PrismaOrderStatus.ACCEPTED]: [
+        PrismaOrderStatus.IN_PROGRESS,
+        PrismaOrderStatus.CANCELLED,
+        PrismaOrderStatus.DISPUTED,
+      ],
       [PrismaOrderStatus.IN_PROGRESS]: [PrismaOrderStatus.COMPLETED, PrismaOrderStatus.DISPUTED],
       [PrismaOrderStatus.COMPLETED]: [PrismaOrderStatus.DISPUTED],
       [PrismaOrderStatus.DISPUTED]: [PrismaOrderStatus.COMPLETED, PrismaOrderStatus.CANCELLED],
-      [PrismaOrderStatus.CANCELLED]: []
+      [PrismaOrderStatus.CANCELLED]: [],
     };
 
     if (!validTransitions[currentStatus].includes(newStatus)) {
-      throw new ApiError(400, `Tidak dapat mengubah status dari ${currentStatus} menjadi ${newStatus}`);
+      throw new ApiError(
+        400,
+        `Tidak dapat mengubah status dari ${currentStatus} menjadi ${newStatus}`
+      );
     }
   }
 
@@ -571,20 +608,27 @@ export const getOrderById = async (id: number): Promise<OrderResponseDto | null>
   return orderService.getOrderById(id);
 };
 
-export const getOrders = async (filter: OrderFilterDto): Promise<{ 
-  orders: OrderResponseDto[]; 
-  meta: { page: number; limit: number; totalItems: number; totalPages: number; };
+export const getOrders = async (
+  filter: OrderFilterDto
+): Promise<{
+  orders: OrderResponseDto[];
+  meta: { page: number; limit: number; totalItems: number; totalPages: number };
 }> => {
   const orderService = new OrderService();
   return orderService.getOrders(filter);
 };
 
-export const createOrder = async (orderData: CreateOrderDto | CreateConsultativeOrderDto): Promise<OrderResponseDto> => {
+export const createOrder = async (
+  orderData: CreateOrderDto | CreateConsultativeOrderDto
+): Promise<OrderResponseDto> => {
   const orderService = new OrderService();
   return orderService.createOrder(orderData);
 };
 
-export const updateOrder = async (id: number, updateData: UpdateOrderDto): Promise<OrderResponseDto> => {
+export const updateOrder = async (
+  id: number,
+  updateData: UpdateOrderDto
+): Promise<OrderResponseDto> => {
   const orderService = new OrderService();
   return orderService.updateOrder(id, updateData);
 };
@@ -595,8 +639,8 @@ export const confirmOrder = async (id: number, customerId: number): Promise<Orde
 };
 
 export const createDispute = async (
-  orderId: number, 
-  customerId: number, 
+  orderId: number,
+  customerId: number,
   description: string
 ): Promise<any> => {
   const orderService = new OrderService();

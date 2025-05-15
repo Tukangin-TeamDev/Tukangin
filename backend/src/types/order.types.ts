@@ -4,13 +4,13 @@ import { ServiceType } from './service.types';
  * Enum untuk status order
  */
 export enum OrderStatus {
-  PENDING = "PENDING",
-  NEGOTIATION = "NEGOTIATION",
-  ACCEPTED = "ACCEPTED",
-  IN_PROGRESS = "IN_PROGRESS",
-  COMPLETED = "COMPLETED",
-  DISPUTED = "DISPUTED",
-  CANCELLED = "CANCELLED"
+  PENDING = 'PENDING',
+  NEGOTIATION = 'NEGOTIATION',
+  ACCEPTED = 'ACCEPTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  DISPUTED = 'DISPUTED',
+  CANCELLED = 'CANCELLED',
 }
 
 /**
@@ -104,4 +104,4 @@ export type ReviewDto = {
   providerId: number;
   rating: number;
   comment?: string;
-}; 
+};

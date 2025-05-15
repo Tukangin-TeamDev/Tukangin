@@ -2,7 +2,7 @@
 // Implementasi barrel pattern secara bertahap untuk menghindari konflik
 
 // Catatan: Untuk saat ini, tidak mengekspor file dari api/index.ts
-// karena bisa menyebabkan impor sirkular. Sebagai gantinya, kita akan 
+// karena bisa menyebabkan impor sirkular. Sebagai gantinya, kita akan
 // mengimpor langsung dari folder spesifik saat dibutuhkan, misalnya:
 // import { something } from './api/auth';
 

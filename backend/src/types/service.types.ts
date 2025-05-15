@@ -2,8 +2,8 @@
  * Enum untuk tipe layanan
  */
 export enum ServiceType {
-  FIXED = "FIXED",
-  CONSULTATIVE = "CONSULTATIVE"
+  FIXED = 'FIXED',
+  CONSULTATIVE = 'CONSULTATIVE',
 }
 
 /**
@@ -54,4 +54,4 @@ export type ServiceFilterDto = {
   search?: string;
   page?: number;
   limit?: number;
-}; 
+};

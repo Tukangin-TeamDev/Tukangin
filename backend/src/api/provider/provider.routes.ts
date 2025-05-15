@@ -56,4 +56,4 @@ router.put(
   providerController.verifyProvider
 );
 
-export default router; 
+export default router;

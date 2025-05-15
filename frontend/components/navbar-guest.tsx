@@ -1,6 +1,6 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Search } from "lucide-react"
+import Link from 'next/link';
+import Image from 'next/image';
+import { Search } from 'lucide-react';
 
 export function NavbarGuest() {
   return (
@@ -17,18 +17,29 @@ export function NavbarGuest() {
                 height={48}
                 className="rounded-full"
               />
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">Tukangin</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
+                Tukangin
+              </span>
             </Link>
 
             {/* Navigation - Hidden on mobile */}
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              <Link
+                href="#"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              >
                 Layanan
               </Link>
-              <Link href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              <Link
+                href="#"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              >
                 Cara Kerja
               </Link>
-              <Link href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              <Link
+                href="#"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              >
                 Tentang Kami
               </Link>
             </nav>
@@ -47,10 +58,16 @@ export function NavbarGuest() {
 
             {/* Auth Buttons */}
             <div className="flex items-center gap-3">
-              <Link href="/login" className="px-5 py-2 border border-gray-200 text-gray-800 rounded-full hover:bg-gray-50 hover:border-gray-300 transition-all font-medium">
+              <Link
+                href="/login"
+                className="px-5 py-2 border border-gray-200 text-gray-800 rounded-full hover:bg-gray-50 hover:border-gray-300 transition-all font-medium"
+              >
                 Masuk
               </Link>
-              <Link href="/register" className="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-md hover:shadow-lg font-medium">
+              <Link
+                href="/register"
+                className="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-md hover:shadow-lg font-medium"
+              >
                 Daftar
               </Link>
             </div>
@@ -72,5 +89,5 @@ export function NavbarGuest() {
         </div>
       </header>
     </div>
-  )
+  );
 }

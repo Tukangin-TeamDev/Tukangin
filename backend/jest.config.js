@@ -10,4 +10,4 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.ts', '!src/**/*.interface.ts'],
   coverageDirectory: 'coverage',
-}; 
+};

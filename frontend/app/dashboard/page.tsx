@@ -1,45 +1,53 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { ArrowRight, Zap, Droplet, HomeIcon, Shield, Clock, ShoppingBag } from "lucide-react"
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight, Zap, Droplet, HomeIcon, Shield, Clock, ShoppingBag } from 'lucide-react';
 
 // Types for our service data
 interface ServiceProvider {
-  id: string
-  name: string
-  rating: number
-  location: string
-  available: boolean
+  id: string;
+  name: string;
+  rating: number;
+  location: string;
+  available: boolean;
 }
 
 interface Service {
-  id: string
-  title: string
-  category: "electrical" | "plumbing" | "home" | "security" | "carpentry" | "gardening" | "moving" | "appliance"
-  categoryLabel: string
-  provider: ServiceProvider
-  price: number
-  image: string
-  rating: number
+  id: string;
+  title: string;
+  category:
+    | 'electrical'
+    | 'plumbing'
+    | 'home'
+    | 'security'
+    | 'carpentry'
+    | 'gardening'
+    | 'moving'
+    | 'appliance';
+  categoryLabel: string;
+  provider: ServiceProvider;
+  price: number;
+  image: string;
+  rating: number;
 }
 
 interface Order {
-  id: string
-  service: string
-  provider: string
-  date: string
-  status: "completed" | "in-progress" | "scheduled" | "cancelled"
-  price: number
-  image: string
+  id: string;
+  service: string;
+  provider: string;
+  date: string;
+  status: 'completed' | 'in-progress' | 'scheduled' | 'cancelled';
+  price: number;
+  image: string;
 }
 
 export default function DashboardPage() {
-  const [userName, setUserName] = useState("Andi")
-  const [orders, setOrders] = useState<Order[]>([])
-  const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState("recent")
+  const [userName, setUserName] = useState('Andi');
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('recent');
 
   // Simulate fetching data
   useEffect(() => {
@@ -48,92 +56,92 @@ export default function DashboardPage() {
       // Simulated API response for orders
       const ordersData: Order[] = [
         {
-          id: "o1",
-          service: "Perbaikan Atap Bocor",
-          provider: "Bengkel Jaya",
-          date: "12 Mei 2023",
-          status: "in-progress",
+          id: 'o1',
+          service: 'Perbaikan Atap Bocor',
+          provider: 'Bengkel Jaya',
+          date: '12 Mei 2023',
+          status: 'in-progress',
           price: 350000,
-          image: "/placeholder.svg?height=80&width=80",
+          image: '/placeholder.svg?height=80&width=80',
         },
         {
-          id: "o2",
-          service: "Instalasi Listrik Rumah",
-          provider: "Elektrindo Mandiri",
-          date: "10 Mei 2023",
-          status: "scheduled",
+          id: 'o2',
+          service: 'Instalasi Listrik Rumah',
+          provider: 'Elektrindo Mandiri',
+          date: '10 Mei 2023',
+          status: 'scheduled',
           price: 750000,
-          image: "/placeholder.svg?height=80&width=80",
+          image: '/placeholder.svg?height=80&width=80',
         },
         {
-          id: "o3",
-          service: "Service AC",
-          provider: "Teknik Dingin",
-          date: "5 Mei 2023",
-          status: "completed",
+          id: 'o3',
+          service: 'Service AC',
+          provider: 'Teknik Dingin',
+          date: '5 Mei 2023',
+          status: 'completed',
           price: 250000,
-          image: "/placeholder.svg?height=80&width=80",
+          image: '/placeholder.svg?height=80&width=80',
         },
-      ]
+      ];
 
-      setOrders(ordersData)
-      setLoading(false)
-    }
+      setOrders(ordersData);
+      setLoading(false);
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   // Format price to IDR
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     })
       .format(price)
-      .replace("IDR", "Rp")
-  }
+      .replace('IDR', 'Rp');
+  };
 
   // Service category icons and counts
   const serviceCategories = [
-    { id: "electrical", name: "Listrik", icon: Zap, count: 45 },
-    { id: "plumbing", name: "Pipa Air", icon: Droplet, count: 32 },
-    { id: "home", name: "AC", icon: HomeIcon, count: 28 },
-    { id: "security", name: "Renovasi", icon: Shield, count: 56 },
-  ]
+    { id: 'electrical', name: 'Listrik', icon: Zap, count: 45 },
+    { id: 'plumbing', name: 'Pipa Air', icon: Droplet, count: 32 },
+    { id: 'home', name: 'AC', icon: HomeIcon, count: 28 },
+    { id: 'security', name: 'Renovasi', icon: Shield, count: 56 },
+  ];
 
   // Status badge color
-  const getStatusColor = (status: Order["status"]) => {
+  const getStatusColor = (status: Order['status']) => {
     switch (status) {
-      case "completed":
-        return "bg-green-100 text-green-800 border-green-500"
-      case "in-progress":
-        return "bg-blue-100 text-blue-800 border-blue-500"
-      case "scheduled":
-        return "bg-yellow-100 text-yellow-800 border-yellow-500"
-      case "cancelled":
-        return "bg-red-100 text-red-800 border-red-500"
+      case 'completed':
+        return 'bg-green-100 text-green-800 border-green-500';
+      case 'in-progress':
+        return 'bg-blue-100 text-blue-800 border-blue-500';
+      case 'scheduled':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-500';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800 border-red-500';
       default:
-        return "bg-gray-100 text-gray-800 border-gray-500"
+        return 'bg-gray-100 text-gray-800 border-gray-500';
     }
-  }
+  };
 
   // Status text
-  const getStatusText = (status: Order["status"]) => {
+  const getStatusText = (status: Order['status']) => {
     switch (status) {
-      case "completed":
-        return "Selesai"
-      case "in-progress":
-        return "Sedang Dikerjakan"
-      case "scheduled":
-        return "Menunggu Konfirmasi"
-      case "cancelled":
-        return "Dibatalkan"
+      case 'completed':
+        return 'Selesai';
+      case 'in-progress':
+        return 'Sedang Dikerjakan';
+      case 'scheduled':
+        return 'Menunggu Konfirmasi';
+      case 'cancelled':
+        return 'Dibatalkan';
       default:
-        return status
+        return status;
     }
-  }
+  };
 
   return (
     <div className="space-y-8">
@@ -142,7 +150,9 @@ export default function DashboardPage() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-white mb-6 md:mb-0">
             <h1 className="text-3xl font-bold mb-2">Selamat Datang, {userName}!</h1>
-            <p className="text-blue-100 mb-6">Temukan layanan terbaik untuk kebutuhan rumah dan bisnis Anda.</p>
+            <p className="text-blue-100 mb-6">
+              Temukan layanan terbaik untuk kebutuhan rumah dan bisnis Anda.
+            </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/marketplace"
@@ -187,7 +197,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {serviceCategories.map((category) => (
+          {serviceCategories.map(category => (
             <Link
               key={category.id}
               href={`/marketplace?category=${category.id}`}
@@ -207,25 +217,25 @@ export default function DashboardPage() {
       <section>
         <div className="bg-white rounded-md shadow-sm inline-flex mb-4">
           <button
-            onClick={() => setActiveTab("recent")}
+            onClick={() => setActiveTab('recent')}
             className={`px-4 py-2 text-sm font-medium rounded-md ${
-              activeTab === "recent" ? "bg-blue-600 text-white" : "text-gray-500"
+              activeTab === 'recent' ? 'bg-blue-600 text-white' : 'text-gray-500'
             }`}
           >
             Pesanan Terbaru
           </button>
           <button
-            onClick={() => setActiveTab("popular")}
+            onClick={() => setActiveTab('popular')}
             className={`px-4 py-2 text-sm font-medium rounded-md ${
-              activeTab === "popular" ? "bg-blue-600 text-white" : "text-gray-500"
+              activeTab === 'popular' ? 'bg-blue-600 text-white' : 'text-gray-500'
             }`}
           >
             Layanan Populer
           </button>
           <button
-            onClick={() => setActiveTab("notifications")}
+            onClick={() => setActiveTab('notifications')}
             className={`px-4 py-2 text-sm font-medium rounded-md flex items-center ${
-              activeTab === "notifications" ? "bg-blue-600 text-white" : "text-gray-500"
+              activeTab === 'notifications' ? 'bg-blue-600 text-white' : 'text-gray-500'
             }`}
           >
             Notifikasi
@@ -236,20 +246,22 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Orders */}
-        {activeTab === "recent" && (
+        {activeTab === 'recent' && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200/80 p-6">
             <h3 className="text-xl font-semibold mb-2">Pesanan Terbaru</h3>
-            <p className="text-gray-500 text-sm mb-6">Daftar pesanan yang baru-baru ini Anda buat.</p>
+            <p className="text-gray-500 text-sm mb-6">
+              Daftar pesanan yang baru-baru ini Anda buat.
+            </p>
 
             <div className="space-y-4">
-              {orders.map((order) => (
+              {orders.map(order => (
                 <div
                   key={order.id}
                   className="border border-gray-200 rounded-lg p-4 flex items-center gap-4 hover:border-blue-300 transition-colors"
                 >
                   <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
                     <Image
-                      src={order.image || "/placeholder.svg"}
+                      src={order.image || '/placeholder.svg'}
                       alt={order.service}
                       width={64}
                       height={64}
@@ -268,7 +280,9 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     <div className="flex justify-between items-center mt-2">
-                      <span className={`text-xs px-3 py-1 rounded-full border ${getStatusColor(order.status)}`}>
+                      <span
+                        className={`text-xs px-3 py-1 rounded-full border ${getStatusColor(order.status)}`}
+                      >
                         {getStatusText(order.status)}
                       </span>
                       <Link
@@ -284,7 +298,10 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            <Link href="/dashboard/orders" className="flex items-center text-black hover:text-blue-600 mt-6">
+            <Link
+              href="/dashboard/orders"
+              className="flex items-center text-black hover:text-blue-600 mt-6"
+            >
               Lihat Semua Pesanan
               <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
@@ -314,5 +331,5 @@ export default function DashboardPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

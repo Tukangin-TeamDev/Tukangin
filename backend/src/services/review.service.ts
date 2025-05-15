@@ -205,7 +205,7 @@ export class ReviewService {
         orderBy: { createdAt: 'desc' },
       });
 
-      return reviews.map((review) => ({
+      return reviews.map(review => ({
         id: review.id,
         orderId: review.orderId,
         customerId: review.customerId,
@@ -283,4 +283,4 @@ export class ReviewService {
       throw error;
     }
   }
-} 
+}

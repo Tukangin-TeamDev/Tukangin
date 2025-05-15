@@ -26,12 +26,12 @@ const app: Application = express();
 app.use((req: Request, res: Response, next) => {
   logger.info(`${req.method} ${req.url}`);
   const start = Date.now();
-  
+
   res.on('finish', () => {
     const duration = Date.now() - start;
     logger.info(`${req.method} ${req.url} ${res.statusCode} - ${duration}ms`);
   });
-  
+
   next();
 });
 
@@ -43,25 +43,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // CORS (Cross-Origin Resource Sharing)
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    credentials: true,
+  })
+);
 
 // Helmet untuk header keamanan
 app.use(helmet());
 
 // Express Session
-app.use(session({
-  secret: process.env.JWT_SECRET || 'secret-session-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000, // 24 jam
-    httpOnly: true,
-  }
-}));
+app.use(
+  session({
+    secret: process.env.JWT_SECRET || 'secret-session-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000, // 24 jam
+      httpOnly: true,
+    },
+  })
+);
 
 // Inisialisasi Passport
 app.use(passport.initialize());
@@ -74,8 +78,8 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: {
-    status: 429, 
-    error: 'Terlalu banyak request, coba lagi nanti'
+    status: 429,
+    error: 'Terlalu banyak request, coba lagi nanti',
   },
 });
 
@@ -114,11 +118,11 @@ app.get('/', (_req, res) => {
 // 404 handler
 app.use((_req: Request, res: Response) => {
   res.status(404).json({
-    message: 'Endpoint tidak ditemukan'
+    message: 'Endpoint tidak ditemukan',
   });
 });
 
 // Global error handler
 app.use(errorHandler);
 
-export default app; 
+export default app;

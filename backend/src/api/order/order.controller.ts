@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import * as orderService from '../../services/order.service';
-import { 
-  OrderStatus, 
-  CreateOrderDto, 
-  CreateConsultativeOrderDto, 
-  OrderResponseDto, 
-  OrderFilterDto 
+import {
+  OrderStatus,
+  CreateOrderDto,
+  CreateConsultativeOrderDto,
+  OrderResponseDto,
+  OrderFilterDto,
 } from '../../types/order.types';
 import { ServiceType } from '../../types/service.types';
 import { ApiResponse } from '../../types/common.types';
@@ -25,24 +25,24 @@ export const getOrders = async (req: Request, res: Response): Promise<Response> 
       page: req.query.page ? parseInt(req.query.page as string) : 1,
       limit: req.query.limit ? parseInt(req.query.limit as string) : 10,
     };
-    
+
     const { orders, meta } = await orderService.getOrders(filter);
-    
+
     const response: ApiResponse<any[]> = {
       success: true,
       data: orders,
       meta,
     };
-    
+
     return res.status(200).json(response);
   } catch (error: any) {
     console.error('Error getting orders:', error);
-    
+
     const response: ApiResponse<null> = {
       success: false,
       error: error.message || 'Terjadi kesalahan saat mengambil data order',
     };
-    
+
     return res.status(500).json(response);
   }
 };
@@ -53,7 +53,7 @@ export const getOrders = async (req: Request, res: Response): Promise<Response> 
 export const getOrderById = async (req: Request, res: Response): Promise<Response> => {
   try {
     const orderId = parseInt(req.params.id);
-    
+
     if (isNaN(orderId)) {
       const response: ApiResponse<null> = {
         success: false,
@@ -61,9 +61,9 @@ export const getOrderById = async (req: Request, res: Response): Promise<Respons
       };
       return res.status(400).json(response);
     }
-    
+
     const order = await orderService.getOrderById(orderId);
-    
+
     if (!order) {
       const response: ApiResponse<null> = {
         success: false,
@@ -71,21 +71,21 @@ export const getOrderById = async (req: Request, res: Response): Promise<Respons
       };
       return res.status(404).json(response);
     }
-    
+
     const response: ApiResponse<OrderResponseDto> = {
       success: true,
       data: order,
     };
-    
+
     return res.status(200).json(response);
   } catch (error: any) {
     console.error('Error getting order by ID:', error);
-    
+
     const response: ApiResponse<null> = {
       success: false,
       error: error.message || 'Terjadi kesalahan saat mengambil data order',
     };
-    
+
     return res.status(500).json(response);
   }
 };
@@ -97,7 +97,7 @@ export const createOrder = async (req: Request, res: Response): Promise<Response
   try {
     // Perbedaan antara fixed-price dan konsultatif ditentukan oleh service yang dipilih
     const { serviceId, customerId, description, scheduledAt, negotiationNote } = req.body;
-    
+
     // Validasi input dasar
     if (!serviceId || !customerId) {
       const response: ApiResponse<null> = {
@@ -108,38 +108,38 @@ export const createOrder = async (req: Request, res: Response): Promise<Response
     }
 
     // Periksa apakah order ini konsultatif (dengan negotiationNote) atau fixed-price
-    const orderData: CreateOrderDto | CreateConsultativeOrderDto = negotiationNote 
-      ? { 
-          serviceId: parseInt(serviceId), 
-          customerId: parseInt(customerId), 
-          description, 
-          scheduledAt, 
-          negotiationNote 
-        } as CreateConsultativeOrderDto
-      : { 
-          serviceId: parseInt(serviceId), 
-          customerId: parseInt(customerId), 
-          description, 
-          scheduledAt 
-        } as CreateOrderDto;
+    const orderData: CreateOrderDto | CreateConsultativeOrderDto = negotiationNote
+      ? ({
+          serviceId: parseInt(serviceId),
+          customerId: parseInt(customerId),
+          description,
+          scheduledAt,
+          negotiationNote,
+        } as CreateConsultativeOrderDto)
+      : ({
+          serviceId: parseInt(serviceId),
+          customerId: parseInt(customerId),
+          description,
+          scheduledAt,
+        } as CreateOrderDto);
 
     const order = await orderService.createOrder(orderData);
-    
+
     const response: ApiResponse<OrderResponseDto> = {
       success: true,
       data: order,
       message: 'Order berhasil dibuat',
     };
-    
+
     return res.status(201).json(response);
   } catch (error: any) {
     console.error('Error creating order:', error);
-    
+
     const response: ApiResponse<null> = {
       success: false,
       error: error.message || 'Terjadi kesalahan saat membuat order',
     };
-    
+
     return res.status(500).json(response);
   }
 };
@@ -151,7 +151,7 @@ export const confirmOrder = async (req: Request, res: Response): Promise<Respons
   try {
     const orderId = parseInt(req.params.id);
     const customerId = req.user?.id; // Diambil dari middleware authentication
-    
+
     if (isNaN(orderId) || !customerId) {
       const response: ApiResponse<null> = {
         success: false,
@@ -159,24 +159,24 @@ export const confirmOrder = async (req: Request, res: Response): Promise<Respons
       };
       return res.status(400).json(response);
     }
-    
+
     const order = await orderService.confirmOrder(orderId, customerId);
-    
+
     const response: ApiResponse<OrderResponseDto> = {
       success: true,
       data: order,
       message: 'Order berhasil dikonfirmasi selesai dan pembayaran telah diproses',
     };
-    
+
     return res.status(200).json(response);
   } catch (error: any) {
     console.error('Error confirming order:', error);
-    
+
     const response: ApiResponse<null> = {
       success: false,
       error: error.message || 'Terjadi kesalahan saat konfirmasi order',
     };
-    
+
     return res.status(400).json(response); // Gunakan 400 karena kemungkinan kesalahan validasi
   }
 };
@@ -189,7 +189,7 @@ export const createDispute = async (req: Request, res: Response): Promise<Respon
     const orderId = parseInt(req.params.id);
     const customerId = req.user?.id; // Diambil dari middleware authentication
     const { description } = req.body;
-    
+
     if (isNaN(orderId) || !customerId || !description) {
       const response: ApiResponse<null> = {
         success: false,
@@ -197,24 +197,24 @@ export const createDispute = async (req: Request, res: Response): Promise<Respon
       };
       return res.status(400).json(response);
     }
-    
+
     const dispute = await orderService.createDispute(orderId, customerId, description);
-    
+
     const response: ApiResponse<any> = {
       success: true,
       data: dispute,
       message: 'Dispute berhasil dibuat',
     };
-    
+
     return res.status(201).json(response);
   } catch (error: any) {
     console.error('Error creating dispute:', error);
-    
+
     const response: ApiResponse<null> = {
       success: false,
       error: error.message || 'Terjadi kesalahan saat membuat dispute',
     };
-    
+
     return res.status(400).json(response); // Gunakan 400 karena kemungkinan kesalahan validasi
   }
-}; 
+};

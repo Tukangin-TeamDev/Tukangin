@@ -59,4 +59,4 @@ export type DisputeDto = {
   description: string;
   status: string;
   resolutionNote?: string;
-}; 
+};

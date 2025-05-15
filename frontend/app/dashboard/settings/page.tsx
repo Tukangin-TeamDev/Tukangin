@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
+import { useState } from 'react';
 import {
   Bell,
   Lock,
@@ -14,139 +14,139 @@ import {
   Shield,
   Smartphone,
   Mail,
-} from "lucide-react"
+} from 'lucide-react';
 
 interface SettingSection {
-  id: string
-  title: string
-  icon: React.ReactNode
-  description: string
-  items: SettingItem[]
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+  description: string;
+  items: SettingItem[];
 }
 
 interface SettingItem {
-  id: string
-  title: string
-  description: string
+  id: string;
+  title: string;
+  description: string;
 }
 
 export default function SettingsPage() {
-  const [activeSection, setActiveSection] = useState<string | null>(null)
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const settingSections: SettingSection[] = [
     {
-      id: "notifications",
-      title: "Notifikasi",
+      id: 'notifications',
+      title: 'Notifikasi',
       icon: <Bell className="h-5 w-5" />,
-      description: "Atur preferensi notifikasi",
+      description: 'Atur preferensi notifikasi',
       items: [
         {
-          id: "email",
-          title: "Email",
-          description: "Terima notifikasi melalui email",
+          id: 'email',
+          title: 'Email',
+          description: 'Terima notifikasi melalui email',
         },
         {
-          id: "push",
-          title: "Push Notification",
-          description: "Terima notifikasi langsung di perangkat Anda",
+          id: 'push',
+          title: 'Push Notification',
+          description: 'Terima notifikasi langsung di perangkat Anda',
         },
         {
-          id: "sms",
-          title: "SMS",
-          description: "Terima notifikasi melalui SMS",
+          id: 'sms',
+          title: 'SMS',
+          description: 'Terima notifikasi melalui SMS',
         },
       ],
     },
     {
-      id: "security",
-      title: "Keamanan",
+      id: 'security',
+      title: 'Keamanan',
       icon: <Lock className="h-5 w-5" />,
-      description: "Kelola keamanan akun Anda",
+      description: 'Kelola keamanan akun Anda',
       items: [
         {
-          id: "password",
-          title: "Ubah Password",
-          description: "Perbarui password akun Anda",
+          id: 'password',
+          title: 'Ubah Password',
+          description: 'Perbarui password akun Anda',
         },
         {
-          id: "2fa",
-          title: "Verifikasi Dua Faktor",
-          description: "Tambahkan lapisan keamanan ekstra",
+          id: '2fa',
+          title: 'Verifikasi Dua Faktor',
+          description: 'Tambahkan lapisan keamanan ekstra',
         },
         {
-          id: "devices",
-          title: "Perangkat Aktif",
-          description: "Kelola perangkat yang terhubung ke akun Anda",
+          id: 'devices',
+          title: 'Perangkat Aktif',
+          description: 'Kelola perangkat yang terhubung ke akun Anda',
         },
       ],
     },
     {
-      id: "payment",
-      title: "Pembayaran",
+      id: 'payment',
+      title: 'Pembayaran',
       icon: <CreditCard className="h-5 w-5" />,
-      description: "Kelola metode pembayaran",
+      description: 'Kelola metode pembayaran',
       items: [
         {
-          id: "methods",
-          title: "Metode Pembayaran",
-          description: "Tambah atau hapus metode pembayaran",
+          id: 'methods',
+          title: 'Metode Pembayaran',
+          description: 'Tambah atau hapus metode pembayaran',
         },
         {
-          id: "history",
-          title: "Riwayat Pembayaran",
-          description: "Lihat riwayat transaksi Anda",
+          id: 'history',
+          title: 'Riwayat Pembayaran',
+          description: 'Lihat riwayat transaksi Anda',
         },
         {
-          id: "invoices",
-          title: "Faktur",
-          description: "Unduh faktur pembayaran",
+          id: 'invoices',
+          title: 'Faktur',
+          description: 'Unduh faktur pembayaran',
         },
       ],
     },
     {
-      id: "language",
-      title: "Bahasa & Wilayah",
+      id: 'language',
+      title: 'Bahasa & Wilayah',
       icon: <Languages className="h-5 w-5" />,
-      description: "Atur preferensi bahasa dan wilayah",
+      description: 'Atur preferensi bahasa dan wilayah',
       items: [
         {
-          id: "language",
-          title: "Bahasa",
-          description: "Pilih bahasa yang digunakan",
+          id: 'language',
+          title: 'Bahasa',
+          description: 'Pilih bahasa yang digunakan',
         },
         {
-          id: "region",
-          title: "Wilayah",
-          description: "Atur wilayah dan zona waktu",
+          id: 'region',
+          title: 'Wilayah',
+          description: 'Atur wilayah dan zona waktu',
         },
       ],
     },
     {
-      id: "privacy",
-      title: "Privasi",
+      id: 'privacy',
+      title: 'Privasi',
       icon: <Shield className="h-5 w-5" />,
-      description: "Kelola pengaturan privasi",
+      description: 'Kelola pengaturan privasi',
       items: [
         {
-          id: "data",
-          title: "Data Saya",
-          description: "Kelola data pribadi Anda",
+          id: 'data',
+          title: 'Data Saya',
+          description: 'Kelola data pribadi Anda',
         },
         {
-          id: "visibility",
-          title: "Visibilitas Profil",
-          description: "Atur siapa yang dapat melihat profil Anda",
+          id: 'visibility',
+          title: 'Visibilitas Profil',
+          description: 'Atur siapa yang dapat melihat profil Anda',
         },
       ],
     },
-  ]
+  ];
 
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Pengaturan</h1>
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        {settingSections.map((section) => (
+        {settingSections.map(section => (
           <div key={section.id} className="border-b border-gray-200 last:border-b-0">
             <button
               onClick={() => setActiveSection(activeSection === section.id ? null : section.id)}
@@ -160,14 +160,14 @@ export default function SettingsPage() {
                 </div>
               </div>
               <ChevronRight
-                className={`h-5 w-5 text-gray-400 transition-transform ${activeSection === section.id ? "rotate-90" : ""}`}
+                className={`h-5 w-5 text-gray-400 transition-transform ${activeSection === section.id ? 'rotate-90' : ''}`}
               />
             </button>
 
             {activeSection === section.id && (
               <div className="bg-gray-50 px-4 py-3 border-t border-gray-200">
                 <div className="space-y-3">
-                  {section.items.map((item) => (
+                  {section.items.map(item => (
                     <div
                       key={item.id}
                       className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
@@ -230,5 +230,5 @@ export default function SettingsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

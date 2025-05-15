@@ -8,31 +8,27 @@ import { AuditLogDto } from '../types/common.types';
  * @param action Tipe aksi yang dilakukan
  * @param getDetails Fungsi untuk mendapatkan detail tambahan dari request
  */
-export const auditLog = (
-  action: string,
-  getDetails?: (req: Request) => Record<string, any>
-) => {
+export const auditLog = (action: string, getDetails?: (req: Request) => Record<string, any>) => {
   return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       // Hanya mencatat jika user terautentikasi
       if (req.user && req.user.id) {
         // Ekstrak detail tambahan jika fungsi tersedia
         const details = getDetails ? JSON.stringify(getDetails(req)) : null;
-        
+
         // Simpan log ke database
         const logData: AuditLogDto = {
           userId: req.user.id,
           action,
           details: details || undefined,
         };
-        
+
         // Buat log asinkron (tidak menunggu hasil)
-        prisma.auditLog.create({ data: logData })
-          .catch(err => {
-            logger.error(`Failed to create audit log: ${err.message}`);
-          });
+        prisma.auditLog.create({ data: logData }).catch(err => {
+          logger.error(`Failed to create audit log: ${err.message}`);
+        });
       }
-      
+
       next();
     } catch (error) {
       logger.error('Error creating audit log:', error);
@@ -44,7 +40,7 @@ export const auditLog = (
 
 /**
  * Mencatat aktivitas administratif ke audit log
- * 
+ *
  * @param action Aksi yang dicatat
  * @param details Detail aktivitas
  * @param userId ID user yang melakukan aksi
@@ -63,9 +59,9 @@ export const createAdminAuditLog = async (
         details: JSON.stringify(details),
       },
     });
-    
+
     logger.info(`Admin action logged: ${action} by user ${userId}`);
   } catch (error) {
     logger.error(`Failed to log admin action: ${error}`);
   }
-}; 
+};

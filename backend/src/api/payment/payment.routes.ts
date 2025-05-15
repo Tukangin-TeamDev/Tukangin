@@ -26,7 +26,7 @@ router.post(
   authenticate,
   checkRole([UserRole.CUSTOMER, UserRole.ADMIN]),
   validateRequest(initiatePaymentSchema),
-  auditLog('PAYMENT_INITIATE', (req) => ({ orderId: req.body.orderId })),
+  auditLog('PAYMENT_INITIATE', req => ({ orderId: req.body.orderId })),
   paymentController.initiatePayment
 );
 
@@ -40,7 +40,7 @@ router.post(
   // Ini bisa menjadi endpoint webhook dari payment gateway, jadi tidak selalu perlu authenticate
   // atau bisa menggunakan token khusus untuk payment gateway
   validateRequest(processPaymentSchema),
-  auditLog('PAYMENT_PROCESS', (req) => ({ paymentId: req.body.paymentId })),
+  auditLog('PAYMENT_PROCESS', req => ({ paymentId: req.body.paymentId })),
   paymentController.processPayment
 );
 
@@ -54,7 +54,7 @@ router.post(
   authenticate,
   checkRole([UserRole.ADMIN]),
   validateRequest(releaseEscrowSchema),
-  auditLog('ESCROW_RELEASE', (req) => ({ orderId: req.params.orderId })),
+  auditLog('ESCROW_RELEASE', req => ({ orderId: req.params.orderId })),
   paymentController.releaseEscrow
 );
 
@@ -68,7 +68,7 @@ router.post(
   authenticate,
   checkRole([UserRole.ADMIN]),
   validateRequest(refundPaymentSchema),
-  auditLog('PAYMENT_REFUND', (req) => ({ orderId: req.params.orderId })),
+  auditLog('PAYMENT_REFUND', req => ({ orderId: req.params.orderId })),
   paymentController.refundPayment
 );
 

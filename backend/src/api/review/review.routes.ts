@@ -25,7 +25,7 @@ router.post(
   authenticate,
   checkRole([UserRole.CUSTOMER]),
   validateRequest(createReviewSchema),
-  auditLog('REVIEW_CREATE', (req) => ({ orderId: req.body.orderId })),
+  auditLog('REVIEW_CREATE', req => ({ orderId: req.body.orderId })),
   reviewController.createReview
 );
 
@@ -34,11 +34,7 @@ router.post(
  * @desc Mendapatkan ulasan berdasarkan ID
  * @access Public
  */
-router.get(
-  '/:id',
-  validateRequest(getReviewByIdSchema),
-  reviewController.getReviewById
-);
+router.get('/:id', validateRequest(getReviewByIdSchema), reviewController.getReviewById);
 
 /**
  * @route GET /api/reviews/order/:orderId
@@ -72,7 +68,7 @@ router.delete(
   authenticate,
   checkRole([UserRole.ADMIN]),
   validateRequest(deleteReviewSchema),
-  auditLog('REVIEW_DELETE', (req) => ({ reviewId: req.params.id })),
+  auditLog('REVIEW_DELETE', req => ({ reviewId: req.params.id })),
   reviewController.deleteReview
 );
 

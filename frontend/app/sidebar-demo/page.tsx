@@ -1,13 +1,13 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Sidebar } from "@/components/sidebar"
-import { NavbarGuest } from "@/components/navbar-guest"
-import { Button } from "@/components/ui/button"
-import { Menu } from "lucide-react"
+import { useState } from 'react';
+import { Sidebar } from '@/components/sidebar';
+import { NavbarGuest } from '@/components/navbar-guest';
+import { Button } from '@/components/ui/button';
+import { Menu } from 'lucide-react';
 
 export default function SidebarDemo() {
-  const [showMobileSidebar, setShowMobileSidebar] = useState(false)
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -24,10 +24,13 @@ export default function SidebarDemo() {
       {/* Mobile Sidebar - Only visible when toggled */}
       <div
         className={`fixed inset-0 z-40 transform transition-transform duration-300 md:hidden ${
-          showMobileSidebar ? "translate-x-0" : "-translate-x-full"
+          showMobileSidebar ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="absolute inset-0 bg-black/50" onClick={() => setShowMobileSidebar(false)}></div>
+        <div
+          className="absolute inset-0 bg-black/50"
+          onClick={() => setShowMobileSidebar(false)}
+        ></div>
         <Sidebar className="relative z-50" />
       </div>
 
@@ -58,25 +61,30 @@ export default function SidebarDemo() {
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h2 className="font-semibold mb-2">Sidebar Component</h2>
               <p className="text-gray-600 mb-4">
-                The sidebar can be collapsed to show only icons, saving space while maintaining navigation
-                functionality. On mobile devices, it becomes an off-canvas menu that can be toggled with a button.
+                The sidebar can be collapsed to show only icons, saving space while maintaining
+                navigation functionality. On mobile devices, it becomes an off-canvas menu that can
+                be toggled with a button.
               </p>
-              <p className="text-gray-600">Try clicking the toggle button on the sidebar to collapse/expand it.</p>
+              <p className="text-gray-600">
+                Try clicking the toggle button on the sidebar to collapse/expand it.
+              </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h2 className="font-semibold mb-2">Navbar Guest Component</h2>
               <p className="text-gray-600 mb-4">
-                The navbar for guest users includes navigation links, a search bar, and authentication buttons. On
-                mobile devices, the search bar moves below the main navbar to ensure it has enough space.
+                The navbar for guest users includes navigation links, a search bar, and
+                authentication buttons. On mobile devices, the search bar moves below the main
+                navbar to ensure it has enough space.
               </p>
               <p className="text-gray-600">
-                Try resizing your browser to see how both components adapt to different screen sizes.
+                Try resizing your browser to see how both components adapt to different screen
+                sizes.
               </p>
             </div>
           </div>
         </main>
       </div>
     </div>
-  )
+  );
 }

@@ -7,7 +7,9 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET as string;
 const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL as string;
 
 if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_CALLBACK_URL) {
-  logger.warn('Google OAuth credentials tidak lengkap. Fitur login dengan Google tidak akan berfungsi.');
+  logger.warn(
+    'Google OAuth credentials tidak lengkap. Fitur login dengan Google tidak akan berfungsi.'
+  );
 }
 
 // Konfigurasi Passport dengan Google OAuth 2.0
@@ -38,4 +40,4 @@ passport.deserializeUser((obj: any, done) => {
   done(null, obj);
 });
 
-export default passport; 
+export default passport;

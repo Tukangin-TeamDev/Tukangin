@@ -1,6 +1,12 @@
-import prisma from "../config/prisma";
-import { ProviderProfileDto } from "../types/user.types";
-import { CreateServiceDto, UpdateServiceDto, ServiceResponseDto, ServiceFilterDto, ServiceType } from "../types/service.types";
+import prisma from '../config/prisma';
+import { ProviderProfileDto } from '../types/user.types';
+import {
+  CreateServiceDto,
+  UpdateServiceDto,
+  ServiceResponseDto,
+  ServiceFilterDto,
+  ServiceType,
+} from '../types/service.types';
 
 // Definisikan interface untuk provider yang di-map untuk return
 interface ProviderResponseDto {
@@ -37,7 +43,9 @@ interface ServiceListItemDto {
 /**
  * Mendapatkan profil provider berdasarkan ID user
  */
-export const getProviderProfileByUserId = async (userId: number): Promise<ProviderProfileDto | null> => {
+export const getProviderProfileByUserId = async (
+  userId: number
+): Promise<ProviderProfileDto | null> => {
   const providerProfile = await prisma.providerProfile.findUnique({
     where: { userId },
     include: {
@@ -46,9 +54,9 @@ export const getProviderProfileByUserId = async (userId: number): Promise<Provid
           name: true,
           email: true,
           phone: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
 
   if (!providerProfile) {
@@ -75,9 +83,9 @@ export const getProviderProfileById = async (id: number): Promise<ProviderProfil
           name: true,
           email: true,
           phone: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
 
   if (!providerProfile) {
@@ -95,10 +103,13 @@ export const getProviderProfileById = async (id: number): Promise<ProviderProfil
 /**
  * Buat atau perbarui profil provider
  */
-export const upsertProviderProfile = async (userId: number, data: Partial<ProviderProfileDto>): Promise<ProviderProfileDto> => {
+export const upsertProviderProfile = async (
+  userId: number,
+  data: Partial<ProviderProfileDto>
+): Promise<ProviderProfileDto> => {
   // Check jika user sudah memiliki profil provider (tidak perlu disimpan ke variabel)
   await prisma.providerProfile.findUnique({
-    where: { userId }
+    where: { userId },
   });
 
   // Buat atau perbarui profil provider
@@ -114,7 +125,7 @@ export const upsertProviderProfile = async (userId: number, data: Partial<Provid
       about: data.about,
       portfolio: data.portfolio,
       verified: data.verified,
-    }
+    },
   });
 
   return {
@@ -129,19 +140,22 @@ export const upsertProviderProfile = async (userId: number, data: Partial<Provid
  * Mendapatkan daftar provider dengan paginasi dan filter
  */
 export const getProviders = async (
-  page: number = 1, 
-  limit: number = 10, 
-  verified?: boolean, 
+  page: number = 1,
+  limit: number = 10,
+  verified?: boolean,
   search?: string
-): Promise<{ providers: ProviderResponseDto[], meta: { page: number; limit: number; totalItems: number; totalPages: number } }> => {
+): Promise<{
+  providers: ProviderResponseDto[];
+  meta: { page: number; limit: number; totalItems: number; totalPages: number };
+}> => {
   const skip = (page - 1) * limit;
-  
+
   const where: any = {};
-  
+
   if (verified !== undefined) {
     where.verified = verified;
   }
-  
+
   if (search) {
     where.OR = [
       { user: { name: { contains: search, mode: 'insensitive' } } },
@@ -149,7 +163,7 @@ export const getProviders = async (
       { about: { contains: search, mode: 'insensitive' } },
     ];
   }
-  
+
   const [providers, total] = await Promise.all([
     prisma.providerProfile.findMany({
       where,
@@ -160,21 +174,21 @@ export const getProviders = async (
             name: true,
             email: true,
             phone: true,
-          }
+          },
         },
         services: {
           select: {
             id: true,
             name: true,
             serviceType: true,
-          }
+          },
         },
         _count: {
           select: {
             services: true,
             providerOrders: true,
-          }
-        }
+          },
+        },
       },
       skip,
       take: limit,
@@ -182,7 +196,7 @@ export const getProviders = async (
     }),
     prisma.providerProfile.count({ where }),
   ]);
-  
+
   return {
     providers: providers.map((provider: any) => ({
       id: provider.id,
@@ -211,7 +225,10 @@ export const getProviders = async (
 /**
  * Verifikasi provider (hanya admin)
  */
-export const verifyProvider = async (providerId: number, isVerified: boolean): Promise<ProviderProfileDto> => {
+export const verifyProvider = async (
+  providerId: number,
+  isVerified: boolean
+): Promise<ProviderProfileDto> => {
   const providerProfile = await prisma.providerProfile.update({
     where: { id: providerId },
     data: { verified: isVerified },
@@ -221,9 +238,9 @@ export const verifyProvider = async (providerId: number, isVerified: boolean): P
           name: true,
           email: true,
           phone: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
 
   return {
@@ -242,7 +259,7 @@ export const verifyProvider = async (providerId: number, isVerified: boolean): P
 export const createService = async (data: CreateServiceDto): Promise<ServiceResponseDto> => {
   // Cek apakah provider dengan ID tersebut ada
   const providerProfile = await prisma.providerProfile.findUnique({
-    where: { id: data.providerId }
+    where: { id: data.providerId },
   });
 
   if (!providerProfile) {
@@ -263,7 +280,7 @@ export const createService = async (data: CreateServiceDto): Promise<ServiceResp
       serviceType: data.serviceType,
       fixedPrice: data.fixedPrice,
       media: data.media,
-    }
+    },
   });
 
   return {
@@ -293,11 +310,11 @@ export const getServiceById = async (id: number): Promise<ServiceResponseDto | n
               name: true,
               email: true,
               phone: true,
-            }
-          }
-        }
-      }
-    }
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!service) {
@@ -321,10 +338,13 @@ export const getServiceById = async (id: number): Promise<ServiceResponseDto | n
 /**
  * Memperbarui layanan
  */
-export const updateService = async (id: number, data: UpdateServiceDto): Promise<ServiceResponseDto> => {
+export const updateService = async (
+  id: number,
+  data: UpdateServiceDto
+): Promise<ServiceResponseDto> => {
   // Cek apakah layanan dengan ID tersebut ada
   const existingService = await prisma.service.findUnique({
-    where: { id }
+    where: { id },
   });
 
   if (!existingService) {
@@ -345,7 +365,7 @@ export const updateService = async (id: number, data: UpdateServiceDto): Promise
       serviceType: data.serviceType,
       fixedPrice: data.fixedPrice,
       media: data.media,
-    }
+    },
   });
 
   return {
@@ -369,8 +389,8 @@ export const deleteService = async (id: number): Promise<void> => {
   const existingService = await prisma.service.findUnique({
     where: { id },
     include: {
-      orders: true
-    }
+      orders: true,
+    },
   });
 
   if (!existingService) {
@@ -384,38 +404,40 @@ export const deleteService = async (id: number): Promise<void> => {
 
   // Hapus layanan
   await prisma.service.delete({
-    where: { id }
+    where: { id },
   });
 };
 
 /**
  * Mendapatkan daftar layanan dengan filter dan paginasi
  */
-export const getServices = async (filter: ServiceFilterDto): Promise<{ 
-  services: ServiceListItemDto[], 
-  meta: { page: number; limit: number; totalItems: number; totalPages: number } 
+export const getServices = async (
+  filter: ServiceFilterDto
+): Promise<{
+  services: ServiceListItemDto[];
+  meta: { page: number; limit: number; totalItems: number; totalPages: number };
 }> => {
   const { serviceType, search, providerId, page = 1, limit = 10 } = filter;
-  
+
   const skip = (page - 1) * limit;
-  
+
   const where: any = {};
-  
+
   if (serviceType) {
     where.serviceType = serviceType;
   }
-  
+
   if (providerId) {
     where.providerId = providerId;
   }
-  
+
   if (search) {
     where.OR = [
       { name: { contains: search, mode: 'insensitive' } },
       { description: { contains: search, mode: 'insensitive' } },
     ];
   }
-  
+
   const [services, total] = await Promise.all([
     prisma.service.findMany({
       where,
@@ -425,10 +447,10 @@ export const getServices = async (filter: ServiceFilterDto): Promise<{
             user: {
               select: {
                 name: true,
-              }
-            }
-          }
-        }
+              },
+            },
+          },
+        },
       },
       skip,
       take: limit,
@@ -436,7 +458,7 @@ export const getServices = async (filter: ServiceFilterDto): Promise<{
     }),
     prisma.service.count({ where }),
   ]);
-  
+
   return {
     services: services.map(service => ({
       id: service.id,

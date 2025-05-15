@@ -1,5 +1,5 @@
 import { PrismaClient, Prisma } from '@prisma/client';
-import { CreateUserDto, UserFilterDto, UserResponseDto } from "../types/user.types";
+import { CreateUserDto, UserFilterDto, UserResponseDto } from '../types/user.types';
 import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -24,13 +24,13 @@ export const createUser = async (data: CreateUserDto): Promise<UserResponseDto> 
   const userData = {
     ...data,
     password: hashedPassword,
-    authProvider: data.authProvider as any // Menggunakan as any untuk menghindari type error
+    authProvider: data.authProvider as any, // Menggunakan as any untuk menghindari type error
   };
 
   const user = await prisma.user.create({
-    data: userData
+    data: userData,
   });
-  
+
   // Mengembalikan data menggunakan fungsi helper
   return mapUserToResponseDto(user);
 };
@@ -45,11 +45,11 @@ export const findUserById = async (id: number): Promise<any> => {
       providerProfile: id !== undefined && id !== null,
     },
   });
-  
+
   if (!user) {
     return null;
   }
-  
+
   return user;
 };
 
@@ -64,35 +64,37 @@ export const mapUserToResponseDto = (user: any): UserResponseDto => {
     role: user.role,
     phone: user.phone || undefined,
     createdAt: user.createdAt,
-    updatedAt: user.updatedAt
+    updatedAt: user.updatedAt,
   };
 };
 
 /**
  * Mencari daftar user dengan filter
  */
-export const findUsers = async (filter: UserFilterDto): Promise<{ 
-  users: UserResponseDto[]; 
-  meta: { page: number; limit: number; totalItems: number; totalPages: number; }; 
+export const findUsers = async (
+  filter: UserFilterDto
+): Promise<{
+  users: UserResponseDto[];
+  meta: { page: number; limit: number; totalItems: number; totalPages: number };
 }> => {
   const { role, search, page = 1, limit = 10 } = filter;
-  
+
   const skip = (page - 1) * limit;
-  
+
   // Buat kondisi where berdasarkan filter
   const where: Prisma.UserWhereInput = {};
-  
+
   if (role) {
     where.role = role;
   }
-  
+
   if (search) {
     where.OR = [
       { name: { contains: search, mode: 'insensitive' } },
       { email: { contains: search, mode: 'insensitive' } },
     ];
   }
-  
+
   // Query users dengan paginasi
   const [users, total] = await Promise.all([
     prisma.user.findMany({
@@ -112,7 +114,7 @@ export const findUsers = async (filter: UserFilterDto): Promise<{
     }),
     prisma.user.count({ where }),
   ]);
-  
+
   return {
     users: users.map(user => mapUserToResponseDto(user)),
     meta: {
@@ -120,7 +122,7 @@ export const findUsers = async (filter: UserFilterDto): Promise<{
       limit,
       totalItems: total,
       totalPages: Math.ceil(total / limit),
-    }
+    },
   };
 };
 
@@ -128,20 +130,20 @@ export const findUsers = async (filter: UserFilterDto): Promise<{
  * Memperbarui data user
  */
 export const updateUser = async (
-  id: number, 
+  id: number,
   data: Partial<Omit<CreateUserDto, 'role'>>
 ): Promise<UserResponseDto> => {
   // Cast authProvider jika ada ke enum untuk kompatibilitas dengan Prisma
   const userData = {
     ...data,
-    authProvider: data.authProvider as any // Menggunakan as any untuk menghindari type error
+    authProvider: data.authProvider as any, // Menggunakan as any untuk menghindari type error
   };
 
   const user = await prisma.user.update({
     where: { id },
     data: userData,
   });
-  
+
   // Mengembalikan data menggunakan fungsi helper
   return mapUserToResponseDto(user);
 };
@@ -153,25 +155,25 @@ export const deleteUser = async (id: number): Promise<UserResponseDto> => {
   // Cek apakah user memiliki providerProfile
   const user = await prisma.user.findUnique({
     where: { id },
-    include: { providerProfile: true }
+    include: { providerProfile: true },
   });
-  
+
   if (!user) {
     throw new Error('User tidak ditemukan');
   }
-  
+
   // Jika user adalah provider, hapus provider profile terlebih dahulu
   if (user.providerProfile) {
     await prisma.providerProfile.delete({
-      where: { userId: id }
+      where: { userId: id },
     });
   }
-  
+
   // Hapus user
   const deletedUser = await prisma.user.delete({
     where: { id },
   });
-  
+
   // Mengembalikan data menggunakan fungsi helper
   return mapUserToResponseDto(deletedUser);
 };

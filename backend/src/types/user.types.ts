@@ -6,8 +6,8 @@ export { UserRole };
  * Enum untuk metode autentikasi
  */
 export enum AuthProvider {
-  LOCAL = "LOCAL",
-  GOOGLE = "GOOGLE"
+  LOCAL = 'LOCAL',
+  GOOGLE = 'GOOGLE',
 }
 
 /**
@@ -20,7 +20,7 @@ export enum AuthError {
   TOKEN_INVALID = 'TOKEN_INVALID',
   REFRESH_TOKEN_INVALID = 'REFRESH_TOKEN_INVALID',
   TWO_FACTOR_REQUIRED = 'TWO_FACTOR_REQUIRED',
-  TWO_FACTOR_INVALID = 'TWO_FACTOR_INVALID'
+  TWO_FACTOR_INVALID = 'TWO_FACTOR_INVALID',
 }
 
 /**
@@ -89,4 +89,4 @@ export type ProviderProfileDto = {
   about?: string;
   portfolio?: string;
   verified: boolean;
-}; 
+};

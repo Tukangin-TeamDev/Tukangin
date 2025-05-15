@@ -17,9 +17,7 @@ export default function Error({
   return (
     <div className="flex h-[80vh] w-full flex-col items-center justify-center">
       <h2 className="text-2xl font-bold">Terjadi Kesalahan</h2>
-      <p className="mt-4 text-gray-600">
-        Maaf, terjadi kesalahan saat memuat halaman.
-      </p>
+      <p className="mt-4 text-gray-600">Maaf, terjadi kesalahan saat memuat halaman.</p>
       <button
         onClick={() => reset()}
         className="mt-6 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
@@ -28,4 +26,4 @@ export default function Error({
       </button>
     </div>
   );
-} 
+}

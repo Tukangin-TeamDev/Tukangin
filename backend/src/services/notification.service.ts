@@ -66,7 +66,7 @@ export class NotificationService {
       logger.info(`Membuat notifikasi massal untuk ${userIds.length} user`);
 
       // Membuat data notifikasi untuk setiap user
-      const notificationData = userIds.map((userId) => ({
+      const notificationData = userIds.map(userId => ({
         userId,
         message,
         type,
@@ -158,7 +158,11 @@ export class NotificationService {
   /**
    * Mendapatkan daftar notifikasi untuk user
    */
-  async getNotificationsByUserId(userId: number, limit: number = 10, offset: number = 0): Promise<{
+  async getNotificationsByUserId(
+    userId: number,
+    limit: number = 10,
+    offset: number = 0
+  ): Promise<{
     notifications: NotificationResponseDto[];
     meta: {
       total: number;
@@ -350,4 +354,4 @@ export class NotificationService {
       throw error;
     }
   }
-} 
+}

@@ -1,81 +1,83 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Search, ChevronDown, MessageSquare, Mail, Phone, FileText } from "lucide-react"
+import { useState } from 'react';
+import { Search, ChevronDown, MessageSquare, Mail, Phone, FileText } from 'lucide-react';
 
 interface FAQ {
-  question: string
-  answer: string
-  category: string
+  question: string;
+  answer: string;
+  category: string;
 }
 
 export default function AdminHelpPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [activeCategory, setActiveCategory] = useState<string | null>(null)
-  const [expandedFAQs, setExpandedFAQs] = useState<string[]>([])
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [expandedFAQs, setExpandedFAQs] = useState<string[]>([]);
 
   const categories = [
-    { id: "general", name: "Umum" },
-    { id: "services", name: "Layanan" },
-    { id: "orders", name: "Pesanan" },
-    { id: "payment", name: "Pembayaran" },
-    { id: "account", name: "Akun" },
-  ]
+    { id: 'general', name: 'Umum' },
+    { id: 'services', name: 'Layanan' },
+    { id: 'orders', name: 'Pesanan' },
+    { id: 'payment', name: 'Pembayaran' },
+    { id: 'account', name: 'Akun' },
+  ];
 
   const faqs: FAQ[] = [
     {
-      question: "Bagaimana cara menambahkan layanan baru?",
+      question: 'Bagaimana cara menambahkan layanan baru?',
       answer:
         "Untuk menambahkan layanan baru, masuk ke dashboard provider dan klik 'Tambah Layanan' di bagian atas halaman. Isi formulir dengan informasi layanan seperti nama, deskripsi, harga, dan kategori. Anda juga dapat mengunggah gambar untuk layanan tersebut. Setelah selesai, klik 'Simpan' untuk mempublikasikan layanan baru Anda.",
-      category: "services",
+      category: 'services',
     },
     {
-      question: "Bagaimana cara mengubah status pesanan?",
+      question: 'Bagaimana cara mengubah status pesanan?',
       answer:
         "Untuk mengubah status pesanan, buka halaman 'Pesanan Masuk' di dashboard provider. Temukan pesanan yang ingin diubah statusnya, lalu klik tombol 'Detail'. Pada halaman detail pesanan, Anda akan melihat opsi untuk mengubah status pesanan menjadi 'Sedang Dikerjakan', 'Selesai', atau status lainnya sesuai dengan alur kerja yang telah Anda tetapkan.",
-      category: "orders",
+      category: 'orders',
     },
     {
-      question: "Bagaimana cara mencairkan pendapatan saya?",
+      question: 'Bagaimana cara mencairkan pendapatan saya?',
       answer:
         "Pendapatan Anda dapat dicairkan melalui menu 'Keuangan' di dashboard provider. Klik pada 'Tarik Dana' dan pilih metode penarikan yang tersedia (transfer bank, e-wallet, dll). Penarikan dana hanya dapat dilakukan setelah pesanan selesai dan melewati masa garansi. Proses pencairan biasanya membutuhkan waktu 1-3 hari kerja tergantung metode penarikan yang dipilih.",
-      category: "payment",
+      category: 'payment',
     },
     {
-      question: "Bagaimana cara meningkatkan peringkat toko saya?",
+      question: 'Bagaimana cara meningkatkan peringkat toko saya?',
       answer:
-        "Untuk meningkatkan peringkat toko Anda, pastikan untuk memberikan layanan berkualitas tinggi dan responsif terhadap pesanan pelanggan. Faktor-faktor yang mempengaruhi peringkat toko meliputi: rating dan ulasan positif dari pelanggan, tingkat penyelesaian pesanan, waktu respons terhadap pesan pelanggan, dan kelengkapan profil toko Anda. Secara rutin memperbarui informasi layanan dan mengunggah portofolio pekerjaan juga dapat membantu meningkatkan visibilitas toko Anda.",
-      category: "general",
+        'Untuk meningkatkan peringkat toko Anda, pastikan untuk memberikan layanan berkualitas tinggi dan responsif terhadap pesanan pelanggan. Faktor-faktor yang mempengaruhi peringkat toko meliputi: rating dan ulasan positif dari pelanggan, tingkat penyelesaian pesanan, waktu respons terhadap pesan pelanggan, dan kelengkapan profil toko Anda. Secara rutin memperbarui informasi layanan dan mengunggah portofolio pekerjaan juga dapat membantu meningkatkan visibilitas toko Anda.',
+      category: 'general',
     },
     {
-      question: "Apa saja biaya yang dikenakan untuk penyedia jasa?",
+      question: 'Apa saja biaya yang dikenakan untuk penyedia jasa?',
       answer:
-        "Tukangin mengenakan biaya komisi sebesar 10% dari setiap transaksi yang berhasil diselesaikan. Biaya ini akan otomatis dipotong dari pembayaran yang Anda terima. Tidak ada biaya pendaftaran atau biaya bulanan untuk menjadi penyedia jasa di platform kami. Biaya tambahan mungkin berlaku untuk layanan premium seperti promosi atau penempatan iklan khusus, yang dapat Anda pilih secara opsional untuk meningkatkan visibilitas layanan Anda.",
-      category: "payment",
+        'Tukangin mengenakan biaya komisi sebesar 10% dari setiap transaksi yang berhasil diselesaikan. Biaya ini akan otomatis dipotong dari pembayaran yang Anda terima. Tidak ada biaya pendaftaran atau biaya bulanan untuk menjadi penyedia jasa di platform kami. Biaya tambahan mungkin berlaku untuk layanan premium seperti promosi atau penempatan iklan khusus, yang dapat Anda pilih secara opsional untuk meningkatkan visibilitas layanan Anda.',
+      category: 'payment',
     },
     {
-      question: "Bagaimana cara menangani keluhan pelanggan?",
+      question: 'Bagaimana cara menangani keluhan pelanggan?',
       answer:
-        "Untuk menangani keluhan pelanggan, segera tanggapi pesan mereka dan tunjukkan empati terhadap masalah yang dihadapi. Tawarkan solusi konkret dan, jika memungkinkan, kompensasi yang sesuai seperti perbaikan gratis atau diskon untuk layanan berikutnya. Jika masalah tidak dapat diselesaikan langsung, Anda dapat menghubungi tim dukungan Tukangin untuk mediasi. Ingat bahwa penanganan keluhan yang baik dapat mengubah pelanggan yang tidak puas menjadi pelanggan loyal.",
-      category: "orders",
+        'Untuk menangani keluhan pelanggan, segera tanggapi pesan mereka dan tunjukkan empati terhadap masalah yang dihadapi. Tawarkan solusi konkret dan, jika memungkinkan, kompensasi yang sesuai seperti perbaikan gratis atau diskon untuk layanan berikutnya. Jika masalah tidak dapat diselesaikan langsung, Anda dapat menghubungi tim dukungan Tukangin untuk mediasi. Ingat bahwa penanganan keluhan yang baik dapat mengubah pelanggan yang tidak puas menjadi pelanggan loyal.',
+      category: 'orders',
     },
-  ]
+  ];
 
   const toggleFAQ = (question: string) => {
-    setExpandedFAQs((prev) => (prev.includes(question) ? prev.filter((q) => q !== question) : [...prev, question]))
-  }
+    setExpandedFAQs(prev =>
+      prev.includes(question) ? prev.filter(q => q !== question) : [...prev, question]
+    );
+  };
 
   const toggleCategory = (categoryId: string) => {
-    setActiveCategory(activeCategory === categoryId ? null : categoryId)
-  }
+    setActiveCategory(activeCategory === categoryId ? null : categoryId);
+  };
 
-  const filteredFAQs = faqs.filter((faq) => {
+  const filteredFAQs = faqs.filter(faq => {
     const matchesSearch =
       faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = !activeCategory || faq.category === activeCategory
-    return matchesSearch && matchesCategory
-  })
+      faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = !activeCategory || faq.category === activeCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -88,7 +90,7 @@ export default function AdminHelpPage() {
             type="text"
             placeholder="Cari pertanyaan atau kata kunci..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="w-full py-3 px-6 pr-12 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-white"
           />
           <Search className="absolute right-4 top-3 h-6 w-6 text-gray-500" />
@@ -101,12 +103,14 @@ export default function AdminHelpPage() {
           <div className="bg-white rounded-lg shadow-sm p-4">
             <h2 className="font-semibold mb-4">Kategori</h2>
             <ul className="space-y-2">
-              {categories.map((category) => (
+              {categories.map(category => (
                 <li key={category.id}>
                   <button
                     onClick={() => toggleCategory(category.id)}
                     className={`w-full text-left px-3 py-2 rounded-md ${
-                      activeCategory === category.id ? "bg-orange-100 text-orange-700" : "hover:bg-gray-100"
+                      activeCategory === category.id
+                        ? 'bg-orange-100 text-orange-700'
+                        : 'hover:bg-gray-100'
                     }`}
                   >
                     {category.name}
@@ -154,8 +158,11 @@ export default function AdminHelpPage() {
 
             {filteredFAQs.length > 0 ? (
               <div className="space-y-4">
-                {filteredFAQs.map((faq) => (
-                  <div key={faq.question} className="border border-gray-200 rounded-lg overflow-hidden">
+                {filteredFAQs.map(faq => (
+                  <div
+                    key={faq.question}
+                    className="border border-gray-200 rounded-lg overflow-hidden"
+                  >
                     <button
                       onClick={() => toggleFAQ(faq.question)}
                       className="w-full flex justify-between items-center p-4 text-left bg-gray-50 hover:bg-gray-100"
@@ -163,7 +170,7 @@ export default function AdminHelpPage() {
                       <h3 className="font-medium">{faq.question}</h3>
                       <ChevronDown
                         className={`h-5 w-5 text-gray-500 transition-transform ${
-                          expandedFAQs.includes(faq.question) ? "rotate-180" : ""
+                          expandedFAQs.includes(faq.question) ? 'rotate-180' : ''
                         }`}
                       />
                     </button>
@@ -181,7 +188,9 @@ export default function AdminHelpPage() {
                   <Search className="h-8 w-8 text-gray-400" />
                 </div>
                 <h3 className="text-lg font-medium mb-2">Tidak ada hasil ditemukan</h3>
-                <p className="text-gray-500">Coba gunakan kata kunci yang berbeda atau hubungi tim dukungan kami</p>
+                <p className="text-gray-500">
+                  Coba gunakan kata kunci yang berbeda atau hubungi tim dukungan kami
+                </p>
               </div>
             )}
           </div>
@@ -198,5 +207,5 @@ export default function AdminHelpPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

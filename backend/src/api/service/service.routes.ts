@@ -32,7 +32,7 @@ const checkServiceOwnership = async (req: Request, res: Response, next: NextFunc
     }
 
     const serviceId = parseInt(req.params.id);
-    
+
     if (isNaN(serviceId)) {
       const response: ApiResponse<null> = {
         success: false,
@@ -45,8 +45,8 @@ const checkServiceOwnership = async (req: Request, res: Response, next: NextFunc
     const service = await prisma.service.findUnique({
       where: { id: serviceId },
       include: {
-        providerProfile: true
-      }
+        providerProfile: true,
+      },
     });
 
     if (!service) {
@@ -59,7 +59,7 @@ const checkServiceOwnership = async (req: Request, res: Response, next: NextFunc
 
     // Cari provider profile berdasarkan user ID
     const providerProfile = await prisma.providerProfile.findUnique({
-      where: { userId: req.user.id }
+      where: { userId: req.user.id },
     });
 
     if (!providerProfile) {
@@ -82,12 +82,12 @@ const checkServiceOwnership = async (req: Request, res: Response, next: NextFunc
     next();
   } catch (error) {
     console.error('Error checking service ownership:', error);
-    
+
     const response: ApiResponse<null> = {
       success: false,
       error: 'Terjadi kesalahan saat memeriksa kepemilikan layanan',
     };
-    
+
     return res.status(500).json(response);
   }
 };
@@ -135,7 +135,7 @@ router.put(
 
 /**
  * @route DELETE /api/services/:id
- * @desc Menghapus layanan 
+ * @desc Menghapus layanan
  * @access Private (Provider yang memiliki layanan atau Admin)
  */
 router.delete(
@@ -146,4 +146,4 @@ router.delete(
   providerController.deleteService
 );
 
-export default router; 
+export default router;

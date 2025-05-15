@@ -22,17 +22,8 @@
     "paths": {
       "@/*": ["*"]
     },
-    "typeRoots": [
-      "./node_modules/@types",
-      "./types"
-    ]
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
-  "include": [
-    "frontend/**/*",
-    "backend/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
-} 
+  "include": ["frontend/**/*", "backend/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

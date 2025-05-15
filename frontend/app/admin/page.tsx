@@ -1,44 +1,54 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { ArrowRight, ArrowUp, Clock, Star, Wrench, Zap, Paintbrush, PlusCircle, LayoutDashboard } from "lucide-react"
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import {
+  ArrowRight,
+  ArrowUp,
+  Clock,
+  Star,
+  Wrench,
+  Zap,
+  Paintbrush,
+  PlusCircle,
+  LayoutDashboard,
+} from 'lucide-react';
 
 // Types for our data
 interface Order {
-  id: string
-  service: string
-  customer: string
-  date: string
-  status: "pending" | "in-progress" | "completed"
-  price: number
-  image: string
+  id: string;
+  service: string;
+  customer: string;
+  date: string;
+  status: 'pending' | 'in-progress' | 'completed';
+  price: number;
+  image: string;
 }
 
 interface ServiceStats {
-  name: string
-  count: number
-  growth: number
-  icon: React.ReactNode
+  name: string;
+  count: number;
+  growth: number;
+  icon: React.ReactNode;
 }
 
 interface CustomerStats {
-  name: string
-  count: number
-  avatar: string
+  name: string;
+  count: number;
+  avatar: string;
 }
 
 export default function AdminDashboardPage() {
-  const [orders, setOrders] = useState<Order[]>([])
-  const [loading, setLoading] = useState(true)
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
   const [statusCounts, setStatusCounts] = useState({
     pending: 5,
     inProgress: 8,
     completed: 14,
-  })
+  });
 
   // Simulate fetching data
   useEffect(() => {
@@ -47,107 +57,107 @@ export default function AdminDashboardPage() {
       // Simulated API response for orders
       const ordersData: Order[] = [
         {
-          id: "o1",
-          service: "Perbaikan Atap Bocor",
-          customer: "Bengkel Jaya",
-          date: "12 Mei 2023",
-          status: "in-progress",
+          id: 'o1',
+          service: 'Perbaikan Atap Bocor',
+          customer: 'Bengkel Jaya',
+          date: '12 Mei 2023',
+          status: 'in-progress',
           price: 350000,
-          image: "/placeholder.svg?height=80&width=80",
+          image: '/placeholder.svg?height=80&width=80',
         },
         {
-          id: "o2",
-          service: "Perbaikan Listrik Rumah",
-          customer: "Bengkel Jaya",
-          date: "10 Mei 2023",
-          status: "pending",
+          id: 'o2',
+          service: 'Perbaikan Listrik Rumah',
+          customer: 'Bengkel Jaya',
+          date: '10 Mei 2023',
+          status: 'pending',
           price: 750000,
-          image: "/placeholder.svg?height=80&width=80",
+          image: '/placeholder.svg?height=80&width=80',
         },
-      ]
+      ];
 
-      setOrders(ordersData)
-      setLoading(false)
-    }
+      setOrders(ordersData);
+      setLoading(false);
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   // Format price to IDR
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     })
       .format(price)
-      .replace("IDR", "Rp")
-  }
+      .replace('IDR', 'Rp');
+  };
 
   // Top services data
   const topServices: ServiceStats[] = [
     {
-      name: "Perbaikan Atap",
+      name: 'Perbaikan Atap',
       count: 15,
       growth: 23,
       icon: <Wrench className="h-5 w-5" />,
     },
     {
-      name: "Instalasi Listrik",
+      name: 'Instalasi Listrik',
       count: 12,
       growth: 18,
       icon: <Zap className="h-5 w-5" />,
     },
     {
-      name: "Pengecatan",
+      name: 'Pengecatan',
       count: 8,
       growth: 5,
       icon: <Paintbrush className="h-5 w-5" />,
     },
-  ]
+  ];
 
   // Top customers data
   const topCustomers: CustomerStats[] = [
     {
-      name: "Ahmad Budiman",
+      name: 'Ahmad Budiman',
       count: 4,
-      avatar: "/placeholder.svg?height=32&width=32",
+      avatar: '/placeholder.svg?height=32&width=32',
     },
     {
-      name: "Siti Sunarti",
+      name: 'Siti Sunarti',
       count: 3,
-      avatar: "/placeholder.svg?height=32&width=32",
+      avatar: '/placeholder.svg?height=32&width=32',
     },
-  ]
+  ];
 
   // Status badge color
-  const getStatusColor = (status: Order["status"]) => {
+  const getStatusColor = (status: Order['status']) => {
     switch (status) {
-      case "completed":
-        return "bg-green-100 text-green-800 border-green-500"
-      case "in-progress":
-        return "bg-blue-100 text-blue-800 border-blue-500"
-      case "pending":
-        return "bg-yellow-100 text-yellow-800 border-yellow-500"
+      case 'completed':
+        return 'bg-green-100 text-green-800 border-green-500';
+      case 'in-progress':
+        return 'bg-blue-100 text-blue-800 border-blue-500';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-500';
       default:
-        return "bg-gray-100 text-gray-800 border-gray-500"
+        return 'bg-gray-100 text-gray-800 border-gray-500';
     }
-  }
+  };
 
   // Status text
-  const getStatusText = (status: Order["status"]) => {
+  const getStatusText = (status: Order['status']) => {
     switch (status) {
-      case "completed":
-        return "Selesai"
-      case "in-progress":
-        return "Sedang Dikerjakan"
-      case "pending":
-        return "Menunggu Konfirmasi"
+      case 'completed':
+        return 'Selesai';
+      case 'in-progress':
+        return 'Sedang Dikerjakan';
+      case 'pending':
+        return 'Menunggu Konfirmasi';
       default:
-        return status
+        return status;
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -157,11 +167,17 @@ export default function AdminDashboardPage() {
           <p className="text-gray-600">Selamat datang kembali, Bengkel Jaya!</p>
         </div>
         <div className="flex gap-2">
-          <Link href="/admin/services" className="flex items-center gap-2 px-4 py-2 text-black hover:text-blue-600">
+          <Link
+            href="/admin/services"
+            className="flex items-center gap-2 px-4 py-2 text-black hover:text-blue-600"
+          >
             <LayoutDashboard className="h-4 w-4" />
             Kelola Layanan
           </Link>
-          <Link href="/admin/services/new" className="flex items-center gap-2 px-4 py-2 text-black hover:text-blue-600">
+          <Link
+            href="/admin/services/new"
+            className="flex items-center gap-2 px-4 py-2 text-black hover:text-blue-600"
+          >
             <PlusCircle className="h-4 w-4" />
             Tambah Layanan
           </Link>
@@ -225,7 +241,7 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="px-6 pb-6 space-y-4">
-            {orders.map((order) => (
+            {orders.map(order => (
               <div
                 key={order.id}
                 className="border border-gray-200/80 rounded-lg overflow-hidden hover:border-blue-300 transition-all shadow-sm"
@@ -233,7 +249,7 @@ export default function AdminDashboardPage() {
                 <div className="p-4 flex items-center gap-4">
                   <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 border">
                     <Image
-                      src={order.image || "/placeholder.svg"}
+                      src={order.image || '/placeholder.svg'}
                       alt={order.service}
                       width={64}
                       height={64}
@@ -252,7 +268,9 @@ export default function AdminDashboardPage() {
                       </div>
                     </div>
                     <div className="flex justify-between items-center mt-2">
-                      <span className={`text-xs px-3 py-1 rounded-full border ${getStatusColor(order.status)}`}>
+                      <span
+                        className={`text-xs px-3 py-1 rounded-full border ${getStatusColor(order.status)}`}
+                      >
                         {getStatusText(order.status)}
                       </span>
                       <Link
@@ -311,7 +329,7 @@ export default function AdminDashboardPage() {
             <div className="mt-6 pt-4 border-t">
               <h3 className="font-medium mb-4">Layanan Teratas</h3>
               <div className="space-y-3">
-                {topServices.map((service) => (
+                {topServices.map(service => (
                   <div key={service.name} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="h-8 w-8 rounded-full bg-orange-100 flex items-center justify-center">
@@ -331,11 +349,11 @@ export default function AdminDashboardPage() {
             <div className="mt-6 pt-4 border-t">
               <h3 className="font-medium mb-4">Pelanggan Teratas</h3>
               <div className="space-y-3">
-                {topCustomers.map((customer) => (
+                {topCustomers.map(customer => (
                   <div key={customer.name} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Image
-                        src={customer.avatar || "/placeholder.svg"}
+                        src={customer.avatar || '/placeholder.svg'}
                         alt={customer.name}
                         width={32}
                         height={32}
@@ -352,5 +370,5 @@ export default function AdminDashboardPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

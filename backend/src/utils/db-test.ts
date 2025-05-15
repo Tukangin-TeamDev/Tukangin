@@ -14,13 +14,13 @@ async function testDatabaseConnection(): Promise<void> {
   try {
     console.log('Mencoba terhubung ke database PostgreSQL via Supabase...');
     console.log(`URL database yang digunakan: ${process.env.DATABASE_URL?.substring(0, 25)}...`);
-    
+
     // Menjalankan query sederhana untuk memastikan koneksi berfungsi
     const result = await prisma.$queryRaw`SELECT 1 as result`;
-    
+
     console.log('Koneksi database berhasil!');
     console.log('Hasil query tes:', result);
-    
+
     // Mencoba mengambil daftar tabel (opsional)
     const tableList = await prisma.$queryRaw`
       SELECT table_name 
@@ -29,7 +29,6 @@ async function testDatabaseConnection(): Promise<void> {
     `;
     console.log('Daftar tabel di database:');
     console.log(tableList);
-    
   } catch (error) {
     console.error('Gagal terhubung ke database:');
     console.error(error);
@@ -42,4 +41,4 @@ async function testDatabaseConnection(): Promise<void> {
 // Menjalankan fungsi pengujian
 testDatabaseConnection()
   .then(() => console.log('Pengujian koneksi database selesai'))
-  .catch((error) => console.error('Error menjalankan pengujian:', error)); 
+  .catch(error => console.error('Error menjalankan pengujian:', error));

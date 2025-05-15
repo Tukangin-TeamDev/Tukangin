@@ -13,11 +13,7 @@ const router = Router();
  * @desc Registrasi user baru
  * @access Public
  */
-router.post(
-  '/register',
-  validateRequest(registerSchema),
-  authController.register
-);
+router.post('/register', validateRequest(registerSchema), authController.register);
 
 /**
  * @route POST /api/auth/login
@@ -27,7 +23,7 @@ router.post(
 router.post(
   '/login',
   validateRequest(loginSchema),
-  auditLog('LOGIN_ATTEMPT', (req) => ({ email: req.body.email })),
+  auditLog('LOGIN_ATTEMPT', req => ({ email: req.body.email })),
   authController.login
 );
 
@@ -39,7 +35,7 @@ router.post(
 router.post(
   '/google',
   validateRequest(googleAuthSchema),
-  auditLog('GOOGLE_AUTH_ATTEMPT', (req) => ({ email: req.body.email })),
+  auditLog('GOOGLE_AUTH_ATTEMPT', req => ({ email: req.body.email })),
   authController.googleAuth
 );
 
@@ -48,10 +44,7 @@ router.post(
  * @desc Memulai proses OAuth Google
  * @access Public
  */
-router.get(
-  '/google/start',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
-);
+router.get('/google/start', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 /**
  * @route GET /api/auth/google/callback
@@ -60,9 +53,9 @@ router.get(
  */
 router.get(
   '/google/callback',
-  passport.authenticate('google', { 
+  passport.authenticate('google', {
     session: false,
-    failureRedirect: `${process.env.FRONTEND_URL}/auth/error` 
+    failureRedirect: `${process.env.FRONTEND_URL}/auth/error`,
   }),
   authController.googleCallback
 );
@@ -79,47 +72,27 @@ router.post('/refresh', authController.refreshToken);
  * @desc Logout user
  * @access Private
  */
-router.post(
-  '/logout',
-  authenticate,
-  auditLog('LOGOUT'),
-  authController.logout
-);
+router.post('/logout', authenticate, auditLog('LOGOUT'), authController.logout);
 
 /**
  * @route POST /api/auth/2fa/enable
  * @desc Mengaktifkan 2FA untuk akun user
  * @access Private
  */
-router.post(
-  '/2fa/enable',
-  authenticate,
-  auditLog('ENABLE_2FA'),
-  authController.enable2FA
-);
+router.post('/2fa/enable', authenticate, auditLog('ENABLE_2FA'), authController.enable2FA);
 
 /**
  * @route POST /api/auth/2fa/verify
  * @desc Verifikasi kode 2FA
  * @access Private
  */
-router.post(
-  '/2fa/verify',
-  authenticate,
-  auditLog('VERIFY_2FA'),
-  authController.verify2FA
-);
+router.post('/2fa/verify', authenticate, auditLog('VERIFY_2FA'), authController.verify2FA);
 
 /**
  * @route POST /api/auth/2fa/disable
  * @desc Menonaktifkan 2FA untuk akun user
  * @access Private
  */
-router.post(
-  '/2fa/disable',
-  authenticate,
-  auditLog('DISABLE_2FA'),
-  authController.disable2FA
-);
+router.post('/2fa/disable', authenticate, auditLog('DISABLE_2FA'), authController.disable2FA);
 
-export default router; 
+export default router;

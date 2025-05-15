@@ -1,48 +1,51 @@
-import Link from "next/link"
-import Image from "next/image"
-import { ArrowRight, Star } from "lucide-react"
+import Link from 'next/link';
+import Image from 'next/image';
+import { ArrowRight, Star } from 'lucide-react';
 
 interface ServiceProvider {
-  id: string
-  name: string
-  rating: number
-  location: string
+  id: string;
+  name: string;
+  rating: number;
+  location: string;
 }
 
 interface RecommendedService {
-  id: string
-  title: string
-  category: string
-  categoryLabel: string
-  provider: ServiceProvider
-  price: number
-  image: string
-  rating: number
-  reason: string
+  id: string;
+  title: string;
+  category: string;
+  categoryLabel: string;
+  provider: ServiceProvider;
+  price: number;
+  image: string;
+  rating: number;
+  reason: string;
 }
 
 interface PersonalizedRecommendationsProps {
-  recommendations: RecommendedService[]
+  recommendations: RecommendedService[];
 }
 
 export function PersonalizedRecommendations({ recommendations }: PersonalizedRecommendationsProps) {
   // Format price to IDR
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     })
       .format(price)
-      .replace("IDR", "Rp")
-  }
+      .replace('IDR', 'Rp');
+  };
 
   return (
     <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold text-gray-900">Rekomendasi Untuk Anda</h2>
-        <Link href="/recommendations" className="text-blue-500 hover:text-blue-600 flex items-center text-sm">
+        <Link
+          href="/recommendations"
+          className="text-blue-500 hover:text-blue-600 flex items-center text-sm"
+        >
           Lihat Semua
           <ArrowRight className="ml-1 h-4 w-4" />
         </Link>
@@ -54,14 +57,14 @@ export function PersonalizedRecommendations({ recommendations }: PersonalizedRec
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {recommendations.map((service) => (
+          {recommendations.map(service => (
             <div
               key={service.id}
               className="rounded-lg bg-white overflow-hidden border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-300"
             >
               <div className="relative h-36">
                 <Image
-                  src={service.image || "/placeholder.svg"}
+                  src={service.image || '/placeholder.svg'}
                   alt={service.title}
                   fill
                   className="object-cover"
@@ -69,13 +72,13 @@ export function PersonalizedRecommendations({ recommendations }: PersonalizedRec
                 />
                 <div
                   className={`absolute top-2 left-2 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                    service.category === "electrical"
-                      ? "bg-blue-500"
-                      : service.category === "home"
-                        ? "bg-green-500"
-                        : service.category === "appliance"
-                          ? "bg-blue-600"
-                          : "bg-blue-500"
+                    service.category === 'electrical'
+                      ? 'bg-blue-500'
+                      : service.category === 'home'
+                        ? 'bg-green-500'
+                        : service.category === 'appliance'
+                          ? 'bg-blue-600'
+                          : 'bg-blue-500'
                   } text-white`}
                 >
                   {service.categoryLabel}
@@ -91,7 +94,9 @@ export function PersonalizedRecommendations({ recommendations }: PersonalizedRec
                 <p className="text-xs text-blue-600 mb-1">{service.provider.name}</p>
                 <p className="text-xs text-gray-500 line-clamp-2 mb-2">{service.reason}</p>
                 <div className="flex justify-between items-center">
-                  <span className="font-bold text-sm text-green-600">{formatPrice(service.price)}</span>
+                  <span className="font-bold text-sm text-green-600">
+                    {formatPrice(service.price)}
+                  </span>
                   <Link
                     href={`/services/${service.id}`}
                     className="text-xs text-blue-600 hover:text-blue-700 font-medium"
@@ -105,5 +110,5 @@ export function PersonalizedRecommendations({ recommendations }: PersonalizedRec
         </div>
       )}
     </div>
-  )
+  );
 }

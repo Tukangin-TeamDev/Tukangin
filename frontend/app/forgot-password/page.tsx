@@ -1,52 +1,52 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
-import Link from "next/link"
-import { ArrowLeft, Mail, CheckCircle } from "lucide-react"
-import { validateEmail } from "@/lib/validation"
+import { useState } from 'react';
+import Link from 'next/link';
+import { ArrowLeft, Mail, CheckCircle } from 'lucide-react';
+import { validateEmail } from '@/lib/validation';
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("")
-  const [emailError, setEmailError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value)
-    if (emailError) setEmailError("")
-  }
+    setEmail(e.target.value);
+    if (emailError) setEmailError('');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Reset errors
-    setEmailError("")
+    setEmailError('');
 
     // Validate email
     if (!email) {
-      setEmailError("Email tidak boleh kosong")
-      return
+      setEmailError('Email tidak boleh kosong');
+      return;
     } else if (!validateEmail(email)) {
-      setEmailError("Format email tidak valid")
-      return
+      setEmailError('Format email tidak valid');
+      return;
     }
 
     // Simulate password reset request
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       // Here you would normally call your password reset API
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      setIsSubmitted(true)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setIsSubmitted(true);
     } catch (error) {
-      console.error("Password reset request failed:", error)
-      setEmailError("Terjadi kesalahan. Silakan coba lagi.")
+      console.error('Password reset request failed:', error);
+      setEmailError('Terjadi kesalahan. Silakan coba lagi.');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -55,7 +55,10 @@ export default function ForgotPasswordPage() {
           {!isSubmitted ? (
             <>
               <div className="mb-6">
-                <Link href="/login" className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700">
+                <Link
+                  href="/login"
+                  className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
+                >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Kembali ke halaman login
                 </Link>
@@ -64,7 +67,9 @@ export default function ForgotPasswordPage() {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <h1 className="text-2xl font-bold">Lupa Password</h1>
-                  <p className="text-gray-500">Masukkan email Anda untuk menerima instruksi reset password</p>
+                  <p className="text-gray-500">
+                    Masukkan email Anda untuk menerima instruksi reset password
+                  </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -83,7 +88,7 @@ export default function ForgotPasswordPage() {
                         onChange={handleEmailChange}
                         placeholder="Masukkan E-mail"
                         className={`flex h-12 w-full rounded-xl border bg-white pl-10 pr-4 py-2 text-sm shadow-sm transition-all duration-300 hover:shadow-md focus:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                          emailError ? "border-red-500" : "border-gray-300 hover:border-blue-500/50"
+                          emailError ? 'border-red-500' : 'border-gray-300 hover:border-blue-500/50'
                         }`}
                       />
                     </div>
@@ -95,7 +100,7 @@ export default function ForgotPasswordPage() {
                     disabled={isLoading}
                     className="inline-flex items-center justify-center w-full h-12 px-4 py-2 rounded-xl text-base font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isLoading ? "Memproses..." : "Kirim Instruksi Reset"}
+                    {isLoading ? 'Memproses...' : 'Kirim Instruksi Reset'}
                   </button>
                 </form>
               </div>
@@ -111,8 +116,9 @@ export default function ForgotPasswordPage() {
               <div className="space-y-2">
                 <h1 className="text-2xl font-bold">Email Terkirim</h1>
                 <p className="text-gray-500">
-                  Kami telah mengirimkan instruksi reset password ke <span className="font-medium">{email}</span>.
-                  Silakan periksa kotak masuk email Anda.
+                  Kami telah mengirimkan instruksi reset password ke{' '}
+                  <span className="font-medium">{email}</span>. Silakan periksa kotak masuk email
+                  Anda.
                 </p>
               </div>
 
@@ -126,8 +132,11 @@ export default function ForgotPasswordPage() {
               </div>
 
               <p className="text-sm text-gray-500">
-                Tidak menerima email? Periksa folder spam atau{" "}
-                <button onClick={() => setIsSubmitted(false)} className="text-blue-600 hover:underline">
+                Tidak menerima email? Periksa folder spam atau{' '}
+                <button
+                  onClick={() => setIsSubmitted(false)}
+                  className="text-blue-600 hover:underline"
+                >
                   coba lagi
                 </button>
               </p>
@@ -136,5 +145,5 @@ export default function ForgotPasswordPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

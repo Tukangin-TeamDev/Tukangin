@@ -21,9 +21,9 @@ router.get('/', authenticate, checkRole([UserRole.ADMIN]), userController.getUse
  * @access Private (Admin atau pemilik akun)
  */
 router.get(
-  '/:id', 
-  authenticate, 
-  checkOwnership((req) => parseInt(req.params.id)),
+  '/:id',
+  authenticate,
+  checkOwnership(req => parseInt(req.params.id)),
   userController.getUserById
 );
 
@@ -33,8 +33,8 @@ router.get(
  * @access Private (Admin)
  */
 router.post(
-  '/', 
-  authenticate, 
+  '/',
+  authenticate,
   checkRole([UserRole.ADMIN]),
   validateRequest(createUserSchema),
   userController.createUser
@@ -46,9 +46,9 @@ router.post(
  * @access Private (Admin atau pemilik akun)
  */
 router.put(
-  '/:id', 
-  authenticate, 
-  checkOwnership((req) => parseInt(req.params.id)),
+  '/:id',
+  authenticate,
+  checkOwnership(req => parseInt(req.params.id)),
   validateRequest(updateUserSchema),
   userController.updateUser
 );
@@ -58,11 +58,6 @@ router.put(
  * @desc Menghapus user (hanya admin)
  * @access Private (Admin)
  */
-router.delete(
-  '/:id',
-  authenticate,
-  checkRole([UserRole.ADMIN]),
-  userController.deleteUser
-);
+router.delete('/:id', authenticate, checkRole([UserRole.ADMIN]), userController.deleteUser);
 
-export default router; 
+export default router;

@@ -19,13 +19,13 @@ export type UserResponse = Omit<PrismaUser, 'password' | 'otpSecret' | 'refreshT
 /**
  * Tipe data untuk fungsi audit log
  */
-export type AuditLogAction = 
-  | 'USER_LOGIN' 
-  | 'USER_LOGOUT' 
-  | 'USER_REGISTER' 
-  | 'PASSWORD_RESET' 
-  | 'PROFILE_UPDATE' 
-  | 'TWO_FACTOR_SETUP' 
+export type AuditLogAction =
+  | 'USER_LOGIN'
+  | 'USER_LOGOUT'
+  | 'USER_REGISTER'
+  | 'PASSWORD_RESET'
+  | 'PROFILE_UPDATE'
+  | 'TWO_FACTOR_SETUP'
   | 'TWO_FACTOR_VERIFY';
 
 export interface AuditLogData {

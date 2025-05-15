@@ -1,134 +1,151 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle, User, Phone, MapPin, Briefcase } from "lucide-react"
-import { validateEmail, validatePassword, validateName, validatePhone, validateAddress } from "@/lib/validation"
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  ArrowRight,
+  CheckCircle,
+  User,
+  Phone,
+  MapPin,
+  Briefcase,
+} from 'lucide-react';
+import {
+  validateEmail,
+  validatePassword,
+  validateName,
+  validatePhone,
+  validateAddress,
+} from '@/lib/validation';
 
-type UserRole = "pelanggan" | "penyedia"
+type UserRole = 'pelanggan' | 'penyedia';
 
 export default function RegisterPage() {
-  const [activeRole, setActiveRole] = useState<UserRole>("pelanggan")
+  const [activeRole, setActiveRole] = useState<UserRole>('pelanggan');
 
   // Common form fields
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [agreeToTerms, setAgreeToTerms] = useState(false)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   // Customer specific fields
-  const [customerName, setCustomerName] = useState("")
-  const [customerPhone, setCustomerPhone] = useState("")
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
 
   // Provider specific fields
-  const [providerName, setProviderName] = useState("")
-  const [providerPhone, setProviderPhone] = useState("")
-  const [providerAddress, setProviderAddress] = useState("")
-  const [serviceType, setServiceType] = useState("")
-  const [experience, setExperience] = useState("")
+  const [providerName, setProviderName] = useState('');
+  const [providerPhone, setProviderPhone] = useState('');
+  const [providerAddress, setProviderAddress] = useState('');
+  const [serviceType, setServiceType] = useState('');
+  const [experience, setExperience] = useState('');
 
   // Form errors
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {}
+    const newErrors: Record<string, string> = {};
 
     // Validate common fields
     if (!email) {
-      newErrors.email = "Email tidak boleh kosong"
+      newErrors.email = 'Email tidak boleh kosong';
     } else if (!validateEmail(email)) {
-      newErrors.email = "Format email tidak valid"
+      newErrors.email = 'Format email tidak valid';
     }
 
     if (!password) {
-      newErrors.password = "Password tidak boleh kosong"
+      newErrors.password = 'Password tidak boleh kosong';
     } else if (!validatePassword(password)) {
-      newErrors.password = "Password harus minimal 8 karakter dengan kombinasi huruf dan angka"
+      newErrors.password = 'Password harus minimal 8 karakter dengan kombinasi huruf dan angka';
     }
 
     if (!confirmPassword) {
-      newErrors.confirmPassword = "Konfirmasi password tidak boleh kosong"
+      newErrors.confirmPassword = 'Konfirmasi password tidak boleh kosong';
     } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Password dan konfirmasi password tidak cocok"
+      newErrors.confirmPassword = 'Password dan konfirmasi password tidak cocok';
     }
 
     if (!agreeToTerms) {
-      newErrors.agreeToTerms = "Anda harus menyetujui syarat dan ketentuan"
+      newErrors.agreeToTerms = 'Anda harus menyetujui syarat dan ketentuan';
     }
 
     // Validate role-specific fields
-    if (activeRole === "pelanggan") {
+    if (activeRole === 'pelanggan') {
       if (!customerName) {
-        newErrors.customerName = "Nama tidak boleh kosong"
+        newErrors.customerName = 'Nama tidak boleh kosong';
       } else if (!validateName(customerName)) {
-        newErrors.customerName = "Nama harus minimal 2 karakter"
+        newErrors.customerName = 'Nama harus minimal 2 karakter';
       }
 
       if (!customerPhone) {
-        newErrors.customerPhone = "Nomor telepon tidak boleh kosong"
+        newErrors.customerPhone = 'Nomor telepon tidak boleh kosong';
       } else if (!validatePhone(customerPhone)) {
-        newErrors.customerPhone = "Format nomor telepon tidak valid"
+        newErrors.customerPhone = 'Format nomor telepon tidak valid';
       }
     } else {
       if (!providerName) {
-        newErrors.providerName = "Nama tidak boleh kosong"
+        newErrors.providerName = 'Nama tidak boleh kosong';
       } else if (!validateName(providerName)) {
-        newErrors.providerName = "Nama harus minimal 2 karakter"
+        newErrors.providerName = 'Nama harus minimal 2 karakter';
       }
 
       if (!providerPhone) {
-        newErrors.providerPhone = "Nomor telepon tidak boleh kosong"
+        newErrors.providerPhone = 'Nomor telepon tidak boleh kosong';
       } else if (!validatePhone(providerPhone)) {
-        newErrors.providerPhone = "Format nomor telepon tidak valid"
+        newErrors.providerPhone = 'Format nomor telepon tidak valid';
       }
 
       if (!providerAddress) {
-        newErrors.providerAddress = "Alamat tidak boleh kosong"
+        newErrors.providerAddress = 'Alamat tidak boleh kosong';
       } else if (!validateAddress(providerAddress)) {
-        newErrors.providerAddress = "Alamat harus minimal 5 karakter"
+        newErrors.providerAddress = 'Alamat harus minimal 5 karakter';
       }
 
       if (!serviceType) {
-        newErrors.serviceType = "Jenis layanan tidak boleh kosong"
+        newErrors.serviceType = 'Jenis layanan tidak boleh kosong';
       }
 
       if (!experience) {
-        newErrors.experience = "Pengalaman tidak boleh kosong"
+        newErrors.experience = 'Pengalaman tidak boleh kosong';
       }
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!validateForm()) return
+    if (!validateForm()) return;
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       // Here you would normally call your registration API
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Redirect to success page or login page after successful registration
-      window.location.href = "/register/success"
+      window.location.href = '/register/success';
     } catch (error) {
-      console.error("Registration failed:", error)
+      console.error('Registration failed:', error);
       setErrors({
-        form: "Terjadi kesalahan saat mendaftar. Silakan coba lagi.",
-      })
+        form: 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.',
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="grid h-[100dvh] w-screen grid-cols-1 overflow-hidden bg-gradient-to-b from-white to-gray-50 lg:grid-cols-2">
@@ -138,7 +155,7 @@ export default function RegisterPage() {
           <div className="absolute top-[20%] -left-[10%] h-[40vh] w-[40vh] rounded-full bg-gradient-to-r from-blue-400/20 to-teal-300/20 blur-3xl"></div>
           <div className="absolute bottom-[20%] -right-[10%] h-[40vh] w-[40vh] rounded-full bg-gradient-to-r from-primary-400/20 to-blue-300/20 blur-3xl"></div>
         </div>
-      
+
         <div className="relative z-10 flex h-full w-full flex-col items-center justify-center p-4">
           <div className="relative mb-4 lg:mb-6">
             <div className="absolute -inset-8 rounded-full bg-gradient-to-r from-blue-500/30 to-primary/30 opacity-30 blur-3xl"></div>
@@ -163,19 +180,22 @@ export default function RegisterPage() {
             </h2>
 
             <div className="grid grid-cols-2 gap-2 overflow-hidden text-left sm:gap-2">
-              {["Layanan tukang profesional", "Harga transparan", "Garansi pekerjaan", "Pembayaran aman"].map(
-                (feature, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 rounded-xl bg-white/50 p-2 shadow-sm transition-all hover:shadow-md backdrop-blur-sm"
-                  >
-                    <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500/10 sm:h-7 sm:w-7">
-                      <CheckCircle className="h-3 w-3 text-blue-600 sm:h-3.5 sm:w-3.5" />
-                    </div>
-                    <span className="text-xs text-gray-700 sm:text-xs">{feature}</span>
+              {[
+                'Layanan tukang profesional',
+                'Harga transparan',
+                'Garansi pekerjaan',
+                'Pembayaran aman',
+              ].map((feature, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 rounded-xl bg-white/50 p-2 shadow-sm transition-all hover:shadow-md backdrop-blur-sm"
+                >
+                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500/10 sm:h-7 sm:w-7">
+                    <CheckCircle className="h-3 w-3 text-blue-600 sm:h-3.5 sm:w-3.5" />
                   </div>
-                ),
-              )}
+                  <span className="text-xs text-gray-700 sm:text-xs">{feature}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -226,24 +246,26 @@ export default function RegisterPage() {
                 <div className="relative h-9 rounded-full bg-gray-100 p-1.5 sm:h-10">
                   <div
                     className={`absolute inset-y-1.5 rounded-full bg-blue-600 shadow-lg transition-all duration-300 ${
-                      activeRole === "pelanggan" ? "left-1.5 right-1/2 translate-x-1" : "left-1/2 right-1.5 -translate-x-1"
+                      activeRole === 'pelanggan'
+                        ? 'left-1.5 right-1/2 translate-x-1'
+                        : 'left-1/2 right-1.5 -translate-x-1'
                     }`}
                   ></div>
                   <div className="relative flex h-full">
                     <button
                       type="button"
-                      onClick={() => setActiveRole("pelanggan")}
+                      onClick={() => setActiveRole('pelanggan')}
                       className={`flex-1 flex items-center justify-center rounded-full text-xs font-medium transition-colors ${
-                        activeRole === "pelanggan" ? "text-white" : "text-gray-500"
+                        activeRole === 'pelanggan' ? 'text-white' : 'text-gray-500'
                       }`}
                     >
                       Pelanggan
                     </button>
                     <button
                       type="button"
-                      onClick={() => setActiveRole("penyedia")}
+                      onClick={() => setActiveRole('penyedia')}
                       className={`flex-1 flex items-center justify-center rounded-full text-xs font-medium transition-colors ${
-                        activeRole === "penyedia" ? "text-white" : "text-gray-500"
+                        activeRole === 'penyedia' ? 'text-white' : 'text-gray-500'
                       }`}
                     >
                       Penyedia Jasa
@@ -263,10 +285,12 @@ export default function RegisterPage() {
                           id="email"
                           type="email"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={e => setEmail(e.target.value)}
                           placeholder="Email"
                           className={`h-9 w-full rounded-xl border bg-white/70 py-2 pl-9 pr-3 text-xs transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 sm:text-xs ${
-                            errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                            errors.email
+                              ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                              : 'border-gray-200'
                           }`}
                         />
                       </div>
@@ -274,7 +298,7 @@ export default function RegisterPage() {
                     </div>
 
                     {/* Role-specific fields */}
-                    {activeRole === "pelanggan" ? (
+                    {activeRole === 'pelanggan' ? (
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-0.5">
                           <div className="relative group">
@@ -285,14 +309,18 @@ export default function RegisterPage() {
                               id="customerName"
                               type="text"
                               value={customerName}
-                              onChange={(e) => setCustomerName(e.target.value)}
+                              onChange={e => setCustomerName(e.target.value)}
                               placeholder="Nama"
                               className={`h-9 w-full rounded-xl border bg-white/70 py-2 pl-9 pr-3 text-xs transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 ${
-                                errors.customerName ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                                errors.customerName
+                                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                                  : 'border-gray-200'
                               }`}
                             />
                           </div>
-                          {errors.customerName && <p className="ml-1 text-[10px] text-red-500">{errors.customerName}</p>}
+                          {errors.customerName && (
+                            <p className="ml-1 text-[10px] text-red-500">{errors.customerName}</p>
+                          )}
                         </div>
 
                         <div className="space-y-0.5">
@@ -304,14 +332,18 @@ export default function RegisterPage() {
                               id="customerPhone"
                               type="tel"
                               value={customerPhone}
-                              onChange={(e) => setCustomerPhone(e.target.value)}
+                              onChange={e => setCustomerPhone(e.target.value)}
                               placeholder="Telepon"
                               className={`h-9 w-full rounded-xl border bg-white/70 py-2 pl-9 pr-3 text-xs transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 ${
-                                errors.customerPhone ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                                errors.customerPhone
+                                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                                  : 'border-gray-200'
                               }`}
                             />
                           </div>
-                          {errors.customerPhone && <p className="ml-1 text-[10px] text-red-500">{errors.customerPhone}</p>}
+                          {errors.customerPhone && (
+                            <p className="ml-1 text-[10px] text-red-500">{errors.customerPhone}</p>
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -325,14 +357,18 @@ export default function RegisterPage() {
                               id="providerName"
                               type="text"
                               value={providerName}
-                              onChange={(e) => setProviderName(e.target.value)}
+                              onChange={e => setProviderName(e.target.value)}
                               placeholder="Nama"
                               className={`h-9 w-full rounded-xl border bg-white/70 py-2 pl-9 pr-3 text-xs transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 ${
-                                errors.providerName ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                                errors.providerName
+                                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                                  : 'border-gray-200'
                               }`}
                             />
                           </div>
-                          {errors.providerName && <p className="ml-1 text-[10px] text-red-500">{errors.providerName}</p>}
+                          {errors.providerName && (
+                            <p className="ml-1 text-[10px] text-red-500">{errors.providerName}</p>
+                          )}
                         </div>
 
                         <div className="space-y-0.5">
@@ -344,14 +380,18 @@ export default function RegisterPage() {
                               id="providerPhone"
                               type="tel"
                               value={providerPhone}
-                              onChange={(e) => setProviderPhone(e.target.value)}
+                              onChange={e => setProviderPhone(e.target.value)}
                               placeholder="Telepon"
                               className={`h-9 w-full rounded-xl border bg-white/70 py-2 pl-9 pr-3 text-xs transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 ${
-                                errors.providerPhone ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                                errors.providerPhone
+                                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                                  : 'border-gray-200'
                               }`}
                             />
                           </div>
-                          {errors.providerPhone && <p className="ml-1 text-[10px] text-red-500">{errors.providerPhone}</p>}
+                          {errors.providerPhone && (
+                            <p className="ml-1 text-[10px] text-red-500">{errors.providerPhone}</p>
+                          )}
                         </div>
 
                         <div className="col-span-2 space-y-0.5">
@@ -363,15 +403,19 @@ export default function RegisterPage() {
                               id="providerAddress"
                               type="text"
                               value={providerAddress}
-                              onChange={(e) => setProviderAddress(e.target.value)}
+                              onChange={e => setProviderAddress(e.target.value)}
                               placeholder="Alamat"
                               className={`h-9 w-full rounded-xl border bg-white/70 py-2 pl-9 pr-3 text-xs transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 ${
-                                errors.providerAddress ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                                errors.providerAddress
+                                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                                  : 'border-gray-200'
                               }`}
                             />
                           </div>
                           {errors.providerAddress && (
-                            <p className="ml-1 text-[10px] text-red-500">{errors.providerAddress}</p>
+                            <p className="ml-1 text-[10px] text-red-500">
+                              {errors.providerAddress}
+                            </p>
                           )}
                         </div>
 
@@ -383,9 +427,11 @@ export default function RegisterPage() {
                             <select
                               id="serviceType"
                               value={serviceType}
-                              onChange={(e) => setServiceType(e.target.value)}
+                              onChange={e => setServiceType(e.target.value)}
                               className={`h-9 w-full appearance-none rounded-xl border bg-white/70 py-2 pl-9 pr-3 text-xs transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 ${
-                                errors.serviceType ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                                errors.serviceType
+                                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                                  : 'border-gray-200'
                               }`}
                             >
                               <option value="">Pilih Layanan</option>
@@ -396,7 +442,9 @@ export default function RegisterPage() {
                               <option value="lainnya">Lainnya</option>
                             </select>
                           </div>
-                          {errors.serviceType && <p className="ml-1 text-[10px] text-red-500">{errors.serviceType}</p>}
+                          {errors.serviceType && (
+                            <p className="ml-1 text-[10px] text-red-500">{errors.serviceType}</p>
+                          )}
                         </div>
 
                         <div className="space-y-0.5">
@@ -407,19 +455,23 @@ export default function RegisterPage() {
                             <select
                               id="experience"
                               value={experience}
-                              onChange={(e) => setExperience(e.target.value)}
+                              onChange={e => setExperience(e.target.value)}
                               className={`h-9 w-full appearance-none rounded-xl border bg-white/70 py-2 pl-9 pr-3 text-xs transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 ${
-                                errors.experience ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                                errors.experience
+                                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                                  : 'border-gray-200'
                               }`}
                             >
                               <option value="">Pengalaman</option>
-                              <option value="kurang_dari_1_tahun">{"<"} 1 tahun</option>
+                              <option value="kurang_dari_1_tahun">{'<'} 1 tahun</option>
                               <option value="1_3_tahun">1-3 tahun</option>
                               <option value="3_5_tahun">3-5 tahun</option>
-                              <option value="lebih_dari_5_tahun">{">"} 5 tahun</option>
+                              <option value="lebih_dari_5_tahun">{'>'} 5 tahun</option>
                             </select>
                           </div>
-                          {errors.experience && <p className="ml-1 text-[10px] text-red-500">{errors.experience}</p>}
+                          {errors.experience && (
+                            <p className="ml-1 text-[10px] text-red-500">{errors.experience}</p>
+                          )}
                         </div>
                       </div>
                     )}
@@ -432,12 +484,14 @@ export default function RegisterPage() {
                           </div>
                           <input
                             id="password"
-                            type={showPassword ? "text" : "password"}
+                            type={showPassword ? 'text' : 'password'}
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={e => setPassword(e.target.value)}
                             placeholder="Password"
                             className={`h-9 w-full rounded-xl border bg-white/70 py-2 pl-9 pr-9 text-xs transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 ${
-                              errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                              errors.password
+                                ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                                : 'border-gray-200'
                             }`}
                           />
                           <button
@@ -445,10 +499,16 @@ export default function RegisterPage() {
                             onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
                           >
-                            {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                            {showPassword ? (
+                              <EyeOff className="h-3.5 w-3.5" />
+                            ) : (
+                              <Eye className="h-3.5 w-3.5" />
+                            )}
                           </button>
                         </div>
-                        {errors.password && <p className="ml-1 text-[10px] text-red-500">{errors.password}</p>}
+                        {errors.password && (
+                          <p className="ml-1 text-[10px] text-red-500">{errors.password}</p>
+                        )}
                       </div>
 
                       <div className="space-y-0.5">
@@ -458,12 +518,14 @@ export default function RegisterPage() {
                           </div>
                           <input
                             id="confirmPassword"
-                            type={showConfirmPassword ? "text" : "password"}
+                            type={showConfirmPassword ? 'text' : 'password'}
                             value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            onChange={e => setConfirmPassword(e.target.value)}
                             placeholder="Konfirmasi Password"
                             className={`h-9 w-full rounded-xl border bg-white/70 py-2 pl-9 pr-9 text-xs transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 ${
-                              errors.confirmPassword ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                              errors.confirmPassword
+                                ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                                : 'border-gray-200'
                             }`}
                           />
                           <button
@@ -471,10 +533,16 @@ export default function RegisterPage() {
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
                           >
-                            {showConfirmPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                            {showConfirmPassword ? (
+                              <EyeOff className="h-3.5 w-3.5" />
+                            ) : (
+                              <Eye className="h-3.5 w-3.5" />
+                            )}
                           </button>
                         </div>
-                        {errors.confirmPassword && <p className="ml-1 text-[10px] text-red-500">{errors.confirmPassword}</p>}
+                        {errors.confirmPassword && (
+                          <p className="ml-1 text-[10px] text-red-500">{errors.confirmPassword}</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -484,17 +552,22 @@ export default function RegisterPage() {
                       type="checkbox"
                       id="agreeToTerms"
                       checked={agreeToTerms}
-                      onChange={(e) => setAgreeToTerms(e.target.checked)}
+                      onChange={e => setAgreeToTerms(e.target.checked)}
                       className="mt-0.5 h-3.5 w-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
                     <label htmlFor="agreeToTerms" className="text-xs text-gray-500">
-                      Dengan mendaftar, saya menyetujui{" "}
-                      <Link href="/terms" className="text-blue-600 transition-colors hover:text-blue-800">
+                      Dengan mendaftar, saya menyetujui{' '}
+                      <Link
+                        href="/terms"
+                        className="text-blue-600 transition-colors hover:text-blue-800"
+                      >
                         Syarat dan Ketentuan
                       </Link>
                     </label>
                   </div>
-                  {errors.agreeToTerms && <p className="ml-1 text-xs text-red-500">{errors.agreeToTerms}</p>}
+                  {errors.agreeToTerms && (
+                    <p className="ml-1 text-xs text-red-500">{errors.agreeToTerms}</p>
+                  )}
 
                   {errors.form && (
                     <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
@@ -532,12 +605,12 @@ export default function RegisterPage() {
                         Memproses...
                       </>
                     ) : (
-                      "Daftar"
+                      'Daftar'
                     )}
                   </button>
 
                   <div className="text-center">
-                    <span className="text-xs text-gray-500">Sudah punya akun?</span>{" "}
+                    <span className="text-xs text-gray-500">Sudah punya akun?</span>{' '}
                     <Link
                       href="/login"
                       className="text-xs font-medium text-blue-600 transition-colors hover:text-blue-800"
@@ -557,7 +630,13 @@ export default function RegisterPage() {
                   type="button"
                   className="group flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-700 shadow-sm transition-all duration-300 hover:bg-gray-50 hover:shadow-md sm:h-10"
                 >
-                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       d="M18.1711 8.36788H17.5V8.33329H10V11.6666H14.6904C14.0309 13.6501 12.1866 15.0001 10 15.0001C7.23859 15.0001 5.00001 12.7615 5.00001 10.0001C5.00001 7.23868 7.23859 5.00009 10 5.00009C11.2958 5.00009 12.4799 5.48118 13.3867 6.27286L15.7921 3.86743C14.2929 2.45686 12.2645 1.66676 10 1.66676C5.39763 1.66676 1.66667 5.39771 1.66667 10.0001C1.66667 14.6025 5.39763 18.3334 10 18.3334C14.6024 18.3334 18.3333 14.6025 18.3333 10.0001C18.3333 9.44117 18.2746 8.89575 18.1711 8.36788Z"
                       fill="#4285F4"
@@ -580,12 +659,12 @@ export default function RegisterPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="py-2 text-center text-xs text-gray-500">
             <p>© {new Date().getFullYear()} Tukangin</p>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

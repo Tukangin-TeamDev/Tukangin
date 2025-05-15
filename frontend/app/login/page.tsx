@@ -1,72 +1,72 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle } from "lucide-react"
-import { validateEmail } from "../../lib/validation"
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
+import { validateEmail } from '../../lib/validation';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [emailError, setEmailError] = useState("")
-  const [passwordError, setPasswordError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value)
-    if (emailError) setEmailError("")
-  }
+    setEmail(e.target.value);
+    if (emailError) setEmailError('');
+  };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value)
-    if (passwordError) setPasswordError("")
-  }
+    setPassword(e.target.value);
+    if (passwordError) setPasswordError('');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Reset errors
-    setEmailError("")
-    setPasswordError("")
+    setEmailError('');
+    setPasswordError('');
 
     // Validate inputs
-    let isValid = true
+    let isValid = true;
 
     if (!email) {
-      setEmailError("Email tidak boleh kosong")
-      isValid = false
+      setEmailError('Email tidak boleh kosong');
+      isValid = false;
     } else if (!validateEmail(email)) {
-      setEmailError("Format email tidak valid")
-      isValid = false
+      setEmailError('Format email tidak valid');
+      isValid = false;
     }
 
     if (!password) {
-      setPasswordError("Password tidak boleh kosong")
-      isValid = false
+      setPasswordError('Password tidak boleh kosong');
+      isValid = false;
     }
 
-    if (!isValid) return
+    if (!isValid) return;
 
     // Simulate login process
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       // Here you would normally call your authentication API
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Redirect to dashboard or home page after successful login
-      window.location.href = "/dashboard"
+      window.location.href = '/dashboard';
     } catch (error) {
-      console.error("Login failed:", error)
-      setPasswordError("Email atau password salah")
+      console.error('Login failed:', error);
+      setPasswordError('Email atau password salah');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="grid h-[100dvh] w-screen overflow-hidden bg-gradient-to-b from-white to-gray-50 lg:grid-cols-2">
@@ -101,19 +101,22 @@ export default function LoginPage() {
             </h2>
 
             <div className="grid max-h-[30vh] grid-cols-2 gap-2 overflow-y-auto text-left sm:gap-3">
-              {["Layanan tukang profesional", "Harga transparan", "Garansi pekerjaan", "Pembayaran aman"].map(
-                (feature, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 rounded-xl bg-white/50 p-2 shadow-sm transition-all hover:shadow-md backdrop-blur-sm"
-                  >
-                    <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500/10 sm:h-8 sm:w-8">
-                      <CheckCircle className="h-3 w-3 text-blue-600 sm:h-4 sm:w-4" />
-                    </div>
-                    <span className="text-xs text-gray-700 sm:text-sm">{feature}</span>
+              {[
+                'Layanan tukang profesional',
+                'Harga transparan',
+                'Garansi pekerjaan',
+                'Pembayaran aman',
+              ].map((feature, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 rounded-xl bg-white/50 p-2 shadow-sm transition-all hover:shadow-md backdrop-blur-sm"
+                >
+                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500/10 sm:h-8 sm:w-8">
+                    <CheckCircle className="h-3 w-3 text-blue-600 sm:h-4 sm:w-4" />
                   </div>
-                ),
-              )}
+                  <span className="text-xs text-gray-700 sm:text-sm">{feature}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -172,11 +175,15 @@ export default function LoginPage() {
                       onChange={handleEmailChange}
                       placeholder="Email"
                       className={`h-10 w-full rounded-xl border bg-white/70 py-2 pl-9 pr-3 text-sm transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-11 sm:pl-10 ${
-                        emailError ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                        emailError
+                          ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                          : 'border-gray-200'
                       }`}
                     />
                   </div>
-                  {emailError && <p className="ml-1 text-xs text-red-500 sm:text-sm">{emailError}</p>}
+                  {emailError && (
+                    <p className="ml-1 text-xs text-red-500 sm:text-sm">{emailError}</p>
+                  )}
                 </div>
 
                 <div className="space-y-1">
@@ -197,12 +204,14 @@ export default function LoginPage() {
                     </div>
                     <input
                       id="password"
-                      type={showPassword ? "text" : "password"}
+                      type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={handlePasswordChange}
                       placeholder="Password"
                       className={`h-10 w-full rounded-xl border bg-white/70 py-2 pl-9 pr-9 text-sm transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-11 sm:pl-10 sm:pr-10 ${
-                        passwordError ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-gray-200"
+                        passwordError
+                          ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
+                          : 'border-gray-200'
                       }`}
                     />
                     <button
@@ -217,7 +226,9 @@ export default function LoginPage() {
                       )}
                     </button>
                   </div>
-                  {passwordError && <p className="ml-1 text-xs text-red-500 sm:text-sm">{passwordError}</p>}
+                  {passwordError && (
+                    <p className="ml-1 text-xs text-red-500 sm:text-sm">{passwordError}</p>
+                  )}
                 </div>
 
                 <button
@@ -250,12 +261,14 @@ export default function LoginPage() {
                       Memproses...
                     </>
                   ) : (
-                    "Masuk"
+                    'Masuk'
                   )}
                 </button>
 
                 <div className="text-center">
-                  <span className="text-xs text-gray-500 sm:text-sm">Belum punya akun Tukangin?</span>{" "}
+                  <span className="text-xs text-gray-500 sm:text-sm">
+                    Belum punya akun Tukangin?
+                  </span>{' '}
                   <Link
                     href="/register"
                     className="text-xs font-medium text-blue-600 transition-colors hover:text-blue-800 sm:text-sm"
@@ -275,7 +288,13 @@ export default function LoginPage() {
                 type="button"
                 className="group flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-700 shadow-sm transition-all duration-300 hover:bg-gray-50 hover:shadow-md sm:h-11 sm:text-sm"
               >
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M18.1711 8.36788H17.5V8.33329H10V11.6666H14.6904C14.0309 13.6501 12.1866 15.0001 10 15.0001C7.23859 15.0001 5.00001 12.7615 5.00001 10.0001C5.00001 7.23868 7.23859 5.00009 10 5.00009C11.2958 5.00009 12.4799 5.48118 13.3867 6.27286L15.7921 3.86743C14.2929 2.45686 12.2645 1.66676 10 1.66676C5.39763 1.66676 1.66667 5.39771 1.66667 10.0001C1.66667 14.6025 5.39763 18.3334 10 18.3334C14.6024 18.3334 18.3333 14.6025 18.3333 10.0001C18.3333 9.44117 18.2746 8.89575 18.1711 8.36788Z"
                     fill="#4285F4"
@@ -304,5 +323,5 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

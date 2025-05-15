@@ -1,60 +1,80 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { ArrowRight, Zap, Droplet, HomeIcon, Shield, Hammer, Sprout, Package, Star, MapPin, Clock } from "lucide-react"
-import { CustomerNavbar } from "@/components/customer-navbar"
-import { Footer } from "@/components/footer"
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import {
+  ArrowRight,
+  Zap,
+  Droplet,
+  HomeIcon,
+  Shield,
+  Hammer,
+  Sprout,
+  Package,
+  Star,
+  MapPin,
+  Clock,
+} from 'lucide-react';
+import { CustomerNavbar } from '@/components/customer-navbar';
+import { Footer } from '@/components/footer';
 
 // Types for our service data
 interface ServiceProvider {
-  id: string
-  name: string
-  rating: number
-  location: string
-  available: boolean
+  id: string;
+  name: string;
+  rating: number;
+  location: string;
+  available: boolean;
 }
 
 interface Service {
-  id: string
-  title: string
-  category: "electrical" | "plumbing" | "home" | "security" | "carpentry" | "gardening" | "moving" | "appliance"
-  categoryLabel: string
-  provider: ServiceProvider
-  price: number
-  image: string
-  rating: number
+  id: string;
+  title: string;
+  category:
+    | 'electrical'
+    | 'plumbing'
+    | 'home'
+    | 'security'
+    | 'carpentry'
+    | 'gardening'
+    | 'moving'
+    | 'appliance';
+  categoryLabel: string;
+  provider: ServiceProvider;
+  price: number;
+  image: string;
+  rating: number;
 }
 
 interface Order {
-  id: string
-  service: string
-  provider: string
-  date: string
-  status: "completed" | "in-progress" | "scheduled" | "cancelled"
-  price: number
-  image: string
+  id: string;
+  service: string;
+  provider: string;
+  date: string;
+  status: 'completed' | 'in-progress' | 'scheduled' | 'cancelled';
+  price: number;
+  image: string;
 }
 
 interface RecommendedService {
-  id: string
-  title: string
-  category: string
-  categoryLabel: string
-  provider: ServiceProvider
-  price: number
-  image: string
-  rating: number
-  reason: string
+  id: string;
+  title: string;
+  category: string;
+  categoryLabel: string;
+  provider: ServiceProvider;
+  price: number;
+  image: string;
+  rating: number;
+  reason: string;
 }
 
 export default function CustomerHomePage() {
-  const [userName, setUserName] = useState("Dono")
-  const [services, setServices] = useState<Service[]>([])
-  const [recentOrders, setRecentOrders] = useState<Order[]>([])
-  const [recommendations, setRecommendations] = useState<RecommendedService[]>([])
-  const [loading, setLoading] = useState(true)
+  const [userName, setUserName] = useState('Dono');
+  const [services, setServices] = useState<Service[]>([]);
+  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+  const [recommendations, setRecommendations] = useState<RecommendedService[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Simulate fetching data
   useEffect(() => {
@@ -63,240 +83,240 @@ export default function CustomerHomePage() {
       // Simulated API response for services
       const servicesData: Service[] = [
         {
-          id: "1",
-          title: "Service AC Rumah",
-          category: "electrical",
-          categoryLabel: "Electrical",
+          id: '1',
+          title: 'Service AC Rumah',
+          category: 'electrical',
+          categoryLabel: 'Electrical',
           provider: {
-            id: "p1",
-            name: "Teknik Dingin",
+            id: 'p1',
+            name: 'Teknik Dingin',
             rating: 4.8,
-            location: "Jakarta Selatan",
+            location: 'Jakarta Selatan',
             available: true,
           },
           price: 200000,
-          image: "/placeholder.svg?height=192&width=344",
+          image: '/placeholder.svg?height=192&width=344',
           rating: 4.8,
         },
         {
-          id: "2",
-          title: "Perbaikan Atap Bocor",
-          category: "home",
-          categoryLabel: "Home",
+          id: '2',
+          title: 'Perbaikan Atap Bocor',
+          category: 'home',
+          categoryLabel: 'Home',
           provider: {
-            id: "p2",
-            name: "Bengkel Jaya",
+            id: 'p2',
+            name: 'Bengkel Jaya',
             rating: 4.7,
-            location: "Jakarta Barat",
+            location: 'Jakarta Barat',
             available: true,
           },
           price: 350000,
-          image: "/placeholder.svg?height=192&width=344",
+          image: '/placeholder.svg?height=192&width=344',
           rating: 4.7,
         },
         {
-          id: "3",
-          title: "Instalasi Listrik Rumah",
-          category: "electrical",
-          categoryLabel: "Electrical",
+          id: '3',
+          title: 'Instalasi Listrik Rumah',
+          category: 'electrical',
+          categoryLabel: 'Electrical',
           provider: {
-            id: "p3",
-            name: "Elektrindo Mandiri",
+            id: 'p3',
+            name: 'Elektrindo Mandiri',
             rating: 4.9,
-            location: "Jakarta Timur",
+            location: 'Jakarta Timur',
             available: true,
           },
           price: 500000,
-          image: "/placeholder.svg?height=192&width=344",
+          image: '/placeholder.svg?height=192&width=344',
           rating: 4.9,
         },
         {
-          id: "4",
-          title: "Desain Interior Rumah",
-          category: "home",
-          categoryLabel: "Home",
+          id: '4',
+          title: 'Desain Interior Rumah',
+          category: 'home',
+          categoryLabel: 'Home',
           provider: {
-            id: "p4",
-            name: "Kreasi Design",
+            id: 'p4',
+            name: 'Kreasi Design',
             rating: 4.6,
-            location: "Jakarta Utara",
+            location: 'Jakarta Utara',
             available: true,
           },
           price: 2000000,
-          image: "/placeholder.svg?height=192&width=344",
+          image: '/placeholder.svg?height=192&width=344',
           rating: 4.6,
         },
         {
-          id: "5",
-          title: "Service Mesin Cuci",
-          category: "appliance",
-          categoryLabel: "Appliance",
+          id: '5',
+          title: 'Service Mesin Cuci',
+          category: 'appliance',
+          categoryLabel: 'Appliance',
           provider: {
-            id: "p5",
-            name: "Teknik Jaya",
+            id: 'p5',
+            name: 'Teknik Jaya',
             rating: 4.5,
-            location: "Jakarta Pusat",
+            location: 'Jakarta Pusat',
             available: true,
           },
           price: 175000,
-          image: "/placeholder.svg?height=192&width=344",
+          image: '/placeholder.svg?height=192&width=344',
           rating: 4.5,
         },
         {
-          id: "6",
-          title: "Pembersihan Water Heater",
-          category: "electrical",
-          categoryLabel: "Electrical",
+          id: '6',
+          title: 'Pembersihan Water Heater',
+          category: 'electrical',
+          categoryLabel: 'Electrical',
           provider: {
-            id: "p6",
-            name: "Ahli Heater",
+            id: 'p6',
+            name: 'Ahli Heater',
             rating: 4.7,
-            location: "Jakarta Selatan",
+            location: 'Jakarta Selatan',
             available: true,
           },
           price: 300000,
-          image: "/placeholder.svg?height=192&width=344",
+          image: '/placeholder.svg?height=192&width=344',
           rating: 4.7,
         },
-      ]
+      ];
 
       // Simulated API response for recent orders
       const ordersData: Order[] = [
         {
-          id: "o1",
-          service: "Service AC Rumah",
-          provider: "Teknik Dingin",
-          date: "20 Apr 2025",
-          status: "completed",
+          id: 'o1',
+          service: 'Service AC Rumah',
+          provider: 'Teknik Dingin',
+          date: '20 Apr 2025',
+          status: 'completed',
           price: 200000,
-          image: "/placeholder.svg?height=80&width=80",
+          image: '/placeholder.svg?height=80&width=80',
         },
         {
-          id: "o2",
-          service: "Perbaikan Atap Bocor",
-          provider: "Bengkel Jaya",
-          date: "15 Apr 2025",
-          status: "in-progress",
+          id: 'o2',
+          service: 'Perbaikan Atap Bocor',
+          provider: 'Bengkel Jaya',
+          date: '15 Apr 2025',
+          status: 'in-progress',
           price: 350000,
-          image: "/placeholder.svg?height=80&width=80",
+          image: '/placeholder.svg?height=80&width=80',
         },
-      ]
+      ];
 
       // Simulated API response for recommendations
       const recommendationsData: RecommendedService[] = [
         {
-          id: "r1",
-          title: "Pemasangan CCTV Rumah",
-          category: "security",
-          categoryLabel: "Security",
+          id: 'r1',
+          title: 'Pemasangan CCTV Rumah',
+          category: 'security',
+          categoryLabel: 'Security',
           provider: {
-            id: "p7",
-            name: "Secure Vision",
+            id: 'p7',
+            name: 'Secure Vision',
             rating: 4.9,
-            location: "Jakarta Selatan",
+            location: 'Jakarta Selatan',
           },
           price: 1500000,
-          image: "/placeholder.svg?height=144&width=256",
+          image: '/placeholder.svg?height=144&width=256',
           rating: 4.9,
-          reason: "Berdasarkan pesanan AC dan listrik Anda sebelumnya",
+          reason: 'Berdasarkan pesanan AC dan listrik Anda sebelumnya',
         },
         {
-          id: "r2",
-          title: "Pembersihan Saluran Air",
-          category: "plumbing",
-          categoryLabel: "Plumbing",
+          id: 'r2',
+          title: 'Pembersihan Saluran Air',
+          category: 'plumbing',
+          categoryLabel: 'Plumbing',
           provider: {
-            id: "p8",
-            name: "Pipa Bersih",
+            id: 'p8',
+            name: 'Pipa Bersih',
             rating: 4.7,
-            location: "Jakarta Barat",
+            location: 'Jakarta Barat',
           },
           price: 250000,
-          image: "/placeholder.svg?height=144&width=256",
+          image: '/placeholder.svg?height=144&width=256',
           rating: 4.7,
-          reason: "Layanan perawatan rumah yang populer di area Anda",
+          reason: 'Layanan perawatan rumah yang populer di area Anda',
         },
         {
-          id: "r3",
-          title: "Pengecatan Dinding Rumah",
-          category: "home",
-          categoryLabel: "Home",
+          id: 'r3',
+          title: 'Pengecatan Dinding Rumah',
+          category: 'home',
+          categoryLabel: 'Home',
           provider: {
-            id: "p9",
-            name: "Warna Prima",
+            id: 'p9',
+            name: 'Warna Prima',
             rating: 4.8,
-            location: "Jakarta Timur",
+            location: 'Jakarta Timur',
           },
           price: 1200000,
-          image: "/placeholder.svg?height=144&width=256",
+          image: '/placeholder.svg?height=144&width=256',
           rating: 4.8,
-          reason: "Pelanggan yang memesan renovasi juga memesan layanan ini",
+          reason: 'Pelanggan yang memesan renovasi juga memesan layanan ini',
         },
-      ]
+      ];
 
-      setServices(servicesData)
-      setRecentOrders(ordersData)
-      setRecommendations(recommendationsData)
-      setLoading(false)
-    }
+      setServices(servicesData);
+      setRecentOrders(ordersData);
+      setRecommendations(recommendationsData);
+      setLoading(false);
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   // Format price to IDR
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     })
       .format(price)
-      .replace("IDR", "Rp")
-  }
+      .replace('IDR', 'Rp');
+  };
 
   // Service category icons
   const serviceCategories = [
-    { id: "electrical", name: "Electrician", icon: Zap },
-    { id: "plumbing", name: "Plumbing", icon: Droplet },
-    { id: "home", name: "Housing", icon: HomeIcon },
-    { id: "security", name: "Security", icon: Shield },
-    { id: "carpentry", name: "Carpentry", icon: Hammer },
-    { id: "gardening", name: "Gardening", icon: Sprout },
-    { id: "moving", name: "Moving", icon: Package },
-  ]
+    { id: 'electrical', name: 'Electrician', icon: Zap },
+    { id: 'plumbing', name: 'Plumbing', icon: Droplet },
+    { id: 'home', name: 'Housing', icon: HomeIcon },
+    { id: 'security', name: 'Security', icon: Shield },
+    { id: 'carpentry', name: 'Carpentry', icon: Hammer },
+    { id: 'gardening', name: 'Gardening', icon: Sprout },
+    { id: 'moving', name: 'Moving', icon: Package },
+  ];
 
   // Status badge color
-  const getStatusColor = (status: Order["status"]) => {
+  const getStatusColor = (status: Order['status']) => {
     switch (status) {
-      case "completed":
-        return "bg-green-100 text-green-800"
-      case "in-progress":
-        return "bg-blue-100 text-blue-800"
-      case "scheduled":
-        return "bg-yellow-100 text-yellow-800"
-      case "cancelled":
-        return "bg-red-100 text-red-800"
+      case 'completed':
+        return 'bg-green-100 text-green-800';
+      case 'in-progress':
+        return 'bg-blue-100 text-blue-800';
+      case 'scheduled':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
       default:
-        return "bg-gray-100 text-gray-800"
+        return 'bg-gray-100 text-gray-800';
     }
-  }
+  };
 
   // Status text
-  const getStatusText = (status: Order["status"]) => {
+  const getStatusText = (status: Order['status']) => {
     switch (status) {
-      case "completed":
-        return "Selesai"
-      case "in-progress":
-        return "Dalam Proses"
-      case "scheduled":
-        return "Terjadwal"
-      case "cancelled":
-        return "Dibatalkan"
+      case 'completed':
+        return 'Selesai';
+      case 'in-progress':
+        return 'Dalam Proses';
+      case 'scheduled':
+        return 'Terjadwal';
+      case 'cancelled':
+        return 'Dibatalkan';
       default:
-        return status
+        return status;
     }
-  }
+  };
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -338,8 +358,8 @@ export default function CustomerHomePage() {
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <h1 className="text-2xl font-bold text-gray-900">Selamat datang kembali, {userName}!</h1>
           <p className="text-gray-600 mt-2">
-            Temukan layanan terbaik untuk kebutuhan rumah dan bisnis Anda. Kami telah menyiapkan rekomendasi khusus
-            berdasarkan preferensi Anda.
+            Temukan layanan terbaik untuk kebutuhan rumah dan bisnis Anda. Kami telah menyiapkan
+            rekomendasi khusus berdasarkan preferensi Anda.
           </p>
         </div>
       </section>
@@ -350,21 +370,24 @@ export default function CustomerHomePage() {
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-gray-900">Pesanan Terbaru</h2>
-              <Link href="/dashboard/orders" className="text-blue-500 hover:text-blue-600 flex items-center text-sm">
+              <Link
+                href="/dashboard/orders"
+                className="text-blue-500 hover:text-blue-600 flex items-center text-sm"
+              >
                 Lihat Semua
                 <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {recentOrders.map((order) => (
+              {recentOrders.map(order => (
                 <Link
                   key={order.id}
                   href={`/dashboard/orders/${order.id}`}
                   className="flex items-center gap-4 p-4 rounded-lg border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all"
                 >
                   <Image
-                    src={order.image || "/placeholder.svg"}
+                    src={order.image || '/placeholder.svg'}
                     alt={order.service}
                     width={80}
                     height={80}
@@ -382,7 +405,7 @@ export default function CustomerHomePage() {
                     <span className="font-medium text-green-600">{formatPrice(order.price)}</span>
                     <span
                       className={`mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                        order.status,
+                        order.status
                       )}`}
                     >
                       {getStatusText(order.status)}
@@ -406,7 +429,7 @@ export default function CustomerHomePage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
-          {serviceCategories.map((category) => (
+          {serviceCategories.map(category => (
             <Link
               key={category.id}
               href={`/services/category/${category.id}`}
@@ -426,14 +449,17 @@ export default function CustomerHomePage() {
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-900">Rekomendasi Untuk Anda</h2>
-            <Link href="/recommendations" className="text-blue-500 hover:text-blue-600 flex items-center text-sm">
+            <Link
+              href="/recommendations"
+              className="text-blue-500 hover:text-blue-600 flex items-center text-sm"
+            >
               Lihat Semua
               <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {recommendations.map((service) => (
+            {recommendations.map(service => (
               <Link
                 key={service.id}
                 href={`/services/${service.id}`}
@@ -441,7 +467,7 @@ export default function CustomerHomePage() {
               >
                 <div className="relative h-36">
                   <Image
-                    src={service.image || "/placeholder.svg"}
+                    src={service.image || '/placeholder.svg'}
                     alt={service.title}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -449,15 +475,15 @@ export default function CustomerHomePage() {
                   />
                   <div
                     className={`absolute top-2 left-2 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                      service.category === "electrical"
-                        ? "bg-blue-500"
-                        : service.category === "home"
-                          ? "bg-green-500"
-                          : service.category === "security"
-                            ? "bg-purple-500"
-                            : service.category === "plumbing"
-                              ? "bg-cyan-500"
-                              : "bg-blue-500"
+                      service.category === 'electrical'
+                        ? 'bg-blue-500'
+                        : service.category === 'home'
+                          ? 'bg-green-500'
+                          : service.category === 'security'
+                            ? 'bg-purple-500'
+                            : service.category === 'plumbing'
+                              ? 'bg-cyan-500'
+                              : 'bg-blue-500'
                     } text-white`}
                   >
                     {service.categoryLabel}
@@ -504,7 +530,7 @@ export default function CustomerHomePage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => (
+            {services.map(service => (
               <div
                 key={service.id}
                 className="rounded-lg bg-white text-gray-900 shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200/80 hover:border-blue-300 group"
@@ -512,7 +538,7 @@ export default function CustomerHomePage() {
                 <div className="relative">
                   <div className="relative h-48 w-full overflow-hidden">
                     <Image
-                      src={service.image || "/placeholder.svg"}
+                      src={service.image || '/placeholder.svg'}
                       alt={service.title}
                       width={344}
                       height={192}
@@ -521,13 +547,13 @@ export default function CustomerHomePage() {
                   </div>
                   <div
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold absolute top-3 left-3 ${
-                      service.category === "electrical"
-                        ? "bg-blue-500"
-                        : service.category === "home"
-                          ? "bg-green-500"
-                          : service.category === "appliance"
-                            ? "bg-blue-600"
-                            : "bg-blue-500"
+                      service.category === 'electrical'
+                        ? 'bg-blue-500'
+                        : service.category === 'home'
+                          ? 'bg-green-500'
+                          : service.category === 'appliance'
+                            ? 'bg-blue-600'
+                            : 'bg-blue-500'
                     } text-white`}
                   >
                     {service.categoryLabel}
@@ -547,7 +573,9 @@ export default function CustomerHomePage() {
                         <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
                         <span>Tersedia Sekarang</span>
                       </div>
-                      <span className="font-bold text-lg text-green-600">{formatPrice(service.price)}</span>
+                      <span className="font-bold text-lg text-green-600">
+                        {formatPrice(service.price)}
+                      </span>
                     </div>
                   </div>
 
@@ -585,5 +613,5 @@ export default function CustomerHomePage() {
 
       <Footer />
     </main>
-  )
+  );
 }

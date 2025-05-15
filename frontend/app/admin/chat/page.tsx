@@ -1,148 +1,157 @@
-"use client"
+'use client';
 
-import { useState, useRef, useEffect } from "react"
-import Image from "next/image"
-import { Search, Phone, Video, MoreHorizontal, Paperclip, Mic, Send, MessageSquare } from "lucide-react"
+import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
+import {
+  Search,
+  Phone,
+  Video,
+  MoreHorizontal,
+  Paperclip,
+  Mic,
+  Send,
+  MessageSquare,
+} from 'lucide-react';
 
 interface ChatMessage {
-  id: string
-  sender: "provider" | "customer"
-  text: string
-  time: string
+  id: string;
+  sender: 'provider' | 'customer';
+  text: string;
+  time: string;
 }
 
 interface ChatContact {
-  id: string
-  name: string
-  status: "online" | "offline"
-  lastMessage: string
-  time: string
-  unread: number
-  avatar: string
+  id: string;
+  name: string;
+  status: 'online' | 'offline';
+  lastMessage: string;
+  time: string;
+  unread: number;
+  avatar: string;
 }
 
 export default function AdminChatPage() {
-  const [activeTab, setActiveTab] = useState("all")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [message, setMessage] = useState("")
-  const [activeChat, setActiveChat] = useState<string | null>("ahmad-budiman")
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [activeTab, setActiveTab] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [message, setMessage] = useState('');
+  const [activeChat, setActiveChat] = useState<string | null>('ahmad-budiman');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [contacts, setContacts] = useState<ChatContact[]>([
     {
-      id: "ahmad-budiman",
-      name: "Ahmad Budiman",
-      status: "online",
-      lastMessage: "Apakah perbaikan atap saya sudah selesai?",
-      time: "10:30",
+      id: 'ahmad-budiman',
+      name: 'Ahmad Budiman',
+      status: 'online',
+      lastMessage: 'Apakah perbaikan atap saya sudah selesai?',
+      time: '10:30',
       unread: 2,
-      avatar: "/placeholder.svg?height=48&width=48",
+      avatar: '/placeholder.svg?height=48&width=48',
     },
     {
-      id: "siti-sunarti",
-      name: "Siti Sunarti",
-      status: "offline",
-      lastMessage: "Terima kasih atas perbaikannya.",
-      time: "Kemarin",
+      id: 'siti-sunarti',
+      name: 'Siti Sunarti',
+      status: 'offline',
+      lastMessage: 'Terima kasih atas perbaikannya.',
+      time: 'Kemarin',
       unread: 0,
-      avatar: "/placeholder.svg?height=48&width=48",
+      avatar: '/placeholder.svg?height=48&width=48',
     },
     {
-      id: "budi-santoso",
-      name: "Budi Santoso",
-      status: "online",
-      lastMessage: "Kapan tim Anda bisa datang untuk survei?",
-      time: "Kemarin",
+      id: 'budi-santoso',
+      name: 'Budi Santoso',
+      status: 'online',
+      lastMessage: 'Kapan tim Anda bisa datang untuk survei?',
+      time: 'Kemarin',
       unread: 0,
-      avatar: "/placeholder.svg?height=48&width=48",
+      avatar: '/placeholder.svg?height=48&width=48',
     },
     {
-      id: "admin-tukangin",
-      name: "Admin Tukangin",
-      status: "online",
-      lastMessage: "Ada pesanan baru untuk Anda.",
-      time: "12/05",
+      id: 'admin-tukangin',
+      name: 'Admin Tukangin',
+      status: 'online',
+      lastMessage: 'Ada pesanan baru untuk Anda.',
+      time: '12/05',
       unread: 1,
-      avatar: "/placeholder.svg?height=48&width=48",
+      avatar: '/placeholder.svg?height=48&width=48',
     },
-  ])
+  ]);
 
   const [messages, setMessages] = useState<Record<string, ChatMessage[]>>({
-    "ahmad-budiman": [
+    'ahmad-budiman': [
       {
-        id: "1",
-        sender: "customer",
-        text: "Halo, saya ingin menanyakan tentang perbaikan atap rumah saya. Apakah sudah selesai?",
-        time: "09:40",
+        id: '1',
+        sender: 'customer',
+        text: 'Halo, saya ingin menanyakan tentang perbaikan atap rumah saya. Apakah sudah selesai?',
+        time: '09:40',
       },
       {
-        id: "2",
-        sender: "provider",
-        text: "Selamat pagi Pak Ahmad. Tim kami sedang dalam proses penyelesaian. Diperkirakan akan selesai hari ini sekitar jam 3 sore. Apakah Bapak akan ada di rumah?",
-        time: "09:42",
+        id: '2',
+        sender: 'provider',
+        text: 'Selamat pagi Pak Ahmad. Tim kami sedang dalam proses penyelesaian. Diperkirakan akan selesai hari ini sekitar jam 3 sore. Apakah Bapak akan ada di rumah?',
+        time: '09:42',
       },
       {
-        id: "3",
-        sender: "customer",
-        text: "Baik, saya akan ada di rumah mulai jam 2 siang. Mohon kabari jika ada perubahan jadwal.",
-        time: "09:45",
-      },
-    ],
-    "siti-sunarti": [
-      {
-        id: "1",
-        sender: "customer",
-        text: "Terima kasih atas perbaikan yang sudah dilakukan di rumah saya.",
-        time: "14:20",
-      },
-      {
-        id: "2",
-        sender: "provider",
-        text: "Sama-sama Bu Siti. Kami senang dapat membantu. Jika ada kebutuhan lain, jangan ragu untuk menghubungi kami kembali.",
-        time: "14:25",
-      },
-      {
-        id: "3",
-        sender: "customer",
-        text: "Baik, terima kasih banyak.",
-        time: "14:30",
+        id: '3',
+        sender: 'customer',
+        text: 'Baik, saya akan ada di rumah mulai jam 2 siang. Mohon kabari jika ada perubahan jadwal.',
+        time: '09:45',
       },
     ],
-  })
+    'siti-sunarti': [
+      {
+        id: '1',
+        sender: 'customer',
+        text: 'Terima kasih atas perbaikan yang sudah dilakukan di rumah saya.',
+        time: '14:20',
+      },
+      {
+        id: '2',
+        sender: 'provider',
+        text: 'Sama-sama Bu Siti. Kami senang dapat membantu. Jika ada kebutuhan lain, jangan ragu untuk menghubungi kami kembali.',
+        time: '14:25',
+      },
+      {
+        id: '3',
+        sender: 'customer',
+        text: 'Baik, terima kasih banyak.',
+        time: '14:30',
+      },
+    ],
+  });
 
   const filteredContacts = contacts
-    .filter((contact) => {
-      if (activeTab === "all") return true
-      if (activeTab === "customers") return contact.id !== "admin-tukangin"
-      if (activeTab === "admin") return contact.id === "admin-tukangin"
-      return true
+    .filter(contact => {
+      if (activeTab === 'all') return true;
+      if (activeTab === 'customers') return contact.id !== 'admin-tukangin';
+      if (activeTab === 'admin') return contact.id === 'admin-tukangin';
+      return true;
     })
-    .filter((contact) => {
-      if (!searchQuery) return true
-      return contact.name.toLowerCase().includes(searchQuery.toLowerCase())
-    })
+    .filter(contact => {
+      if (!searchQuery) return true;
+      return contact.name.toLowerCase().includes(searchQuery.toLowerCase());
+    });
 
   const sendMessage = () => {
-    if (!message.trim() || !activeChat) return
+    if (!message.trim() || !activeChat) return;
 
     const newMessage: ChatMessage = {
       id: Date.now().toString(),
-      sender: "provider",
+      sender: 'provider',
       text: message,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    }
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
 
-    setMessages((prev) => ({
+    setMessages(prev => ({
       ...prev,
       [activeChat]: [...(prev[activeChat] || []), newMessage],
-    }))
+    }));
 
-    setMessage("")
-  }
+    setMessage('');
+  };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages, activeChat])
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, activeChat]);
 
   return (
     <div className="bg-blue-50/50 rounded-lg overflow-hidden h-[calc(100vh-12rem)]">
@@ -155,7 +164,7 @@ export default function AdminChatPage() {
                 type="text"
                 placeholder="Cari chat..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="w-full py-2 pl-10 pr-4 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
               <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
@@ -163,25 +172,29 @@ export default function AdminChatPage() {
 
             <div className="flex border-b border-gray-200">
               <button
-                onClick={() => setActiveTab("all")}
+                onClick={() => setActiveTab('all')}
                 className={`flex-1 py-2 text-sm font-medium ${
-                  activeTab === "all" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"
+                  activeTab === 'all' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'
                 }`}
               >
                 Semua
               </button>
               <button
-                onClick={() => setActiveTab("customers")}
+                onClick={() => setActiveTab('customers')}
                 className={`flex-1 py-2 text-sm font-medium ${
-                  activeTab === "customers" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"
+                  activeTab === 'customers'
+                    ? 'text-blue-600 border-b-2 border-blue-600'
+                    : 'text-gray-500'
                 }`}
               >
                 Pelanggan
               </button>
               <button
-                onClick={() => setActiveTab("admin")}
+                onClick={() => setActiveTab('admin')}
                 className={`flex-1 py-2 text-sm font-medium ${
-                  activeTab === "admin" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"
+                  activeTab === 'admin'
+                    ? 'text-blue-600 border-b-2 border-blue-600'
+                    : 'text-gray-500'
                 }`}
               >
                 Admin
@@ -190,23 +203,23 @@ export default function AdminChatPage() {
           </div>
 
           <div className="flex-1 overflow-y-auto">
-            {filteredContacts.map((contact) => (
+            {filteredContacts.map(contact => (
               <div
                 key={contact.id}
                 onClick={() => setActiveChat(contact.id)}
                 className={`flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-50 ${
-                  activeChat === contact.id ? "bg-blue-50" : ""
+                  activeChat === contact.id ? 'bg-blue-50' : ''
                 }`}
               >
                 <div className="relative">
                   <Image
-                    src={contact.avatar || "/placeholder.svg"}
+                    src={contact.avatar || '/placeholder.svg'}
                     alt={contact.name}
                     width={48}
                     height={48}
                     className="rounded-full"
                   />
-                  {contact.status === "online" && (
+                  {contact.status === 'online' && (
                     <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
                   )}
                 </div>
@@ -234,16 +247,21 @@ export default function AdminChatPage() {
             <div className="bg-white p-4 border-b border-gray-200 flex justify-between items-center">
               <div className="flex items-center gap-3">
                 <Image
-                  src={contacts.find((c) => c.id === activeChat)?.avatar || "/placeholder.svg?height=48&width=48"}
-                  alt={contacts.find((c) => c.id === activeChat)?.name || ""}
+                  src={
+                    contacts.find(c => c.id === activeChat)?.avatar ||
+                    '/placeholder.svg?height=48&width=48'
+                  }
+                  alt={contacts.find(c => c.id === activeChat)?.name || ''}
                   width={48}
                   height={48}
                   className="rounded-full"
                 />
                 <div>
-                  <h3 className="font-medium">{contacts.find((c) => c.id === activeChat)?.name}</h3>
+                  <h3 className="font-medium">{contacts.find(c => c.id === activeChat)?.name}</h3>
                   <p className="text-sm text-green-600">
-                    {contacts.find((c) => c.id === activeChat)?.status === "online" ? "Online" : "Offline"}
+                    {contacts.find(c => c.id === activeChat)?.status === 'online'
+                      ? 'Online'
+                      : 'Offline'}
                   </p>
                 </div>
               </div>
@@ -263,17 +281,22 @@ export default function AdminChatPage() {
             {/* Messages */}
             <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
               <div className="space-y-4">
-                {(messages[activeChat] || []).map((msg) => (
-                  <div key={msg.id} className={`flex ${msg.sender === "provider" ? "justify-end" : "justify-start"}`}>
+                {(messages[activeChat] || []).map(msg => (
+                  <div
+                    key={msg.id}
+                    className={`flex ${msg.sender === 'provider' ? 'justify-end' : 'justify-start'}`}
+                  >
                     <div
                       className={`max-w-[70%] rounded-lg p-3 ${
-                        msg.sender === "provider"
-                          ? "bg-orange-500 text-white rounded-br-none"
-                          : "bg-white text-gray-800 rounded-bl-none shadow-sm"
+                        msg.sender === 'provider'
+                          ? 'bg-orange-500 text-white rounded-br-none'
+                          : 'bg-white text-gray-800 rounded-bl-none shadow-sm'
                       }`}
                     >
                       <p>{msg.text}</p>
-                      <p className={`text-xs mt-1 ${msg.sender === "provider" ? "text-orange-100" : "text-gray-500"}`}>
+                      <p
+                        className={`text-xs mt-1 ${msg.sender === 'provider' ? 'text-orange-100' : 'text-gray-500'}`}
+                      >
                         {msg.time}
                       </p>
                     </div>
@@ -292,14 +315,17 @@ export default function AdminChatPage() {
                 type="text"
                 placeholder="Ketik pesan..."
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                onChange={e => setMessage(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && sendMessage()}
                 className="flex-1 py-2 px-4 bg-gray-100 border border-gray-200 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
               <button className="p-2 rounded-full hover:bg-gray-100">
                 <Mic className="h-5 w-5 text-gray-600" />
               </button>
-              <button onClick={sendMessage} className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white">
+              <button
+                onClick={sendMessage}
+                className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white"
+              >
                 <Send className="h-5 w-5" />
               </button>
             </div>
@@ -317,5 +343,5 @@ export default function AdminChatPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

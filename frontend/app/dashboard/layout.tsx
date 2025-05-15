@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState, Suspense } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { useState, Suspense } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import {
   Home,
   ShoppingBag,
@@ -18,16 +18,16 @@ import {
   Search,
   Bell,
   LogOut,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
-  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false)
+  const pathname = usePathname();
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
 
   const toggleSubmenu = () => {
-    setIsSubmenuOpen(!isSubmenuOpen)
-  }
+    setIsSubmenuOpen(!isSubmenuOpen);
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -74,9 +74,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 href="/dashboard"
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all",
-                  pathname === "/dashboard" &&
-                    "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium shadow-sm"
+                  'flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all',
+                  pathname === '/dashboard' &&
+                    'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium shadow-sm'
                 )}
               >
                 <Home className="h-5 w-5 flex-shrink-0" />
@@ -86,7 +86,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {/* Cari Layanan */}
             <li>
-              <Link href="/marketplace" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all">
+              <Link
+                href="/marketplace"
+                className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all"
+              >
                 <ShoppingBag className="h-5 w-5 flex-shrink-0" />
                 <span>Cari Layanan</span>
               </Link>
@@ -97,14 +100,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <button
                 onClick={toggleSubmenu}
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-xl w-full text-left hover:bg-gray-100 transition-all",
-                  (pathname.includes("/dashboard/orders") || isSubmenuOpen) &&
-                    "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium"
+                  'flex items-center gap-3 p-3 rounded-xl w-full text-left hover:bg-gray-100 transition-all',
+                  (pathname.includes('/dashboard/orders') || isSubmenuOpen) &&
+                    'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium'
                 )}
               >
                 <Package className="h-5 w-5 flex-shrink-0" />
                 <span>Pesanan Saya</span>
-                <ChevronDown className={cn("h-4 w-4 ml-auto transition-transform", isSubmenuOpen && "rotate-180")} />
+                <ChevronDown
+                  className={cn(
+                    'h-4 w-4 ml-auto transition-transform',
+                    isSubmenuOpen && 'rotate-180'
+                  )}
+                />
               </button>
 
               {isSubmenuOpen && (
@@ -113,8 +121,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <Link
                       href="/dashboard/orders/active"
                       className={cn(
-                        "flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-gray-100 transition-all",
-                        pathname === "/dashboard/orders/active" && "text-blue-700 font-medium bg-blue-50"
+                        'flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-gray-100 transition-all',
+                        pathname === '/dashboard/orders/active' &&
+                          'text-blue-700 font-medium bg-blue-50'
                       )}
                     >
                       Aktif
@@ -124,8 +133,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <Link
                       href="/dashboard/orders/completed"
                       className={cn(
-                        "flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-gray-100 transition-all",
-                        pathname === "/dashboard/orders/completed" && "text-blue-700 font-medium bg-blue-50"
+                        'flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-gray-100 transition-all',
+                        pathname === '/dashboard/orders/completed' &&
+                          'text-blue-700 font-medium bg-blue-50'
                       )}
                     >
                       Selesai
@@ -135,8 +145,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <Link
                       href="/dashboard/orders/cancelled"
                       className={cn(
-                        "flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-gray-100 transition-all",
-                        pathname === "/dashboard/orders/cancelled" && "text-blue-700 font-medium bg-blue-50"
+                        'flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-gray-100 transition-all',
+                        pathname === '/dashboard/orders/cancelled' &&
+                          'text-blue-700 font-medium bg-blue-50'
                       )}
                     >
                       Dibatalkan
@@ -151,9 +162,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 href="/dashboard/chat"
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all",
-                  pathname === "/dashboard/chat" && 
-                    "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium shadow-sm"
+                  'flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all',
+                  pathname === '/dashboard/chat' &&
+                    'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium shadow-sm'
                 )}
               >
                 <MessageSquare className="h-5 w-5 flex-shrink-0" />
@@ -174,9 +185,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 href="/dashboard/profile"
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all",
-                  pathname === "/dashboard/profile" && 
-                    "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium shadow-sm"
+                  'flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all',
+                  pathname === '/dashboard/profile' &&
+                    'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium shadow-sm'
                 )}
               >
                 <User className="h-5 w-5 flex-shrink-0" />
@@ -189,9 +200,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 href="/dashboard/settings"
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all",
-                  pathname === "/dashboard/settings" && 
-                    "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium shadow-sm"
+                  'flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all',
+                  pathname === '/dashboard/settings' &&
+                    'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium shadow-sm'
                 )}
               >
                 <Settings className="h-5 w-5 flex-shrink-0" />
@@ -204,9 +215,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 href="/dashboard/help"
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all",
-                  pathname === "/dashboard/help" && 
-                    "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium shadow-sm"
+                  'flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all',
+                  pathname === '/dashboard/help' &&
+                    'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium shadow-sm'
                 )}
               >
                 <HelpCircle className="h-5 w-5 flex-shrink-0" />
@@ -228,8 +239,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <p className="text-xs text-gray-600 text-center mb-3">
               Tim dukungan kami siap membantu Anda 24/7
             </p>
-            <Link 
-              href="/dashboard/help" 
+            <Link
+              href="/dashboard/help"
               className="block text-center text-sm bg-white py-2 px-4 rounded-lg border border-gray-200 hover:bg-blue-50 hover:border-blue-200 transition-colors"
             >
               Hubungi Dukungan
@@ -238,8 +249,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         <div className="p-4 border-t border-gray-100">
-          <Link 
-            href="/logout" 
+          <Link
+            href="/logout"
             className="flex items-center gap-2 p-3 text-gray-600 hover:text-red-600 rounded-xl hover:bg-red-50 transition-all"
           >
             <LogOut className="h-5 w-5" />
@@ -266,19 +277,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </button>
               </div>
             </div>
-            
+
             {/* Page title and breadcrumb */}
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold">{pathname === "/dashboard" ? "Dashboard" : 
-                  (() => {
-                    const pageName = pathname.split('/').pop() || '';
-                    return pageName.charAt(0).toUpperCase() + pageName.slice(1);
-                  })()}</h1>
+                <h1 className="text-2xl font-bold">
+                  {pathname === '/dashboard'
+                    ? 'Dashboard'
+                    : (() => {
+                        const pageName = pathname.split('/').pop() || '';
+                        return pageName.charAt(0).toUpperCase() + pageName.slice(1);
+                      })()}
+                </h1>
                 <nav className="text-sm breadcrumbs">
                   <ul className="flex gap-2 text-gray-500">
-                    <li><Link href="/dashboard" className="hover:text-blue-600">Dashboard</Link></li>
-                    {pathname !== "/dashboard" && (
+                    <li>
+                      <Link href="/dashboard" className="hover:text-blue-600">
+                        Dashboard
+                      </Link>
+                    </li>
+                    {pathname !== '/dashboard' && (
                       <>
                         <li>/</li>
                         <li className="text-blue-600 font-medium">
@@ -292,7 +310,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   </ul>
                 </nav>
               </div>
-              
+
               <div className="hidden md:block relative max-w-md">
                 <input
                   type="text"
@@ -310,7 +328,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Page Content */}
         <main className="flex-1 p-6">
           <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <Suspense 
+            <Suspense
               fallback={
                 <div className="w-full h-40 flex items-center justify-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
@@ -323,5 +341,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </main>
       </div>
     </div>
-  )
+  );
 }

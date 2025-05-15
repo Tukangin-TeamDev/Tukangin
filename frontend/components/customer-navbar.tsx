@@ -1,26 +1,26 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Search, Bell, ShoppingBag, MessageSquare, Menu } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Search, Bell, ShoppingBag, MessageSquare, Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface CustomerNavbarProps {
-  userName: string
+  userName: string;
 }
 
 export function CustomerNavbar({ userName }: CustomerNavbarProps) {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // Handle search functionality
-    console.log("Searching for:", searchQuery)
-  }
+    console.log('Searching for:', searchQuery);
+  };
 
   return (
     <div className="sticky top-0 z-50 px-4 py-3">
@@ -36,12 +36,17 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
                 height={48}
                 className="rounded-full"
               />
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">Tukangin</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
+                Tukangin
+              </span>
             </Link>
 
             {/* Navigation - Hidden on mobile */}
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="/home" className="text-gray-700 hover:text-blue-600 transition-colors border-b-2 border-blue-600 font-medium">
+              <Link
+                href="/home"
+                className="text-gray-700 hover:text-blue-600 transition-colors border-b-2 border-blue-600 font-medium"
+              >
                 Home
               </Link>
               <Link
@@ -64,10 +69,13 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
                 type="text"
                 placeholder="Apa yang anda cari"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="w-full py-2.5 px-5 pr-12 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
-              <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 p-1.5 rounded-full hover:bg-blue-700 transition-colors">
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 p-1.5 rounded-full hover:bg-blue-700 transition-colors"
+              >
                 <Search className="h-4 w-4 text-white" />
               </button>
             </form>
@@ -121,16 +129,19 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
           </div>
 
           {/* Mobile Search - Only visible on small screens */}
-          <div className={`md:hidden mt-4 ${mobileMenuOpen ? "block" : "hidden"}`}>
+          <div className={`md:hidden mt-4 ${mobileMenuOpen ? 'block' : 'hidden'}`}>
             <form onSubmit={handleSearch} className="relative">
               <input
                 type="text"
                 placeholder="Apa yang anda cari"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="w-full py-2.5 px-5 pr-12 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
-              <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 p-1.5 rounded-full hover:bg-blue-700 transition-colors">
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 p-1.5 rounded-full hover:bg-blue-700 transition-colors"
+              >
                 <Search className="h-4 w-4 text-white" />
               </button>
             </form>
@@ -178,5 +189,5 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
         </div>
       </header>
     </div>
-  )
+  );
 }

@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState, Suspense } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { useState, Suspense } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Briefcase,
@@ -17,16 +17,16 @@ import {
   ChevronDown,
   Search,
   Bell,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
-  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false)
+  const pathname = usePathname();
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
 
   const toggleSubmenu = () => {
-    setIsSubmenuOpen(!isSubmenuOpen)
-  }
+    setIsSubmenuOpen(!isSubmenuOpen);
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -46,8 +46,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 href="/admin"
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100",
-                  pathname === "/admin" && "bg-gray-100",
+                  'flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100',
+                  pathname === '/admin' && 'bg-gray-100'
                 )}
               >
                 <LayoutDashboard className="h-5 w-5 flex-shrink-0" />
@@ -60,8 +60,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 href="/admin/services"
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100",
-                  pathname === "/admin/services" && "bg-gray-100",
+                  'flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100',
+                  pathname === '/admin/services' && 'bg-gray-100'
                 )}
               >
                 <Briefcase className="h-5 w-5 flex-shrink-0" />
@@ -77,7 +77,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               >
                 <Package className="h-5 w-5 flex-shrink-0" />
                 <span>Pesanan Masuk</span>
-                <ChevronDown className={cn("h-4 w-4 ml-auto transition-transform", isSubmenuOpen && "rotate-180")} />
+                <ChevronDown
+                  className={cn(
+                    'h-4 w-4 ml-auto transition-transform',
+                    isSubmenuOpen && 'rotate-180'
+                  )}
+                />
               </button>
 
               {isSubmenuOpen && (
@@ -115,8 +120,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 href="/admin/chat"
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100",
-                  pathname === "/admin/chat" && "bg-gray-100",
+                  'flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100',
+                  pathname === '/admin/chat' && 'bg-gray-100'
                 )}
               >
                 <MessageSquare className="h-5 w-5 flex-shrink-0" />
@@ -129,8 +134,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 href="/admin/profile"
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100",
-                  pathname === "/admin/profile" && "bg-gray-100",
+                  'flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100',
+                  pathname === '/admin/profile' && 'bg-gray-100'
                 )}
               >
                 <User className="h-5 w-5 flex-shrink-0" />
@@ -143,8 +148,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 href="/admin/settings"
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100",
-                  pathname === "/admin/settings" && "bg-gray-100",
+                  'flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100',
+                  pathname === '/admin/settings' && 'bg-gray-100'
                 )}
               >
                 <Settings className="h-5 w-5 flex-shrink-0" />
@@ -220,5 +225,5 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </main>
       </div>
     </div>
-  )
+  );
 }

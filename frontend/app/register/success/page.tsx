@@ -1,5 +1,5 @@
-import Link from "next/link"
-import { CheckCircle } from "lucide-react"
+import Link from 'next/link';
+import { CheckCircle } from 'lucide-react';
 
 export default function RegisterSuccessPage() {
   return (
@@ -16,9 +16,12 @@ export default function RegisterSuccessPage() {
             </div>
           </div>
 
-          <h1 className="mb-2 text-xl font-bold text-gray-900 sm:text-2xl">Pendaftaran Berhasil!</h1>
+          <h1 className="mb-2 text-xl font-bold text-gray-900 sm:text-2xl">
+            Pendaftaran Berhasil!
+          </h1>
           <p className="mb-4 text-sm text-gray-600">
-            Akun Anda telah berhasil dibuat. Anda sekarang dapat masuk dan mulai menggunakan layanan Tukangin.
+            Akun Anda telah berhasil dibuat. Anda sekarang dapat masuk dan mulai menggunakan layanan
+            Tukangin.
           </p>
 
           <div className="space-y-2 sm:space-y-3">
@@ -36,12 +39,12 @@ export default function RegisterSuccessPage() {
               Kembali ke Beranda
             </Link>
           </div>
-          
+
           <div className="mt-4 text-center text-xs text-gray-500">
             <p>© {new Date().getFullYear()} Tukangin</p>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

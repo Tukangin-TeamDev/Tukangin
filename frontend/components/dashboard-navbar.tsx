@@ -1,20 +1,20 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Search, Bell, ShoppingBag, MessageSquare } from "lucide-react"
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Search, Bell, ShoppingBag, MessageSquare } from 'lucide-react';
 
 export function DashboardNavbar() {
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // Handle search functionality
-    console.log("Searching for:", searchQuery)
-  }
+    console.log('Searching for:', searchQuery);
+  };
 
   return (
     <div className="sticky top-0 z-50 px-4 py-3">
@@ -30,7 +30,9 @@ export function DashboardNavbar() {
                 height={48}
                 className="rounded-full"
               />
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">Tukangin</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
+                Tukangin
+              </span>
             </Link>
 
             {/* Navigation */}
@@ -61,10 +63,13 @@ export function DashboardNavbar() {
                 type="text"
                 placeholder="Apa yang anda cari"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="w-full py-2.5 px-5 pr-12 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
-              <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 p-1.5 rounded-full hover:bg-blue-700 transition-colors">
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 p-1.5 rounded-full hover:bg-blue-700 transition-colors"
+              >
                 <Search className="h-4 w-4 text-white" />
               </button>
             </form>
@@ -111,10 +116,13 @@ export function DashboardNavbar() {
                 type="text"
                 placeholder="Apa yang anda cari"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="w-full py-2.5 px-5 pr-12 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
-              <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 p-1.5 rounded-full hover:bg-blue-700 transition-colors">
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 p-1.5 rounded-full hover:bg-blue-700 transition-colors"
+              >
                 <Search className="h-4 w-4 text-white" />
               </button>
             </form>
@@ -122,5 +130,5 @@ export function DashboardNavbar() {
         </div>
       </header>
     </div>
-  )
+  );
 }

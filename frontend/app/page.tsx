@@ -1,9 +1,9 @@
-import Image from "next/image"
-import Link from "next/link"
-import { CheckCircle, Shield, Star, Zap, Home, MessageCircle, DollarSign } from "lucide-react"
-import { NavbarGuest } from "@/components/navbar-guest"
-import { Footer } from "@/components/footer"
-import { Search } from "lucide-react"
+import Image from 'next/image';
+import Link from 'next/link';
+import { CheckCircle, Shield, Star, Zap, Home, MessageCircle, DollarSign } from 'lucide-react';
+import { NavbarGuest } from '@/components/navbar-guest';
+import { Footer } from '@/components/footer';
+import { Search } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -21,8 +21,8 @@ export default function HomePage() {
                 <span className="text-blue-600">Aman, & Profesional</span>
               </h1>
               <p className="text-lg mb-8 max-w-lg">
-                Tukangin mempertemukan Anda dengan penyedia jasa profesional yang terverifikasi dan terpercaya dalam
-                satu platform yang aman.
+                Tukangin mempertemukan Anda dengan penyedia jasa profesional yang terverifikasi dan
+                terpercaya dalam satu platform yang aman.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
@@ -32,7 +32,10 @@ export default function HomePage() {
                   Cari Jasa Sekarang
                   <span className="text-lg">→</span>
                 </Link>
-                <Link href="#" className="px-6 py-3 border border-gray-300 rounded-md hover:bg-gray-50">
+                <Link
+                  href="#"
+                  className="px-6 py-3 border border-gray-300 rounded-md hover:bg-gray-50"
+                >
                   Jadi Penyedia Jasa
                 </Link>
               </div>
@@ -82,9 +85,14 @@ export default function HomePage() {
                   </div>
                 </div>
                 <h3 className="text-xl font-semibold text-center mb-2">Perbaikan Listrik</h3>
-                <p className="text-gray-600 text-center mb-6">Perbaikan instalasi listrik rumah dan kantor</p>
+                <p className="text-gray-600 text-center mb-6">
+                  Perbaikan instalasi listrik rumah dan kantor
+                </p>
                 <div className="flex justify-center">
-                  <Link href="#" className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                  <Link
+                    href="#"
+                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                  >
                     Lihat Detail
                   </Link>
                 </div>
@@ -119,7 +127,10 @@ export default function HomePage() {
                 <h3 className="text-xl font-semibold text-center mb-2">Servis AC</h3>
                 <p className="text-gray-600 text-center mb-6">Pemasangan dan perbaikan unit AC</p>
                 <div className="flex justify-center">
-                  <Link href="#" className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                  <Link
+                    href="#"
+                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                  >
                     Lihat Detail
                   </Link>
                 </div>
@@ -135,9 +146,14 @@ export default function HomePage() {
                   </div>
                 </div>
                 <h3 className="text-xl font-semibold text-center mb-2">Renovasi Rumah</h3>
-                <p className="text-gray-600 text-center mb-6">Renovasi dan perbaikan bagian rumah</p>
+                <p className="text-gray-600 text-center mb-6">
+                  Renovasi dan perbaikan bagian rumah
+                </p>
                 <div className="flex justify-center">
-                  <Link href="#" className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                  <Link
+                    href="#"
+                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                  >
                     Lihat Detail
                   </Link>
                 </div>
@@ -171,7 +187,10 @@ export default function HomePage() {
                 <h3 className="text-xl font-semibold text-center mb-2">Tukang Ledeng</h3>
                 <p className="text-gray-600 text-center mb-6">Perbaikan pipa dan sanitasi</p>
                 <div className="flex justify-center">
-                  <Link href="#" className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                  <Link
+                    href="#"
+                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                  >
                     Lihat Detail
                   </Link>
                 </div>
@@ -202,7 +221,8 @@ export default function HomePage() {
               </div>
               <h3 className="text-xl font-semibold text-center mt-4 mb-2">Cari & Pilih Jasa</h3>
               <p className="text-gray-600 text-center">
-                Temukan jasa yang anda butuhkan dari berbagai kategori dan pilih penyedia jasa terbaik
+                Temukan jasa yang anda butuhkan dari berbagai kategori dan pilih penyedia jasa
+                terbaik
               </p>
             </div>
 
@@ -244,9 +264,12 @@ export default function HomePage() {
       {/* Why Choose Us */}
       <section className="py-16">
         <div className="container mx-auto px-4 md:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-2">Mengapa memilih Tukangin?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-2">
+            Mengapa memilih Tukangin?
+          </h2>
           <p className="text-center text-gray-600 mb-12">
-            Tukangin hadir untuk memudahkan anda menemukan jasa tukang profesional dengan kualitas terjamin
+            Tukangin hadir untuk memudahkan anda menemukan jasa tukang profesional dengan kualitas
+            terjamin
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -271,7 +294,9 @@ export default function HomePage() {
                 </div>
               </div>
               <h3 className="text-xl font-semibold text-center mb-2">Garansi Layanan</h3>
-              <p className="text-gray-600 text-center">Kami berikan garansi untuk semua layanan yang anda pesan</p>
+              <p className="text-gray-600 text-center">
+                Kami berikan garansi untuk semua layanan yang anda pesan
+              </p>
             </div>
 
             {/* Reason 3 */}
@@ -282,7 +307,9 @@ export default function HomePage() {
                 </div>
               </div>
               <h3 className="text-xl font-semibold text-center mb-2">Rating & Ulasan</h3>
-              <p className="text-gray-600 text-center">Lihat penilaian dan ulasan dari pelanggan sebelumnya</p>
+              <p className="text-gray-600 text-center">
+                Lihat penilaian dan ulasan dari pelanggan sebelumnya
+              </p>
             </div>
           </div>
         </div>
@@ -293,14 +320,20 @@ export default function HomePage() {
         <div className="container mx-auto px-4 md:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Siap untuk memulai Tukangin?</h2>
           <p className="text-gray-700 mb-8 max-w-2xl mx-auto">
-            Daftar sekarang dan temukan tukang profesional untuk kebutuhan anda atau daftarkan jasa anda sebagai
-            penyedia layanan
+            Daftar sekarang dan temukan tukang profesional untuk kebutuhan anda atau daftarkan jasa
+            anda sebagai penyedia layanan
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="#" className="px-6 py-3 bg-[#00334d] text-white rounded-md hover:bg-[#00334d]/90 shadow-lg">
+            <Link
+              href="#"
+              className="px-6 py-3 bg-[#00334d] text-white rounded-md hover:bg-[#00334d]/90 shadow-lg"
+            >
               Daftar Sebagai Pelanggan
             </Link>
-            <Link href="#" className="px-6 py-3 bg-[#00b36d] text-white rounded-md hover:bg-[#00b36d]/90 shadow-lg">
+            <Link
+              href="#"
+              className="px-6 py-3 bg-[#00b36d] text-white rounded-md hover:bg-[#00b36d]/90 shadow-lg"
+            >
               Daftar Sebagai Penyedia
             </Link>
           </div>
@@ -309,5 +342,5 @@ export default function HomePage() {
 
       <Footer />
     </main>
-  )
+  );
 }

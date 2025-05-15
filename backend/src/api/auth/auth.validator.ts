@@ -64,7 +64,7 @@ export const changePasswordSchema = z
       .regex(/[0-9]/, { message: 'Password baru harus memiliki minimal 1 angka' }),
     confirmPassword: z.string().min(1, { message: 'Konfirmasi password harus diisi' }),
   })
-  .refine((data) => data.newPassword === data.confirmPassword, {
+  .refine(data => data.newPassword === data.confirmPassword, {
     message: 'Password baru dan konfirmasi password tidak sama',
     path: ['confirmPassword'],
-  }); 
+  });

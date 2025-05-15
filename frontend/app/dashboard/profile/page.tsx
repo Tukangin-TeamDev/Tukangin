@@ -1,17 +1,17 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import Image from "next/image"
-import { User, Mail, Phone, MapPin, Edit } from "lucide-react"
+import { useState } from 'react';
+import Image from 'next/image';
+import { User, Mail, Phone, MapPin, Edit } from 'lucide-react';
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState({
-    name: "Andi Wijaya",
-    email: "andi.wijaya@example.com",
-    phone: "+62 812-3456-7890",
-    address: "Jl. Sudirman No. 123, Jakarta Selatan",
-    bio: "Saya adalah profesional yang bekerja di bidang teknologi dan membutuhkan jasa perbaikan rumah yang berkualitas.",
-  })
+    name: 'Andi Wijaya',
+    email: 'andi.wijaya@example.com',
+    phone: '+62 812-3456-7890',
+    address: 'Jl. Sudirman No. 123, Jakarta Selatan',
+    bio: 'Saya adalah profesional yang bekerja di bidang teknologi dan membutuhkan jasa perbaikan rumah yang berkualitas.',
+  });
 
   const [preferences, setPreferences] = useState({
     emailNotifications: true,
@@ -19,14 +19,14 @@ export default function ProfilePage() {
     pushNotifications: true,
     publicProfile: true,
     showOnlineStatus: true,
-  })
+  });
 
   const togglePreference = (key: keyof typeof preferences) => {
     setPreferences({
       ...preferences,
       [key]: !preferences[key],
-    })
-  }
+    });
+  };
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -114,7 +114,7 @@ export default function ProfilePage() {
                     <input
                       type="checkbox"
                       checked={preferences.emailNotifications}
-                      onChange={() => togglePreference("emailNotifications")}
+                      onChange={() => togglePreference('emailNotifications')}
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -127,7 +127,7 @@ export default function ProfilePage() {
                     <input
                       type="checkbox"
                       checked={preferences.smsNotifications}
-                      onChange={() => togglePreference("smsNotifications")}
+                      onChange={() => togglePreference('smsNotifications')}
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -140,7 +140,7 @@ export default function ProfilePage() {
                     <input
                       type="checkbox"
                       checked={preferences.pushNotifications}
-                      onChange={() => togglePreference("pushNotifications")}
+                      onChange={() => togglePreference('pushNotifications')}
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -158,7 +158,7 @@ export default function ProfilePage() {
                     <input
                       type="checkbox"
                       checked={preferences.publicProfile}
-                      onChange={() => togglePreference("publicProfile")}
+                      onChange={() => togglePreference('publicProfile')}
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -171,7 +171,7 @@ export default function ProfilePage() {
                     <input
                       type="checkbox"
                       checked={preferences.showOnlineStatus}
-                      onChange={() => togglePreference("showOnlineStatus")}
+                      onChange={() => togglePreference('showOnlineStatus')}
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -183,5 +183,5 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

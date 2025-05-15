@@ -33,4 +33,4 @@ export const adapter = {
   parse: dateFns.parse,
 };
 
-export default adapter; 
+export default adapter;

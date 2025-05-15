@@ -16,23 +16,22 @@ async function testPgConnection(): Promise<void> {
   try {
     console.log('Mencoba terhubung ke database PostgreSQL via pg...');
     console.log(`URL database yang digunakan: ${process.env.DATABASE_URL?.substring(0, 25)}...`);
-    
+
     // Menjalankan query sederhana
     const result = await pool.query('SELECT NOW() as current_time');
-    
+
     console.log('Koneksi database berhasil!');
     console.log('Waktu server database:', result.rows[0].current_time);
-    
+
     // Mengambil daftar tabel
     const tableListResult = await pool.query(`
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public'
     `);
-    
+
     console.log('Daftar tabel di database:');
     console.log(tableListResult.rows);
-    
   } catch (error) {
     console.error('Gagal terhubung ke database:');
     console.error(error);
@@ -46,4 +45,4 @@ async function testPgConnection(): Promise<void> {
 // Jalankan pengujian
 testPgConnection()
   .then(() => console.log('Pengujian koneksi PostgreSQL selesai'))
-  .catch((error) => console.error('Error menjalankan pengujian:', error)); 
+  .catch(error => console.error('Error menjalankan pengujian:', error));
