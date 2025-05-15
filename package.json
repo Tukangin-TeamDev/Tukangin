@@ -4,31 +4,37 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "frontend_baru",
+      "frontend",
       "backend"
     ]
   },
   "scripts": {
-    "check:all": "npm run lint && cd backend && npx tsc --noEmit && cd ../frontend_baru && npm run build",
-    "fe:dev": "cd frontend_baru && npm run dev",
+    "check:all": "npm run lint && cd backend && npx tsc --noEmit && cd ../frontend && npm run build",
+    "fe:dev": "cd frontend && npm run dev",
     "be:dev": "cd backend && npm run dev",
-    "fe:build": "cd frontend_baru && npm run build",
+    "fe:build": "cd frontend && npm run build",
     "be:build": "cd backend && npm run build",
-    "fe:start": "cd frontend_baru && npm run start",
+    "fe:start": "cd frontend && npm run start",
     "be:start": "cd backend && npm run start",
     "lint": "npm run lint:fe && npm run lint:be",
-    "lint:fe": "cd frontend_baru && npm run lint",
+    "lint:fe": "cd frontend && npm run lint",
     "lint:be": "cd backend && npm run lint",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "fe:add": "npm install --workspace=frontend_baru",
+    "fe:add": "npm install --workspace=frontend",
     "be:add": "npm install --workspace=backend",
-    "fe:add:dev": "npm install --workspace=frontend_baru --save-dev",
+    "fe:add:dev": "npm install --workspace=frontend --save-dev",
     "be:add:dev": "npm install --workspace=backend --save-dev",
     "prepare": "husky",
     "postinstall": "npm run setup:husky",
-    "setup:husky": "husky install"
+    "setup:husky": "husky install",
+    "check": "node check-errors.js"
   },
   "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "chalk": "^4.1.2",
+    "eslint": "^9.26.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.0",
     "prettier": "^3.1.1"
