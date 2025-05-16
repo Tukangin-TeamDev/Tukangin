@@ -23,12 +23,12 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
   };
 
   return (
-    <div className="sticky top-0 z-50 px-4 py-3">
-      <header className="bg-white/80 backdrop-blur-md shadow-lg rounded-2xl py-4 px-6 mx-auto max-w-7xl">
+    <div className="sticky top-0 z-50 px-5 py-4">
+      <header className="bg-white/80 backdrop-blur-md shadow-lg rounded-2xl py-5 px-8 mx-auto max-w-7xl">
         <div className="container mx-auto">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between space-x-4">
             {/* Logo */}
-            <Link href="/home" className="flex items-center gap-2">
+            <Link href="/home" className="flex items-center gap-3">
               <Image
                 src="/placeholder.svg?height=48&width=48"
                 alt="Tukangin Logo"
@@ -36,35 +36,38 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
                 height={48}
                 className="rounded-full"
               />
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text pl-1">
                 Tukangin
               </span>
             </Link>
 
             {/* Navigation - Hidden on mobile */}
-            <nav className="hidden md:flex items-center gap-6">
+            <nav className="hidden md:flex items-center md:gap-8 lg:gap-12">
               <Link
                 href="/home"
-                className="text-gray-700 hover:text-blue-600 transition-colors border-b-2 border-blue-600 font-medium"
+                className="text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group"
               >
-                Home
+                <span className="relative z-10">Home</span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 scale-x-100 group-hover:scale-x-100 transition-transform duration-300"></span>
               </Link>
               <Link
                 href="/marketplace"
-                className="text-gray-700 hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-blue-600 font-medium"
+                className="text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group"
               >
-                Marketplace
+                <span className="relative z-10">Marketplace</span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
               </Link>
               <Link
                 href="/dashboard"
-                className="text-gray-700 hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-blue-600 font-medium"
+                className="text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group"
               >
-                Dashboard
+                <span className="relative z-10">Dashboard</span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
               </Link>
             </nav>
 
             {/* Search Bar */}
-            <form onSubmit={handleSearch} className="hidden md:flex relative flex-1 max-w-md mx-6">
+            <form onSubmit={handleSearch} className="hidden md:flex relative flex-1 max-w-md mx-8">
               <input
                 type="text"
                 placeholder="Apa yang anda cari"
@@ -81,8 +84,8 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
             </form>
 
             {/* User Profile & Notifications */}
-            <div className="flex items-center gap-4">
-              <div className="hidden md:flex items-center gap-4">
+            <div className="flex items-center gap-6">
+              <div className="hidden md:flex items-center gap-6">
                 <button className="relative p-2 text-gray-700 hover:text-blue-600 transition-colors">
                   <Bell className="h-6 w-6" />
                   <span className="absolute top-0 right-0 h-5 w-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center shadow-sm">
@@ -103,7 +106,7 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
                 </button>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <div className="relative">
                   <Image
                     src="/placeholder.svg?height=40&width=40"
@@ -147,23 +150,26 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
             </form>
 
             {/* Mobile Navigation */}
-            <nav className="mt-4 flex flex-col gap-2 bg-gray-50 rounded-xl p-3">
+            <nav className="mt-4 flex flex-col gap-3 bg-gray-50 rounded-xl p-4">
               <Link
                 href="/home"
-                className="text-gray-700 hover:text-blue-600 transition-colors py-2 px-3 rounded-lg hover:bg-white"
+                className="text-gray-700 hover:text-blue-600 transition-all py-3 px-4 rounded-lg hover:bg-white flex items-center font-medium"
               >
+                <span className="w-1 h-5 bg-blue-600 rounded mr-2"></span>
                 Home
               </Link>
               <Link
                 href="/marketplace"
-                className="text-gray-700 hover:text-blue-600 transition-colors py-2 px-3 rounded-lg hover:bg-white"
+                className="text-gray-700 hover:text-blue-600 transition-all py-3 px-4 rounded-lg hover:bg-white flex items-center font-medium group"
               >
+                <span className="w-0 group-hover:w-1 h-5 bg-blue-600 rounded mr-0 group-hover:mr-2 transition-all duration-300"></span>
                 Marketplace
               </Link>
               <Link
                 href="/dashboard"
-                className="text-gray-700 hover:text-blue-600 transition-colors py-2 px-3 rounded-lg hover:bg-white"
+                className="text-gray-700 hover:text-blue-600 transition-all py-3 px-4 rounded-lg hover:bg-white flex items-center font-medium group"
               >
+                <span className="w-0 group-hover:w-1 h-5 bg-blue-600 rounded mr-0 group-hover:mr-2 transition-all duration-300"></span>
                 Dashboard
               </Link>
 
