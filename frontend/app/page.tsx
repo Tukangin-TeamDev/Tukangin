@@ -210,12 +210,23 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
-            <div className="bg-white rounded-lg p-6 shadow-sm relative">
-              <div className="flex justify-center mb-6">
-                <div className="p-4 rounded-full bg-blue-100">
-                  <Search className="w-8 h-8 text-blue-600" />
+            <div className="bg-white rounded-lg p-6 shadow-sm relative overflow-hidden">
+              <div className="flex flex-col items-center">
+                {/* Badge positioned relative to icon container */}
+                <div className="relative mb-8">
+                  <div className="p-4 rounded-full bg-blue-100">
+                    <Search className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm">
+                    Langkah 1
+                  </div>
                 </div>
+                <h3 className="text-xl font-semibold text-center mb-3">Cari & Pilih Jasa</h3>
+                <p className="text-gray-600 text-center">
+                  Temukan jasa yang anda butuhkan dari berbagai kategori dan pilih penyedia jasa terbaik
+                </p>
               </div>
+<<<<<<< HEAD:frontend/app/page.tsx
               <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
                 Langkah 1
               </div>
@@ -224,38 +235,46 @@ export default function HomePage() {
                 Temukan jasa yang anda butuhkan dari berbagai kategori dan pilih penyedia jasa
                 terbaik
               </p>
+=======
+>>>>>>> 712e7fd (card style improve):frontend_baru/app/page.tsx
             </div>
 
             {/* Step 2 */}
-            <div className="bg-white rounded-lg p-6 shadow-sm relative">
-              <div className="flex justify-center mb-6">
-                <div className="p-4 rounded-full bg-blue-100">
-                  <MessageCircle className="w-8 h-8 text-blue-600" />
+            <div className="bg-white rounded-lg p-6 shadow-sm relative overflow-hidden">
+              <div className="flex flex-col items-center">
+                {/* Badge positioned relative to icon container */}
+                <div className="relative mb-8">
+                  <div className="p-4 rounded-full bg-blue-100">
+                    <MessageCircle className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm">
+                    Langkah 2
+                  </div>
                 </div>
+                <h3 className="text-xl font-semibold text-center mb-3">Diskusi & Pesan</h3>
+                <p className="text-gray-600 text-center">
+                  Diskusikan detail pekerjaan dengan penyedia jasa dan lakukan pemesanan
+                </p>
               </div>
-              <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
-                Langkah 2
-              </div>
-              <h3 className="text-xl font-semibold text-center mt-4 mb-2">Diskusi & Pesan</h3>
-              <p className="text-gray-600 text-center">
-                Diskusikan detail pekerjaan dengan penyedia jasa dan lakukan pemesanan
-              </p>
             </div>
 
             {/* Step 3 */}
-            <div className="bg-white rounded-lg p-6 shadow-sm relative">
-              <div className="flex justify-center mb-6">
-                <div className="p-4 rounded-full bg-blue-100">
-                  <DollarSign className="w-8 h-8 text-blue-600" />
+            <div className="bg-white rounded-lg p-6 shadow-sm relative overflow-hidden">
+              <div className="flex flex-col items-center">
+                {/* Badge positioned relative to icon container */}
+                <div className="relative mb-8">
+                  <div className="p-4 rounded-full bg-blue-100">
+                    <DollarSign className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm">
+                    Langkah 3
+                  </div>
                 </div>
+                <h3 className="text-xl font-semibold text-center mb-3">Bayar & Terima Jasa</h3>
+                <p className="text-gray-600 text-center">
+                  Lakukan pembayaran aman melalui website dan terima jasa sesuai kesepakatan
+                </p>
               </div>
-              <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
-                Langkah 3
-              </div>
-              <h3 className="text-xl font-semibold text-center mt-4 mb-2">Bayar & Terima Jasa</h3>
-              <p className="text-gray-600 text-center">
-                Lakukan pembayaran aman melalui website dan terima jasa sesuai kesepakatan
-              </p>
             </div>
           </div>
         </div>
