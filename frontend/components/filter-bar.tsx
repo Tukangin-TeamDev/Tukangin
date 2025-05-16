@@ -205,9 +205,9 @@ export function FilterBar({ filters = [], onFilterChange, onCategoryChange }: Fi
     }
   };
 
-  const applyPreset = (preset: typeof filterPresets[0]) => {
+  const applyPreset = (preset: (typeof filterPresets)[0]) => {
     let updatedFilters = [...activeFilters];
-    
+
     // Remove existing filters that conflict with the preset
     if (preset.filters.category) {
       updatedFilters = updatedFilters.filter(f => f.type !== 'category');
@@ -223,19 +223,19 @@ export function FilterBar({ filters = [], onFilterChange, onCategoryChange }: Fi
         if (onCategoryChange) onCategoryChange('all');
       }
     }
-    
+
     if (preset.filters.location) {
       updatedFilters = updatedFilters.filter(f => f.type !== 'location');
       updatedFilters.push({ type: 'location', value: preset.filters.location });
       setSelectedLocation(preset.filters.location);
     }
-    
+
     if (preset.filters.rating !== undefined) {
       updatedFilters = updatedFilters.filter(f => f.type !== 'rating');
       updatedFilters.push({ type: 'rating', value: `${preset.filters.rating}+` });
       setMinRating(preset.filters.rating);
     }
-    
+
     if (preset.filters.priceMax) {
       updatedFilters = updatedFilters.filter(f => f.type !== 'price');
       const formattedPrice = `Rp0 - Rp${preset.filters.priceMax.toLocaleString()}`;
@@ -275,7 +275,7 @@ export function FilterBar({ filters = [], onFilterChange, onCategoryChange }: Fi
           </div>
           <h2 className="text-lg font-semibold text-gray-900">Filter Pencarian</h2>
         </div>
-        
+
         {/* Quick filter presets */}
         <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
           {filterPresets.map((preset, index) => (
@@ -286,13 +286,15 @@ export function FilterBar({ filters = [], onFilterChange, onCategoryChange }: Fi
             >
               {preset.name === 'Termurah' && <span className="text-green-500 text-xs">Rp</span>}
               {preset.name === 'Terdekat' && <MapPin className="h-3 w-3 text-blue-500" />}
-              {preset.name === 'Rating Tertinggi' && <Star className="h-3 w-3 text-yellow-500 fill-yellow-400" />}
+              {preset.name === 'Rating Tertinggi' && (
+                <Star className="h-3 w-3 text-yellow-500 fill-yellow-400" />
+              )}
               {preset.name === 'Tersedia Sekarang' && <Clock className="h-3 w-3 text-purple-500" />}
               {preset.name}
             </button>
           ))}
         </div>
-        
+
         <button
           onClick={() => setShowFilters(!showFilters)}
           className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition-colors whitespace-nowrap"
@@ -323,24 +325,26 @@ export function FilterBar({ filters = [], onFilterChange, onCategoryChange }: Fi
               exit={{ opacity: 0, scale: 0.8 }}
               className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
             >
-              {filter.type === 'category' && <span className="w-2 h-2 rounded-full bg-green-500 mr-1"></span>}
+              {filter.type === 'category' && (
+                <span className="w-2 h-2 rounded-full bg-green-500 mr-1"></span>
+              )}
               {filter.type === 'location' && <MapPin className="h-3 w-3 text-blue-600 mr-1" />}
               {filter.type === 'price' && <span className="text-green-600 text-xs mr-1">Rp</span>}
-              
+
               {filter.value}
               {filter.type === 'rating' && (
                 <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
               )}
-              <button 
-                onClick={() => removeFilter(filter)} 
+              <button
+                onClick={() => removeFilter(filter)}
                 className="ml-1 rounded-full hover:bg-blue-200 p-0.5 transition-colors"
               >
                 <X className="h-3 w-3" />
               </button>
             </motion.div>
           ))}
-          <button 
-            onClick={resetFilters} 
+          <button
+            onClick={resetFilters}
             className="text-sm text-red-500 hover:text-red-600 ml-1 px-2 py-0.5 hover:bg-red-50 rounded-md transition-colors"
           >
             Reset
@@ -452,9 +456,7 @@ export function FilterBar({ filters = [], onFilterChange, onCategoryChange }: Fi
                       className="mb-2"
                     />
                     <div className="flex justify-between items-center">
-                      <div className="flex gap-1">
-                        {renderStars(minRating)}
-                      </div>
+                      <div className="flex gap-1">{renderStars(minRating)}</div>
                       <div className="flex items-center gap-1 bg-yellow-50 border border-yellow-200 rounded-md px-3 py-1.5">
                         <span className="text-lg font-semibold text-yellow-600">{minRating}</span>
                         <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />

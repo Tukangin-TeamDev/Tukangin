@@ -223,7 +223,8 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-xl font-semibold text-center mb-3">Cari & Pilih Jasa</h3>
                 <p className="text-gray-600 text-center">
-                  Temukan jasa yang anda butuhkan dari berbagai kategori dan pilih penyedia jasa terbaik
+                  Temukan jasa yang anda butuhkan dari berbagai kategori dan pilih penyedia jasa
+                  terbaik
                 </p>
               </div>
             </div>
