@@ -226,17 +226,6 @@ export default function HomePage() {
                   Temukan jasa yang anda butuhkan dari berbagai kategori dan pilih penyedia jasa terbaik
                 </p>
               </div>
-<<<<<<< HEAD:frontend/app/page.tsx
-              <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
-                Langkah 1
-              </div>
-              <h3 className="text-xl font-semibold text-center mt-4 mb-2">Cari & Pilih Jasa</h3>
-              <p className="text-gray-600 text-center">
-                Temukan jasa yang anda butuhkan dari berbagai kategori dan pilih penyedia jasa
-                terbaik
-              </p>
-=======
->>>>>>> 712e7fd (card style improve):frontend_baru/app/page.tsx
             </div>
 
             {/* Step 2 */}
