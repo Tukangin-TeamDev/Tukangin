@@ -257,7 +257,9 @@ export default function ChatPage() {
                   className="rounded-full"
                 />
                 <div>
-                  <h3 className="text-base font-medium">{contacts.find(c => c.id === activeChat)?.name}</h3>
+                  <h3 className="text-base font-medium">
+                    {contacts.find(c => c.id === activeChat)?.name}
+                  </h3>
                   <p className="text-xs text-green-600">
                     {contacts.find(c => c.id === activeChat)?.status === 'online'
                       ? 'Online'
