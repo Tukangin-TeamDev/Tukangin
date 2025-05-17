@@ -65,10 +65,10 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
               </Link>
             </nav>
-            
+
             {/* Spacer to push search and user profile to right */}
             <div className="flex-1"></div>
-            
+
             {/* Search Bar - Right aligned */}
             <form onSubmit={handleSearch} className="hidden md:flex relative w-48 lg:w-56 xl:w-64">
               <input
