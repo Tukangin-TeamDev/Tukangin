@@ -510,7 +510,9 @@ export default function MarketplacePage() {
                       alt={service.title}
                       width={344}
                       height={192}
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                      style={{ objectFit: 'cover', objectPosition: 'center' }}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </div>
                   <div
