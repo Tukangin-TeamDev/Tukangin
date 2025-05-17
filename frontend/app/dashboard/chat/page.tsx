@@ -224,8 +224,8 @@ export default function ChatPage() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex justify-between">
-                    <h3 className="font-medium truncate">{contact.name}</h3>
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-sm font-medium truncate">{contact.name}</h3>
                     <span className="text-xs text-gray-500">{contact.time}</span>
                   </div>
                   <p className="text-sm text-gray-500 truncate">{contact.lastMessage}</p>
@@ -257,8 +257,8 @@ export default function ChatPage() {
                   className="rounded-full"
                 />
                 <div>
-                  <h3 className="font-medium">{contacts.find(c => c.id === activeChat)?.name}</h3>
-                  <p className="text-sm text-green-600">
+                  <h3 className="text-base font-medium">{contacts.find(c => c.id === activeChat)?.name}</h3>
+                  <p className="text-xs text-green-600">
                     {contacts.find(c => c.id === activeChat)?.status === 'online'
                       ? 'Online'
                       : 'Offline'}
