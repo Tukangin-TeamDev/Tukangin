@@ -26,7 +26,7 @@ const nextConfig = {
   },
   
   // Skip TypeScript type checking
-  swcMinify: true
+  
 }
 
 export default nextConfig
