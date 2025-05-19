@@ -212,16 +212,15 @@ export default function HomePage() {
             {/* Step 1 */}
             <div className="bg-white rounded-lg p-6 shadow-sm relative overflow-hidden">
               <div className="flex flex-col items-center">
-                {/* Badge positioned relative to icon container */}
-                <div className="relative mb-8">
-                  <div className="p-4 rounded-full bg-blue-100">
+                <div className="flex flex-col items-center mb-3">
+                  <div className="p-3 rounded-full bg-blue-100 mb-1.5">
                     <Search className="w-8 h-8 text-blue-600" />
                   </div>
-                  <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm">
+                  <div className="bg-blue-600 text-white text-xs px-4 py-1 rounded-full shadow-sm font-medium">
                     Langkah 1
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-center mb-3">Cari & Pilih Jasa</h3>
+                <h3 className="text-xl font-semibold text-center mb-2">Cari & Pilih Jasa</h3>
                 <p className="text-gray-600 text-center">
                   Temukan jasa yang anda butuhkan dari berbagai kategori dan pilih penyedia jasa
                   terbaik
@@ -232,16 +231,15 @@ export default function HomePage() {
             {/* Step 2 */}
             <div className="bg-white rounded-lg p-6 shadow-sm relative overflow-hidden">
               <div className="flex flex-col items-center">
-                {/* Badge positioned relative to icon container */}
-                <div className="relative mb-8">
-                  <div className="p-4 rounded-full bg-blue-100">
+                <div className="flex flex-col items-center mb-3">
+                  <div className="p-3 rounded-full bg-blue-100 mb-1.5">
                     <MessageCircle className="w-8 h-8 text-blue-600" />
                   </div>
-                  <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm">
+                  <div className="bg-blue-600 text-white text-xs px-4 py-1 rounded-full shadow-sm font-medium">
                     Langkah 2
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-center mb-3">Diskusi & Pesan</h3>
+                <h3 className="text-xl font-semibold text-center mb-2">Diskusi & Pesan</h3>
                 <p className="text-gray-600 text-center">
                   Diskusikan detail pekerjaan dengan penyedia jasa dan lakukan pemesanan
                 </p>
@@ -251,16 +249,15 @@ export default function HomePage() {
             {/* Step 3 */}
             <div className="bg-white rounded-lg p-6 shadow-sm relative overflow-hidden">
               <div className="flex flex-col items-center">
-                {/* Badge positioned relative to icon container */}
-                <div className="relative mb-8">
-                  <div className="p-4 rounded-full bg-blue-100">
+                <div className="flex flex-col items-center mb-3">
+                  <div className="p-3 rounded-full bg-blue-100 mb-1.5">
                     <DollarSign className="w-8 h-8 text-blue-600" />
                   </div>
-                  <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm">
+                  <div className="bg-blue-600 text-white text-xs px-4 py-1 rounded-full shadow-sm font-medium">
                     Langkah 3
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-center mb-3">Bayar & Terima Jasa</h3>
+                <h3 className="text-xl font-semibold text-center mb-2">Bayar & Terima Jasa</h3>
                 <p className="text-gray-600 text-center">
                   Lakukan pembayaran aman melalui website dan terima jasa sesuai kesepakatan
                 </p>
