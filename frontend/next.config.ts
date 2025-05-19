@@ -26,7 +26,7 @@ const nextConfig = {
       allowedOrigins: ['localhost:3000', '127.0.0.1:3000'],
     },
     staticIndicator: true, // Indikator halaman statis di dev
-    typedRoutes: true,     // Dukungan link statis bertipe (Next.js 15+)
+    typedRoutes: true, // Dukungan link statis bertipe (Next.js 15+)
     reactCompiler: true, // Aktifkan jika ingin coba React Compiler (experimental)
   },
 
@@ -43,6 +43,6 @@ const nextConfig = {
   //     },
   //   ]
   // },
-}
+};
 
-export default nextConfig
+export default nextConfig;
