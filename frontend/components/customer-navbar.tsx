@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Search, Bell, ShoppingBag, MessageSquare, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { usePathname } from 'next/navigation';
 
 interface CustomerNavbarProps {
   userName: string;
@@ -15,6 +16,7 @@ interface CustomerNavbarProps {
 export function CustomerNavbar({ userName }: CustomerNavbarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,9 +28,9 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
     <div className="sticky top-0 z-50 px-4 sm:px-5 py-3 sm:py-4">
       <header className="bg-white/80 backdrop-blur-md shadow-lg rounded-2xl py-3 px-4 sm:py-4 sm:px-6 mx-auto max-w-7xl">
         <div className="container mx-auto">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center">
             {/* Logo */}
-            <Link href="/home" className="flex items-center gap-2 flex-shrink-0">
+            <Link href="/home" className="flex items-center gap-2 flex-shrink-0 mr-5 md:mr-8">
               <Image
                 src="/placeholder.svg?height=48&width=48"
                 alt="Tukangin Logo"
@@ -42,35 +44,44 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
             </Link>
 
             {/* Navigation - Hidden on mobile */}
-            <nav className="hidden md:flex items-center justify-center space-x-1 lg:space-x-2">
+            <nav className="hidden md:flex items-center flex-1 justify-center space-x-2 lg:space-x-6">
               <Link
                 href="/home"
-                className="text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap"
+                className={`text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap ${
+                  pathname === '/home' ? 'text-blue-600' : ''
+                }`}
               >
                 <span className="relative z-10">Home</span>
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 scale-x-100 group-hover:scale-x-100 transition-transform duration-300"></span>
+                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
+                  pathname === '/home' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                }`}></span>
               </Link>
               <Link
                 href="/marketplace"
-                className="text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap"
+                className={`text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap ${
+                  pathname === '/marketplace' ? 'text-blue-600' : ''
+                }`}
               >
                 <span className="relative z-10">Marketplace</span>
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
+                  pathname === '/marketplace' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                }`}></span>
               </Link>
               <Link
                 href="/dashboard"
-                className="text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap"
+                className={`text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap ${
+                  pathname === '/dashboard' ? 'text-blue-600' : ''
+                }`}
               >
                 <span className="relative z-10">Dashboard</span>
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
+                  pathname === '/dashboard' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                }`}></span>
               </Link>
             </nav>
 
-            {/* Spacer to push search and user profile to right */}
-            <div className="flex-1"></div>
-
             {/* Search Bar - Right aligned */}
-            <form onSubmit={handleSearch} className="hidden md:flex relative w-48 lg:w-56 xl:w-64">
+            <form onSubmit={handleSearch} className="hidden md:flex relative w-48 lg:w-56 xl:w-64 ml-auto">
               <input
                 type="text"
                 placeholder="Apa yang anda cari"
@@ -87,7 +98,7 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
             </form>
 
             {/* User Profile & Notifications */}
-            <div className="flex items-center gap-3 lg:gap-4">
+            <div className="flex items-center gap-3 lg:gap-4 ml-4">
               <div className="hidden md:flex items-center gap-1.5 lg:gap-3">
                 <button className="relative p-1.5 text-gray-700 hover:text-blue-600 transition-colors">
                   <Bell className="h-5 w-5" />
@@ -156,23 +167,29 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
             <nav className="mt-4 flex flex-col gap-3 bg-gray-50 rounded-xl p-4">
               <Link
                 href="/home"
-                className="text-gray-700 hover:text-blue-600 transition-all py-3 px-4 rounded-lg hover:bg-white flex items-center font-medium"
+                className={`text-gray-700 hover:text-blue-600 transition-all py-3 px-4 rounded-lg hover:bg-white flex items-center font-medium ${
+                  pathname === '/home' ? 'text-blue-600 bg-white' : ''
+                }`}
               >
-                <span className="w-1 h-5 bg-blue-600 rounded mr-2"></span>
+                <span className={`${pathname === '/home' ? 'w-1' : 'w-0 group-hover:w-1'} h-5 bg-blue-600 rounded ${pathname === '/home' ? 'mr-2' : 'mr-0 group-hover:mr-2'} transition-all duration-300`}></span>
                 Home
               </Link>
               <Link
                 href="/marketplace"
-                className="text-gray-700 hover:text-blue-600 transition-all py-3 px-4 rounded-lg hover:bg-white flex items-center font-medium group"
+                className={`text-gray-700 hover:text-blue-600 transition-all py-3 px-4 rounded-lg hover:bg-white flex items-center font-medium group ${
+                  pathname === '/marketplace' ? 'text-blue-600 bg-white' : ''
+                }`}
               >
-                <span className="w-0 group-hover:w-1 h-5 bg-blue-600 rounded mr-0 group-hover:mr-2 transition-all duration-300"></span>
+                <span className={`${pathname === '/marketplace' ? 'w-1' : 'w-0 group-hover:w-1'} h-5 bg-blue-600 rounded ${pathname === '/marketplace' ? 'mr-2' : 'mr-0 group-hover:mr-2'} transition-all duration-300`}></span>
                 Marketplace
               </Link>
               <Link
                 href="/dashboard"
-                className="text-gray-700 hover:text-blue-600 transition-all py-3 px-4 rounded-lg hover:bg-white flex items-center font-medium group"
+                className={`text-gray-700 hover:text-blue-600 transition-all py-3 px-4 rounded-lg hover:bg-white flex items-center font-medium group ${
+                  pathname === '/dashboard' ? 'text-blue-600 bg-white' : ''
+                }`}
               >
-                <span className="w-0 group-hover:w-1 h-5 bg-blue-600 rounded mr-0 group-hover:mr-2 transition-all duration-300"></span>
+                <span className={`${pathname === '/dashboard' ? 'w-1' : 'w-0 group-hover:w-1'} h-5 bg-blue-600 rounded ${pathname === '/dashboard' ? 'mr-2' : 'mr-0 group-hover:mr-2'} transition-all duration-300`}></span>
                 Dashboard
               </Link>
 

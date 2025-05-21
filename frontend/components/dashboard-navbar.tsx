@@ -6,9 +6,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search, Bell, ShoppingBag, MessageSquare } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export function DashboardNavbar() {
   const [searchQuery, setSearchQuery] = useState('');
+  const pathname = usePathname();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,19 +41,31 @@ export function DashboardNavbar() {
             <nav className="hidden md:flex items-center gap-6">
               <Link
                 href="/dashboard"
-                className="text-gray-700 hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-blue-600 font-medium"
+                className={`text-gray-700 hover:text-blue-600 transition-colors border-b-2 font-medium ${
+                  pathname === '/dashboard' 
+                    ? 'border-blue-600 text-blue-600' 
+                    : 'border-transparent hover:border-blue-600'
+                }`}
               >
                 Home
               </Link>
               <Link
                 href="/marketplace"
-                className="text-gray-700 hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-blue-600 font-medium"
+                className={`text-gray-700 hover:text-blue-600 transition-colors border-b-2 font-medium ${
+                  pathname === '/marketplace' 
+                    ? 'border-blue-600 text-blue-600' 
+                    : 'border-transparent hover:border-blue-600'
+                }`}
               >
                 Marketplace
               </Link>
               <Link
                 href="/dashboard/orders"
-                className="text-gray-700 hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-blue-600 font-medium"
+                className={`text-gray-700 hover:text-blue-600 transition-colors border-b-2 font-medium ${
+                  pathname === '/dashboard/orders' 
+                    ? 'border-blue-600 text-blue-600' 
+                    : 'border-transparent hover:border-blue-600'
+                }`}
               >
                 Dashboard
               </Link>
