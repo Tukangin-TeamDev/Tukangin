@@ -25,12 +25,11 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['localhost:3000', '127.0.0.1:3000'],
     },
-    staticIndicator: true, // Indikator halaman statis di dev
     typedRoutes: true, // Dukungan link statis bertipe (Next.js 15+)
     reactCompiler: true, // Aktifkan jika ingin coba React Compiler (experimental)
   },
 
-  swcMinify: true, // Build lebih cepat
+   // Build lebih cepat
 
   // Tambahan: jika ingin custom headers/rewrites/redirects
   // async headers() {

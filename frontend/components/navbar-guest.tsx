@@ -1,15 +1,19 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export function NavbarGuest() {
+  const pathname = usePathname();
   return (
     <div className="sticky top-0 z-50 px-4 py-3">
       <header className="bg-white/80 backdrop-blur-md shadow-lg rounded-2xl py-4 px-6 mx-auto max-w-7xl">
         <div className="container mx-auto">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2 flex-shrink-0 mr-5 md:mr-8">
               <Image
                 src="/placeholder.svg?height=48&width=48"
                 alt="Tukangin Logo"
@@ -23,24 +27,31 @@ export function NavbarGuest() {
             </Link>
 
             {/* Navigation - Hidden on mobile */}
-            <nav className="hidden md:flex items-center gap-6">
+            <nav className="hidden md:flex items-center flex-1 justify-center space-x-2 lg:space-x-6">
               <Link
                 href="#"
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                className={`text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap ${
+                  pathname === '/' ? 'text-blue-600' : ''
+                }`}
               >
-                Layanan
+                <span className="relative z-10">Layanan</span>
+                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
+                  pathname === '/' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                }`}></span>
               </Link>
               <Link
                 href="#"
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                className={`text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap`}
               >
-                Cara Kerja
+                <span className="relative z-10">Cara Kerja</span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 scale-x-0 group-hover:scale-x-100"></span>
               </Link>
               <Link
                 href="#"
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                className={`text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap`}
               >
-                Tentang Kami
+                <span className="relative z-10">Tentang Kami</span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 scale-x-0 group-hover:scale-x-100"></span>
               </Link>
             </nav>
 
