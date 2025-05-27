@@ -42,8 +42,8 @@ export function DashboardNavbar() {
               <Link
                 href="/dashboard"
                 className={`text-gray-700 hover:text-blue-600 transition-colors border-b-2 font-medium ${
-                  pathname === '/dashboard' 
-                    ? 'border-blue-600 text-blue-600' 
+                  pathname === '/dashboard'
+                    ? 'border-blue-600 text-blue-600'
                     : 'border-transparent hover:border-blue-600'
                 }`}
               >
@@ -52,8 +52,8 @@ export function DashboardNavbar() {
               <Link
                 href="/marketplace"
                 className={`text-gray-700 hover:text-blue-600 transition-colors border-b-2 font-medium ${
-                  pathname === '/marketplace' 
-                    ? 'border-blue-600 text-blue-600' 
+                  pathname === '/marketplace'
+                    ? 'border-blue-600 text-blue-600'
                     : 'border-transparent hover:border-blue-600'
                 }`}
               >
@@ -62,8 +62,8 @@ export function DashboardNavbar() {
               <Link
                 href="/dashboard/orders"
                 className={`text-gray-700 hover:text-blue-600 transition-colors border-b-2 font-medium ${
-                  pathname === '/dashboard/orders' 
-                    ? 'border-blue-600 text-blue-600' 
+                  pathname === '/dashboard/orders'
+                    ? 'border-blue-600 text-blue-600'
                     : 'border-transparent hover:border-blue-600'
                 }`}
               >

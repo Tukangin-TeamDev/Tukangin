@@ -29,7 +29,7 @@ const nextConfig = {
     reactCompiler: true, // Aktifkan jika ingin coba React Compiler (experimental)
   },
 
-   // Build lebih cepat
+  // Build lebih cepat
 
   // Tambahan: jika ingin custom headers/rewrites/redirects
   // async headers() {

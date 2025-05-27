@@ -18,24 +18,24 @@ export const prismaErrorHandler = (
         return res.status(409).json({
           status: 'error',
           message: 'Data sudah ada (unique constraint violation)',
-          fields: error.meta?.target || []
+          fields: error.meta?.target || [],
         });
       case 'P2025': // Record not found
         return res.status(404).json({
           status: 'error',
-          message: 'Data tidak ditemukan'
+          message: 'Data tidak ditemukan',
         });
       case 'P2003': // Foreign key constraint failed
         return res.status(409).json({
           status: 'error',
-          message: 'Data terkait tidak ditemukan (foreign key constraint failed)'
+          message: 'Data terkait tidak ditemukan (foreign key constraint failed)',
         });
       default:
         console.error('Prisma error:', error);
         return res.status(500).json({
           status: 'error',
           message: 'Database error',
-          code: error.code
+          code: error.code,
         });
     }
   } else if (error instanceof Prisma.PrismaClientValidationError) {
@@ -43,7 +43,7 @@ export const prismaErrorHandler = (
     return res.status(400).json({
       status: 'error',
       message: 'Validasi data gagal',
-      error: error.message
+      error: error.message,
     });
   } else if (error instanceof AppError) {
     // Gunakan error handler umum untuk AppError
@@ -51,4 +51,4 @@ export const prismaErrorHandler = (
   }
 
   next(error);
-}; 
+};

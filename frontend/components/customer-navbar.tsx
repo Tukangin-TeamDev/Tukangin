@@ -52,9 +52,11 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
                 }`}
               >
                 <span className="relative z-10">Home</span>
-                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
-                  pathname === '/home' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
-                }`}></span>
+                <span
+                  className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
+                    pathname === '/home' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                  }`}
+                ></span>
               </Link>
               <Link
                 href="/marketplace"
@@ -63,9 +65,13 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
                 }`}
               >
                 <span className="relative z-10">Marketplace</span>
-                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
-                  pathname === '/marketplace' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
-                }`}></span>
+                <span
+                  className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
+                    pathname === '/marketplace'
+                      ? 'scale-x-100'
+                      : 'scale-x-0 group-hover:scale-x-100'
+                  }`}
+                ></span>
               </Link>
               <Link
                 href="/dashboard"
@@ -74,14 +80,19 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
                 }`}
               >
                 <span className="relative z-10">Dashboard</span>
-                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
-                  pathname === '/dashboard' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
-                }`}></span>
+                <span
+                  className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
+                    pathname === '/dashboard' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                  }`}
+                ></span>
               </Link>
             </nav>
 
             {/* Search Bar - Right aligned */}
-            <form onSubmit={handleSearch} className="hidden md:flex relative w-48 lg:w-56 xl:w-64 ml-auto">
+            <form
+              onSubmit={handleSearch}
+              className="hidden md:flex relative w-48 lg:w-56 xl:w-64 ml-auto"
+            >
               <input
                 type="text"
                 placeholder="Apa yang anda cari"
@@ -171,7 +182,9 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
                   pathname === '/home' ? 'text-blue-600 bg-white' : ''
                 }`}
               >
-                <span className={`${pathname === '/home' ? 'w-1' : 'w-0 group-hover:w-1'} h-5 bg-blue-600 rounded ${pathname === '/home' ? 'mr-2' : 'mr-0 group-hover:mr-2'} transition-all duration-300`}></span>
+                <span
+                  className={`${pathname === '/home' ? 'w-1' : 'w-0 group-hover:w-1'} h-5 bg-blue-600 rounded ${pathname === '/home' ? 'mr-2' : 'mr-0 group-hover:mr-2'} transition-all duration-300`}
+                ></span>
                 Home
               </Link>
               <Link
@@ -180,7 +193,9 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
                   pathname === '/marketplace' ? 'text-blue-600 bg-white' : ''
                 }`}
               >
-                <span className={`${pathname === '/marketplace' ? 'w-1' : 'w-0 group-hover:w-1'} h-5 bg-blue-600 rounded ${pathname === '/marketplace' ? 'mr-2' : 'mr-0 group-hover:mr-2'} transition-all duration-300`}></span>
+                <span
+                  className={`${pathname === '/marketplace' ? 'w-1' : 'w-0 group-hover:w-1'} h-5 bg-blue-600 rounded ${pathname === '/marketplace' ? 'mr-2' : 'mr-0 group-hover:mr-2'} transition-all duration-300`}
+                ></span>
                 Marketplace
               </Link>
               <Link
@@ -189,7 +204,9 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
                   pathname === '/dashboard' ? 'text-blue-600 bg-white' : ''
                 }`}
               >
-                <span className={`${pathname === '/dashboard' ? 'w-1' : 'w-0 group-hover:w-1'} h-5 bg-blue-600 rounded ${pathname === '/dashboard' ? 'mr-2' : 'mr-0 group-hover:mr-2'} transition-all duration-300`}></span>
+                <span
+                  className={`${pathname === '/dashboard' ? 'w-1' : 'w-0 group-hover:w-1'} h-5 bg-blue-600 rounded ${pathname === '/dashboard' ? 'mr-2' : 'mr-0 group-hover:mr-2'} transition-all duration-300`}
+                ></span>
                 Dashboard
               </Link>
 

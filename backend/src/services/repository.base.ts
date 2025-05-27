@@ -40,7 +40,7 @@ export abstract class BaseRepository<T> {
     try {
       return await this.model.findUnique({
         where: { id },
-        ...options
+        ...options,
       });
     } catch (error) {
       throw new AppError(`Error mendapatkan ${this.model} dengan id ${id}: ${error}`, 500);
@@ -54,7 +54,7 @@ export abstract class BaseRepository<T> {
     try {
       return await this.model.findFirst({
         where,
-        ...options
+        ...options,
       });
     } catch (error) {
       throw new AppError(`Error mencari ${this.model}: ${error}`, 500);
@@ -67,7 +67,7 @@ export abstract class BaseRepository<T> {
   async create(data: any): Promise<T> {
     try {
       return await this.model.create({
-        data
+        data,
       });
     } catch (error) {
       throw new AppError(`Error membuat ${this.model}: ${error}`, 500);
@@ -81,7 +81,7 @@ export abstract class BaseRepository<T> {
     try {
       return await this.model.update({
         where: { id },
-        data
+        data,
       });
     } catch (error) {
       throw new AppError(`Error mengupdate ${this.model} dengan id ${id}: ${error}`, 500);
@@ -94,7 +94,7 @@ export abstract class BaseRepository<T> {
   async delete(id: string): Promise<T> {
     try {
       return await this.model.delete({
-        where: { id }
+        where: { id },
       });
     } catch (error) {
       throw new AppError(`Error menghapus ${this.model} dengan id ${id}: ${error}`, 500);
@@ -108,4 +108,4 @@ export abstract class BaseRepository<T> {
   async transaction<R>(operations: (tx: any) => Promise<R>): Promise<R> {
     return prisma.$transaction(operations);
   }
-} 
+}

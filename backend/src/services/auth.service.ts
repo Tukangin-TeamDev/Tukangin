@@ -15,7 +15,12 @@ const googleClient = new OAuth2Client(
 );
 
 export class AuthService {
-  async register(email: string, password: string, fullName: string, role: string): Promise<RegisterResponse> {
+  async register(
+    email: string,
+    password: string,
+    fullName: string,
+    role: string
+  ): Promise<RegisterResponse> {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       throw new Error('Email already registered');
@@ -33,10 +38,10 @@ export class AuthService {
         profile: {
           create: {
             fullName,
-            phone: 'not-set' // Default value untuk memenuhi required field
-          }
-        }
-      }
+            phone: 'not-set', // Default value untuk memenuhi required field
+          },
+        },
+      },
     });
 
     // TODO: Send verification email
@@ -44,9 +49,9 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<LoginResponse> {
-    const user = await prisma.user.findUnique({ 
+    const user = await prisma.user.findUnique({
       where: { email },
-      include: { profile: true }
+      include: { profile: true },
     });
 
     if (!user || !user.passwordHash) {
@@ -79,7 +84,7 @@ export class AuthService {
 
     await prisma.user.update({
       where: { id: user.id },
-      data: { emailVerified: true, verificationToken: null }
+      data: { emailVerified: true, verificationToken: null },
     });
 
     return true;
@@ -94,7 +99,7 @@ export class AuthService {
     const resetToken = crypto.randomBytes(32).toString('hex');
     await prisma.user.update({
       where: { id: user.id },
-      data: { resetPasswordToken: resetToken }
+      data: { resetPasswordToken: resetToken },
     });
 
     // TODO: Send reset password email
@@ -102,8 +107,8 @@ export class AuthService {
   }
 
   async resetPassword(token: string, newPassword: string): Promise<boolean> {
-    const user = await prisma.user.findFirst({ 
-      where: { resetPasswordToken: token } 
+    const user = await prisma.user.findFirst({
+      where: { resetPasswordToken: token },
     });
 
     if (!user) {
@@ -113,10 +118,10 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(newPassword, 10);
     await prisma.user.update({
       where: { id: user.id },
-      data: { 
+      data: {
         passwordHash,
-        resetPasswordToken: null
-      }
+        resetPasswordToken: null,
+      },
     });
 
     return true;
@@ -126,10 +131,10 @@ export class AuthService {
     const secret = authenticator.generateSecret();
     await prisma.user.update({
       where: { id: userId },
-      data: { 
+      data: {
         twoFactorSecret: secret,
-        twoFactorEnabled: false
-      }
+        twoFactorEnabled: false,
+      },
     });
 
     return secret;
@@ -141,9 +146,9 @@ export class AuthService {
       throw new Error('2FA not set up');
     }
 
-    const isValid = authenticator.verify({ 
-      token, 
-      secret: user.twoFactorSecret 
+    const isValid = authenticator.verify({
+      token,
+      secret: user.twoFactorSecret,
     });
 
     if (!isValid) {
@@ -153,7 +158,7 @@ export class AuthService {
     if (!user.twoFactorEnabled) {
       await prisma.user.update({
         where: { id: userId },
-        data: { twoFactorEnabled: true }
+        data: { twoFactorEnabled: true },
       });
     }
 
@@ -164,7 +169,7 @@ export class AuthService {
     try {
       const ticket = await googleClient.verifyIdToken({
         idToken,
-        audience: process.env.GOOGLE_CLIENT_ID
+        audience: process.env.GOOGLE_CLIENT_ID,
       });
 
       const payload = ticket.getPayload();
@@ -173,7 +178,7 @@ export class AuthService {
       }
 
       let user = await prisma.user.findUnique({
-        where: { email: payload.email }
+        where: { email: payload.email },
       });
 
       if (!user) {
@@ -187,10 +192,10 @@ export class AuthService {
             profile: {
               create: {
                 fullName: payload.name || 'Google User',
-                phone: 'not-set'
-              }
-            }
-          }
+                phone: 'not-set',
+              },
+            },
+          },
         });
       } else if (user.loginType !== LoginType.google) {
         throw new Error('Email already registered with different method');
@@ -215,33 +220,29 @@ export class AuthService {
 
     await prisma.user.update({
       where: { id: userId },
-      data: updates
+      data: updates,
     });
   }
 
   private async resetFailedAttempts(userId: string): Promise<void> {
     await prisma.user.update({
       where: { id: userId },
-      data: { 
+      data: {
         failedLoginAttempts: 0,
-        lockedUntil: null
-      }
+        lockedUntil: null,
+      },
     });
   }
 
   private generateTokens(user: User): LoginResponse {
-    const accessToken = jwt.sign(
-      { id: user.id },
-      authConfig.jwtSecret,
-      { expiresIn: authConfig.jwtExpiration }
-    );
+    const accessToken = jwt.sign({ id: user.id }, authConfig.jwtSecret, {
+      expiresIn: authConfig.jwtExpiration,
+    });
 
-    const refreshToken = jwt.sign(
-      { id: user.id },
-      authConfig.jwtSecret,
-      { expiresIn: authConfig.jwtRefreshExpiration }
-    );
+    const refreshToken = jwt.sign({ id: user.id }, authConfig.jwtSecret, {
+      expiresIn: authConfig.jwtRefreshExpiration,
+    });
 
     return { accessToken, refreshToken };
   }
-} 
+}

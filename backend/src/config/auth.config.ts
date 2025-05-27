@@ -4,9 +4,10 @@ export const authConfig = {
   jwtRefreshExpiration: 7 * 24 * 60 * 60, // 7 days
   googleClientId: process.env.GOOGLE_CLIENT_ID,
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:5000/api/auth/google/callback',
+  googleCallbackUrl:
+    process.env.GOOGLE_CALLBACK_URL || 'http://localhost:5000/api/auth/google/callback',
   maxLoginAttempts: 5,
   lockoutDuration: 15 * 60 * 1000, // 15 minutes
   emailVerificationExpiry: 24 * 60 * 60 * 1000, // 24 hours
   resetPasswordExpiry: 1 * 60 * 60 * 1000, // 1 hour
-}; 
+};

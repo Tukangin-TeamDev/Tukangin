@@ -5,6 +5,7 @@
 Bayangkan platform ini seperti sebuah pasar tradisional digital. Di satu sisi ada customer yang butuh tukang, di sisi lain ada tukang yang siap bekerja. Platform kita berperan sebagai "penghubung" yang mempertemukan mereka dengan aman dan mudah.
 
 ### Komponen Utama Sistem
+
 ```
 ┌─────────────────────────────────────────┐
 │            USER (Browser)               │
@@ -27,15 +28,19 @@ Arsitektur ini menggunakan pola client-server yang sederhana namun powerful. Fro
 ## 2. TECH STACK LENGKAP DAN ALASANNYA
 
 ### Frontend: Next.js dengan TypeScript
+
 Next.js dipilih karena memberikan keunggulan SSR (Server-Side Rendering) yang membuat website kita loading lebih cepat dan SEO-friendly. TypeScript memastikan code kita lebih aman dengan type checking yang mencegah bug umum. TailwindCSS v4 memberikan styling yang konsisten dan mudah di-maintain.
 
-### Backend: Express.js dengan TypeScript  
+### Backend: Express.js dengan TypeScript
+
 Express.js adalah framework Node.js yang paling populer dan mudah dipelajari. Dengan TypeScript, kita mendapat keuntungan type safety yang sama seperti di frontend, membuat development lebih smooth dan error-free.
 
 ### Database: PostgreSQL dengan Supabase + Prisma
+
 Supabase memberikan managed PostgreSQL dengan fitur authentication dan real-time features built-in. Prisma ORM memberikan type-safe database access yang sangat membantu dalam development. Kombinasi ini sangat powerful namun tetap mudah digunakan.
 
 ### DevOps: Docker + GitLab CI/CD
+
 Docker memastikan aplikasi kita berjalan konsisten di environment manapun. GitLab CI/CD mengotomatisasi testing dan deployment, membuat project terlihat lebih profesional.
 
 ## 3. STRUKTUR PROJECT YANG RAPI
@@ -92,11 +97,13 @@ tukangin-platform/
 ```
 
 ### Mengapa Struktur Ini?
+
 Struktur ini memisahkan frontend dan backend dengan jelas, memudahkan development dan maintenance. Setiap folder memiliki purpose yang spesifik, membuat code lebih organized dan mudah ditemukan.
 
 ## 4. DATABASE SCHEMA SEDERHANA TAPI LENGKAP
 
 ### Schema Prisma untuk Core Entities
+
 ```prisma
 // prisma/schema.prisma
 
@@ -114,13 +121,13 @@ model User {
   isVerified    Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  
+
   // Relations
   customerJobs  Job[]    @relation("CustomerJobs")
   tukangJobs    Job[]    @relation("TukangJobs")
   tukangProfile TukangProfile?
   reviews       Review[]
-  
+
   @@map("users")
 }
 
@@ -136,10 +143,10 @@ model TukangProfile {
   rating          Float    @default(0)
   totalJobs       Int      @default(0)
   verificationDoc String?
-  
+
   // Relations
   user            User     @relation(fields: [userId], references: [id])
-  
+
   @@map("tukang_profiles")
 }
 
@@ -156,22 +163,22 @@ model Job {
   urgency     Urgency   @default(NORMAL)
   status      JobStatus @default(OPEN)
   scheduledAt DateTime?
-  
+
   // Relations
   customerId  String
   customer    User      @relation("CustomerJobs", fields: [customerId], references: [id])
   tukangId    String?
   tukang      User?     @relation("TukangJobs", fields: [tukangId], references: [id])
-  
+
   // Timestamps
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   completedAt DateTime?
-  
+
   // Additional relations
   reviews     Review[]
   payments    Payment[]
-  
+
   @@map("jobs")
 }
 
@@ -184,14 +191,14 @@ model Payment {
   status          PaymentStatus @default(PENDING)
   paymentMethod   String?
   transactionId   String?       @unique
-  
+
   // Relations
   job             Job           @relation(fields: [jobId], references: [id])
-  
+
   // Timestamps
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
-  
+
   @@map("payments")
 }
 
@@ -202,11 +209,11 @@ model Review {
   rating    Int      // 1-5
   comment   String?
   createdAt DateTime @default(now())
-  
+
   // Relations
   job       Job      @relation(fields: [jobId], references: [id])
   reviewer  User     @relation(fields: [reviewerId], references: [id])
-  
+
   @@map("reviews")
 }
 
@@ -253,6 +260,7 @@ Schema ini dirancang sederhana namun mencakup semua aspek penting dari business 
 ## 5. API DESIGN YANG MUDAH DIPAHAMI
 
 ### RESTful API Endpoints
+
 ```typescript
 // backend/src/routes/jobs.ts
 import express from 'express';
@@ -265,7 +273,7 @@ const prisma = new PrismaClient();
 router.get('/', async (req, res) => {
   try {
     const { category, city, status } = req.query;
-    
+
     const jobs = await prisma.job.findMany({
       where: {
         ...(category && { category: category as JobCategory }),
@@ -274,12 +282,12 @@ router.get('/', async (req, res) => {
       },
       include: {
         customer: {
-          select: { name: true, avatar: true, rating: true }
-        }
+          select: { name: true, avatar: true, rating: true },
+        },
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
-    
+
     res.json({ success: true, data: jobs });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to fetch jobs' });
@@ -290,17 +298,17 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const jobData = req.body;
-    
+
     const newJob = await prisma.job.create({
       data: {
         ...jobData,
-        customerId: req.user.id // dari authentication middleware
+        customerId: req.user.id, // dari authentication middleware
       },
       include: {
-        customer: true
-      }
+        customer: true,
+      },
     });
-    
+
     res.status(201).json({ success: true, data: newJob });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to create job' });
@@ -315,6 +323,7 @@ API design mengikuti RESTful conventions yang standard dan mudah dipahami. Setia
 ## 6. FRONTEND COMPONENT STRUCTURE
 
 ### Contoh Component dengan TypeScript
+
 ```typescript
 // frontend/src/components/jobs/JobCard.tsx
 import React from 'react';
@@ -393,6 +402,7 @@ Component ini menunjukkan penggunaan TypeScript yang proper dengan interface def
 ## 7. DOCKER SETUP UNTUK DEVELOPMENT
 
 ### Docker Configuration
+
 ```dockerfile
 # docker/Dockerfile.frontend
 FROM node:18-alpine
@@ -453,7 +463,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile.frontend
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:5000
     depends_on:
@@ -464,7 +474,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile.backend
     ports:
-      - "5000:5000"
+      - '5000:5000'
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
@@ -478,7 +488,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -491,6 +501,7 @@ Docker setup ini memungkinkan seluruh tim development memiliki environment yang 
 ## 8. GITLAB CI/CD PIPELINE
 
 ### GitLab CI Configuration
+
 ```yaml
 # .gitlab-ci.yml
 stages:
@@ -500,7 +511,7 @@ stages:
 
 variables:
   DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_TLS_CERTDIR: '/certs'
 
 # Test stage
 test:
@@ -561,6 +572,7 @@ Pipeline ini mengotomatisasi testing, building, dan deployment process, membuat 
 ## 9. WORKFLOW DEVELOPMENT LENGKAP
 
 ### Step 1: Initial Setup (Hari 1-2)
+
 ```bash
 # Clone dan setup project
 git clone <repository-url>
@@ -582,6 +594,7 @@ npx prisma db seed
 ```
 
 ### Step 2: Development Process (Hari 3-14)
+
 ```bash
 # Start development servers
 docker-compose up -d
@@ -597,6 +610,7 @@ npx prisma generate
 ```
 
 ### Step 3: Testing dan Quality Assurance (Hari 12-14)
+
 ```bash
 # Backend testing
 cd backend
@@ -611,6 +625,7 @@ npm run type-check
 ```
 
 ### Step 4: Deployment Process (Hari 15)
+
 ```bash
 # Commit dan push ke GitLab
 git add .
@@ -629,51 +644,43 @@ Workflow ini dirancang untuk tim kecil dengan timeline project kuliah yang reali
 ## 10. MONITORING DAN MAINTENANCE SEDERHANA
 
 ### Basic Logging Setup
+
 ```typescript
 // backend/src/utils/logger.ts
 import winston from 'winston';
 
 export const logger = winston.createLogger({
   level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
+  format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
   transports: [
     new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
     new winston.transports.File({ filename: 'logs/combined.log' }),
     new winston.transports.Console({
-      format: winston.format.simple()
-    })
-  ]
+      format: winston.format.simple(),
+    }),
+  ],
 });
 ```
 
 ### Error Handling Middleware
+
 ```typescript
 // backend/src/middleware/errorHandler.ts
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger';
 
-export const errorHandler = (
-  error: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
   logger.error('API Error:', {
     message: error.message,
     stack: error.stack,
     url: req.url,
     method: req.method,
-    ip: req.ip
+    ip: req.ip,
   });
 
   res.status(500).json({
     success: false,
-    error: process.env.NODE_ENV === 'production' 
-      ? 'Internal server error' 
-      : error.message
+    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message,
   });
 };
 ```

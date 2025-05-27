@@ -13,29 +13,26 @@ export class StorageService {
   }
 
   async uploadFile(file: Buffer, fileName: string): Promise<string> {
-    const { data, error } = await this.supabase
-      .storage
+    const { data, error } = await this.supabase.storage
       .from(this.bucket)
       .upload(`documents/${fileName}`, file, {
         contentType: 'application/octet-stream',
-        upsert: true
+        upsert: true,
       });
 
     if (error) {
       throw new Error(`Upload failed: ${error.message}`);
     }
 
-    const { data: { publicUrl } } = this.supabase
-      .storage
-      .from(this.bucket)
-      .getPublicUrl(`documents/${fileName}`);
+    const {
+      data: { publicUrl },
+    } = this.supabase.storage.from(this.bucket).getPublicUrl(`documents/${fileName}`);
 
     return publicUrl;
   }
 
   async deleteFile(fileName: string): Promise<void> {
-    const { error } = await this.supabase
-      .storage
+    const { error } = await this.supabase.storage
       .from(this.bucket)
       .remove([`documents/${fileName}`]);
 
@@ -43,4 +40,4 @@ export class StorageService {
       throw new Error(`Delete failed: ${error.message}`);
     }
   }
-} 
+}

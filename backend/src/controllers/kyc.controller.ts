@@ -40,7 +40,7 @@ export class KYCController {
   async getProviderDocuments(req: AuthRequest, res: Response) {
     try {
       const providerId = req.params.providerId || req.user?.id;
-      
+
       if (!providerId) {
         return res.status(401).json({ message: 'Unauthorized' });
       }
@@ -60,4 +60,4 @@ export class KYCController {
       res.status(400).json({ message: error.message });
     }
   }
-} 
+}

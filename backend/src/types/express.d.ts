@@ -7,7 +7,7 @@ declare global {
         id: string;
         role: Role;
         emailVerified: boolean;
-      }
+      };
     }
   }
-} 
+}

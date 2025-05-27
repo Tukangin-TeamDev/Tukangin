@@ -17,7 +17,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
     const decoded = jwt.verify(token, authConfig.jwtSecret) as { id: string };
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
-      select: { id: true, role: true, emailVerified: true }
+      select: { id: true, role: true, emailVerified: true },
     });
 
     if (!user) {
@@ -31,9 +31,9 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
     req.user = {
       id: user.id,
       role: user.role,
-      emailVerified: user.emailVerified
+      emailVerified: user.emailVerified,
     } as AuthUser;
-    
+
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Invalid token' });
@@ -61,14 +61,14 @@ export const rateLimiter = (maxAttempts: number, windowMs: number) => {
     const ip = req.ip;
     const now = Date.now();
     const userAttempts = attempts.get(ip) || [];
-    
+
     // Clean old attempts
     const validAttempts = userAttempts.filter((timestamp: number) => now - timestamp < windowMs);
-    
+
     if (validAttempts.length >= maxAttempts) {
-      return res.status(429).json({ 
+      return res.status(429).json({
         message: 'Too many attempts. Please try again later.',
-        nextValidRequest: new Date(validAttempts[0] + windowMs)
+        nextValidRequest: new Date(validAttempts[0] + windowMs),
       });
     }
 
@@ -76,4 +76,4 @@ export const rateLimiter = (maxAttempts: number, windowMs: number) => {
     attempts.set(ip, validAttempts);
     next();
   };
-}; 
+};

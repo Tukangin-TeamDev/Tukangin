@@ -17,7 +17,7 @@ export class UserRepository extends BaseRepository<User> {
   async findByEmail(email: string): Promise<User | null> {
     try {
       return await prisma.user.findUnique({
-        where: { email }
+        where: { email },
       });
     } catch (error) {
       throw this.handleError('Error mencari user berdasarkan email', error);
@@ -27,13 +27,13 @@ export class UserRepository extends BaseRepository<User> {
   /**
    * Mengambil user dengan profil
    */
-  async findByIdWithProfile(id: string): Promise<User & { profile: any } | null> {
+  async findByIdWithProfile(id: string): Promise<(User & { profile: any }) | null> {
     try {
       return await prisma.user.findUnique({
         where: { id },
         include: {
-          profile: true
-        }
+          profile: true,
+        },
       });
     } catch (error) {
       throw this.handleError('Error mencari user dengan profil', error);
@@ -44,18 +44,18 @@ export class UserRepository extends BaseRepository<User> {
    * Membuat user baru beserta profil dalam satu transaksi
    */
   async createWithProfile(
-    userData: Prisma.UserCreateInput, 
+    userData: Prisma.UserCreateInput,
     profileData: Prisma.UserProfileCreateWithoutUserInput
   ): Promise<User> {
     try {
-      return await prisma.$transaction(async (tx) => {
+      return await prisma.$transaction(async tx => {
         const user = await tx.user.create({
           data: {
             ...userData,
             profile: {
-              create: profileData
-            }
-          }
+              create: profileData,
+            },
+          },
         });
         return user;
       });
@@ -71,4 +71,4 @@ export class UserRepository extends BaseRepository<User> {
     console.error(`${message}: `, error);
     return new AppError(`${message}: ${error.message}`, 500);
   }
-} 
+}

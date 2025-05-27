@@ -19,7 +19,12 @@ export class AuthServiceWithRepository {
   /**
    * Registrasi pengguna baru
    */
-  async register(email: string, password: string, fullName: string, role: string): Promise<RegisterResponse> {
+  async register(
+    email: string,
+    password: string,
+    fullName: string,
+    role: string
+  ): Promise<RegisterResponse> {
     // Cek apakah email sudah digunakan
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
@@ -28,7 +33,7 @@ export class AuthServiceWithRepository {
 
     // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
-    
+
     // Generate token verifikasi
     const verificationToken = this.generateRandomToken();
 
@@ -39,19 +44,19 @@ export class AuthServiceWithRepository {
         passwordHash,
         role: role as Role,
         verificationToken,
-        emailVerified: false
+        emailVerified: false,
       },
       {
         fullName,
-        phone: 'not-set'
+        phone: 'not-set',
       }
     );
 
     // TODO: Kirim email verifikasi
-    
-    return { 
-      userId: user.id, 
-      verificationToken 
+
+    return {
+      userId: user.id,
+      verificationToken,
     };
   }
 
@@ -84,15 +89,16 @@ export class AuthServiceWithRepository {
 
     // Reset failed login attempts
     await this.resetFailedAttempts(user.id);
-    
+
     // Generate tokens
     return this.generateTokens(user);
   }
 
   // Metode private untuk keperluan internal service
   private generateRandomToken(): string {
-    return Math.random().toString(36).substring(2, 15) + 
-           Math.random().toString(36).substring(2, 15);
+    return (
+      Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    );
   }
 
   private async handleFailedLogin(userId: string): Promise<void> {
@@ -104,18 +110,14 @@ export class AuthServiceWithRepository {
   }
 
   private generateTokens(user: User): LoginResponse {
-    const accessToken = jwt.sign(
-      { id: user.id },
-      authConfig.jwtSecret,
-      { expiresIn: authConfig.jwtExpiration }
-    );
+    const accessToken = jwt.sign({ id: user.id }, authConfig.jwtSecret, {
+      expiresIn: authConfig.jwtExpiration,
+    });
 
-    const refreshToken = jwt.sign(
-      { id: user.id },
-      authConfig.jwtSecret,
-      { expiresIn: authConfig.jwtRefreshExpiration }
-    );
+    const refreshToken = jwt.sign({ id: user.id }, authConfig.jwtSecret, {
+      expiresIn: authConfig.jwtRefreshExpiration,
+    });
 
     return { accessToken, refreshToken };
   }
-} 
+}

@@ -1,4 +1,17 @@
-import { Role, DocumentType, KYCStatus, LoginType, ServiceType, ServiceStatus, OrderStatus, EscrowStatus, TransactionType, WalletTxType, Gender, RequestStatus } from '@prisma/client';
+import {
+  Role,
+  DocumentType,
+  KYCStatus,
+  LoginType,
+  ServiceType,
+  ServiceStatus,
+  OrderStatus,
+  EscrowStatus,
+  TransactionType,
+  WalletTxType,
+  Gender,
+  RequestStatus,
+} from '@prisma/client';
 import { Request } from 'express';
 
 // Re-export semua enum dari Prisma untuk memudahkan import
@@ -14,7 +27,7 @@ export {
   TransactionType,
   WalletTxType,
   Gender,
-  RequestStatus
+  RequestStatus,
 };
 
 // Enum tambahan yang tidak ada di Prisma Client
@@ -22,7 +35,7 @@ export enum Unit {
   hour = 'hour',
   project = 'project',
   unit = 'unit',
-  custom = 'custom'
+  custom = 'custom',
 }
 
 // Tipe untuk user yang terautentikasi
@@ -90,7 +103,7 @@ export class AppError extends Error {
     super(message);
     this.statusCode = statusCode;
     this.isOperational = true;
-    
+
     Error.captureStackTrace(this, this.constructor);
   }
-} 
+}

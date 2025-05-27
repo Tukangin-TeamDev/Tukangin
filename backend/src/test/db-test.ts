@@ -9,7 +9,9 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 if (!process.env.DATABASE_URL) {
   console.error('ERROR: DATABASE_URL tidak ditemukan di file .env');
   console.error('Pastikan .env file berisi konfigurasi yang benar:');
-  console.error('DATABASE_URL="postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres?pgbouncer=true"');
+  console.error(
+    'DATABASE_URL="postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres?pgbouncer=true"'
+  );
   process.exit(1);
 }
 
@@ -17,7 +19,9 @@ if (!process.env.DIRECT_URL) {
   console.warn('PERINGATAN: DIRECT_URL tidak ditemukan di file .env');
   console.warn('DIRECT_URL diperlukan untuk migrasi database dengan Prisma');
   console.warn('Sebaiknya tambahkan DIRECT_URL ke file .env dengan format:');
-  console.warn('DIRECT_URL="postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres"');
+  console.warn(
+    'DIRECT_URL="postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres"'
+  );
 }
 
 console.log('Mencoba koneksi ke database Supabase...');
@@ -47,7 +51,7 @@ async function main() {
       WHERE table_schema = 'public'
     `;
     console.log(`\nJumlah tabel di database: ${tableCount[0].count}`);
-    
+
     // Mencoba mencek schema Prisma vs database aktual
     console.log('\nMemeriksa model-model Prisma yang tersedia:');
     const dmmf = (prisma as any)._baseDmmf;
@@ -57,7 +61,7 @@ async function main() {
         console.log(`- ${model.name}`);
       });
     }
-    
+
     console.log('\nKoneksi siap digunakan untuk aplikasi ✨');
   } catch (error) {
     console.error('\n❌ KONEKSI DATABASE GAGAL');
@@ -69,15 +73,19 @@ async function main() {
     console.error('3. Database tidak aktif atau sedang maintenance');
     console.error('4. Masalah jaringan atau firewall');
     console.error('5. Untuk Supabase dengan pgBouncer, pastikan URL berisi ?pgbouncer=true');
-    
+
     console.error('\nLangkah troubleshooting:');
     console.error('- Periksa kembali DATABASE_URL dan DIRECT_URL di file .env');
-    console.error('- Pastikan IP address diizinkan di Supabase (Settings > Database > Connection Pooling)');
+    console.error(
+      '- Pastikan IP address diizinkan di Supabase (Settings > Database > Connection Pooling)'
+    );
     console.error('- Cek status Supabase di dashboard project');
-    console.error('- Pastikan format URL untuk connection pooling sudah benar (lihat Supabase dashboard)');
+    console.error(
+      '- Pastikan format URL untuk connection pooling sudah benar (lihat Supabase dashboard)'
+    );
   } finally {
     await prisma.$disconnect();
   }
 }
 
-main(); 
+main();

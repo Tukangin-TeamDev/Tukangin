@@ -15,10 +15,12 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+  })
+);
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
@@ -34,8 +36,8 @@ app.get('/', (req, res) => {
 
 // Error handlers - order matters!
 app.use(prismaErrorHandler); // Prisma errors first
-app.use(errorHandler);       // Generic errors last
+app.use(errorHandler); // Generic errors last
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-}); 
+});

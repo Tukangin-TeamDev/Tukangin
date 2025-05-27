@@ -86,11 +86,11 @@ export class AuthController {
     try {
       const { userId, token } = req.body;
       const result = await authService.verify2FA(userId, token);
-      
+
       if (!result.accessToken || !result.refreshToken) {
         throw new Error('Invalid token data');
       }
-      
+
       this.setTokenCookies(res, result.accessToken, result.refreshToken);
       res.json({ message: '2FA verification successful' });
     } catch (error: any) {
@@ -98,7 +98,12 @@ export class AuthController {
     }
   }
 
-  async handleGoogleCallback(accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) {
+  async handleGoogleCallback(
+    accessToken: string,
+    refreshToken: string,
+    profile: Profile,
+    done: VerifyCallback
+  ) {
     try {
       const email = profile.emails?.[0]?.value;
       if (!email) {
@@ -115,7 +120,7 @@ export class AuthController {
   async googleCallback(req: Request, res: Response) {
     try {
       const result = req.user as { accessToken: string; refreshToken: string };
-      
+
       this.setTokenCookies(res, result.accessToken, result.refreshToken);
       res.redirect(process.env.FRONTEND_URL + '/login/success');
     } catch (error: any) {
@@ -128,14 +133,14 @@ export class AuthController {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: authConfig.jwtExpiration * 1000
+      maxAge: authConfig.jwtExpiration * 1000,
     });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: authConfig.jwtRefreshExpiration * 1000
+      maxAge: authConfig.jwtRefreshExpiration * 1000,
     });
   }
-} 
+}
