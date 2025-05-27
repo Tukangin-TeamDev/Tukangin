@@ -1,0 +1,111 @@
+Phase 0 – Desain Data & Kontrak (Sekali Saja)
+1.	ERD & schema.prisma
+o	Definisikan semua entitas, relasi, enum, properti (nullable, default).
+o	Simpan di schema.prisma.
+2.	Generate TS Types & Zod Schemas
+o	npx prisma generate + prisma-zod-generator → satu file schema.ts (Zod + TS types).
+o	Ini jadi “master” tipe/data.
+________________________________________
+Phase 1 – Inisiasi Infrastruktur & CI
+1.	Monorepo / Multi-repo Setup
+o	Backend: Express + TS + Prisma
+o	Frontend: Next.js + React + Tailwind + TS
+o	Schema di backend 
+2.	Tooling & Config
+o	TS strict mode, ESLint/Prettier, path alias
+o	CI pipeline:
+Step 1: prisma generate  
+Step 2: build backend  
+Step 3: build frontend  
+Step 4: lint & test  
+3.	Skeleton Code
+o	BE: Express app, middleware (JSON, CORS, Helmet, rate-limit), error handler, audit log.
+o	FE: Next.js config, Tailwind, global providers.
+
+Phase 2 – Infrastruktur Auth & Core Services
+Siapkan fitur dasar yang menjadi prasyarat banyak flow:
+1.	User Authentication & Security
+o	Registrasi & Login (JWT + HTTP-only cookies)
+o	Google OAuth
+o	Email Verification & Forgot Password
+o	Refresh Token & Account Lockout
+o	Two-Factor Authentication
+2.	Provider Onboarding & KYC
+o	Upload & verifikasi dokumen (KTP/SIM/Passport)
+o	Status verifikasi (Pending → Approved → Rejected)
+ 
+Phase 3 – Iterasi Feature Driven (MVP → v1.0)
+Urutkan berdasarkan dependency (schema sudah ada) dan value tertinggi:
+1.	Service Management
+o	CRUD layanan (FIXED vs CONSULT), Zod schema, API routes, React hooks, UI listing.
+2.	Fixed-Price Order Flow
+o	Cart per provider, scheduling, checkout → escrow initiation.
+o	Order lifecycle enum & pages/hooks.
+3.	Consultative Order Flow
+o	Chat konsultasi + form kebutuhan + upload media.
+o	Survei lapangan (opsional) → provider offer → customer approval → escrow.
+4.	Payments & Escrow Enhancements
+o	Idempotency key, retry logic, structured enum status.
+o	Komisi & fee otomatis.
+5.	Real-Time Chat & Notifications
+o	WebSocket (atau polling) chat, E2E encryption optional.
+o	Multi-channel notifications (email, SMS, FCM).
+6.	Review & Reputation System
+o	Gated review (hanya setelah COMPLETED/PAID).
+o	Admin moderation UI + aggregate rating caching.
+7.	Dashboards per Role
+o	Admin: user/provider management, dispute resolution, audit log viewer.
+o	Provider: order management, financial summary.
+o	Customer: order history, status tracking, review interface.
+8.	Security & Validation Cross-Cutting
+o	Zod for all request/response.
+o	Centralized error handling, audit-log middleware.
+o	Rate limiter, Helmet, CORS, input/output sanitization.
+
+Phase 4 – Testing & Quality Gates
+•	CI Job: jika schema.ts berubah tapi tidak ada route/hook yang mem-parsing schema baru → fail.
+•	Code Review Checklist:
+o	Pastikan langkah lengkap.
+o	Tidak ada import ganda atau definisi tipe lokal.
+o	Semua perubahan di-commit terpisah (one feature → one PR).
+
+
+
+
+Phase 5 – Release & Iterasi
+1.	Staging Deploy
+o	Build & deploy BE/FE, jalankan smoke tests.
+2.	Production Release
+o	Monitor Zod parse errors di logs—menandakan ada schema mismatch.
+3.	Feature Toggle
+o	Gunakan feature flag untuk meluncurkan fitur tanpa deploy ulang seluruh aplikasi.
+ 
+Phase	Langkah / Fitur	Status
+0 – Desain Data & Kontrak	Finalisasi ERD & schema.prisma	🔲
+	prisma migrate dev & prisma generate + Zod schemas	🔲
+1 – Setup & Infrastruktur	Inisialisasi repo & konfigurasi TS/ESLint/Prettier	🔲
+	CI pipeline (generate → build BE → build FE → lint → test)	🔲
+	Skeleton Express (middleware, error handler, audit-log)	🔲
+	Skeleton Next.js + Tailwind + global providers	🔲
+2 – Core Auth & Onboarding	Registrasi/Login JWT + HTTP-only cookies	🔲
+	Google OAuth	🔲
+	Email verification & forgot-password flow	🔲
+	Refresh token & account lockout	🔲
+	Two-Factor Authentication	🔲
+	Provider KYC (upload dokumen, status verifikasi)	🔲
+3 – Iterasi Feature Driven	Service Management (CRUD layanan FIXED/CONSULT)	🔲
+	Fixed-Price Flow (cart, scheduling, checkout, escrow)	🔲
+	Consultative Flow (chat + form + survei + offer + escrow)	🔲
+	Payments & Escrow (idempotency, retry, enums, komisi/fee)	🔲
+	Real-Time Chat & Notif (WebSocket/E2E, multi-channel)	🔲
+	Review & Reputation (gated review, moderation, caching)	🔲
+	Dashboards per role (Admin / Provider / Customer)	🔲
+	Security & Validation (Zod all req/res, centralized errors)	🔲
+4 – Testing & QA	Unit tests (Zod schemas, service)	🔲
+	Integration tests (Supertest)	🔲
+	E2E tests (Playwright/Cypress)	🔲
+	CI quality gates (fail on schema mismatch)	🔲
+5 – Release & Iterasi	Deploy staging + smoke tests	🔲
+	Production release & monitoring (Zod parse errors)	🔲
+	Feedback loop & backlog grooming	🔲
+

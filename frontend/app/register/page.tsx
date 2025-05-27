@@ -148,7 +148,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="grid h-[100dvh] w-screen grid-cols-1 overflow-hidden bg-gradient-to-b from-white to-gray-50 lg:grid-cols-2">
+    <div className="grid h-[100dvh] w-screen overflow-hidden bg-gradient-to-b from-white to-gray-50 lg:grid-cols-2">
       {/* Left side - Branding and Info */}
       <div className="relative hidden bg-gradient-to-br from-blue-500/10 via-blue-600/5 to-blue-700/10 lg:block">
         <div className="absolute inset-0">
@@ -159,27 +159,27 @@ export default function RegisterPage() {
         <div className="relative z-10 flex h-full w-full flex-col items-center justify-center p-4">
           <div className="relative mb-4 lg:mb-6">
             <div className="absolute -inset-8 rounded-full bg-gradient-to-r from-blue-500/30 to-primary/30 opacity-30 blur-3xl"></div>
-            <div className="relative flex h-24 w-24 items-center justify-center rounded-full border border-white/10 bg-white/30 shadow-2xl backdrop-blur-md sm:h-32 sm:w-32 lg:h-40 lg:w-40">
+            <div className="relative flex h-32 w-32 items-center justify-center rounded-full border border-white/10 bg-white/30 shadow-2xl backdrop-blur-md sm:h-40 sm:w-40 lg:h-48 lg:w-48">
               <Image
-                src="/placeholder.svg?height=306&width=306"
-                alt="Tukangin Logo"
-                width={306}
-                height={306}
-                className="object-contain drop-shadow-2xl"
-              />
+                  src="/logo-tukangin.png"
+                  alt="Tukangin Logo"
+                  width={150}
+                  height={150}
+                  className="object-contain drop-shadow-2xl"
+                />
             </div>
           </div>
 
-          <h1 className="mb-2 bg-gradient-to-r from-blue-700 to-blue-500 bg-clip-text text-center text-2xl font-bold text-transparent sm:text-3xl lg:text-4xl">
+          <h1 className="mb-3 bg-gradient-to-r from-blue-700 to-blue-500 bg-clip-text text-center text-2xl font-bold text-transparent sm:text-3xl lg:text-4xl">
             Tukangin
           </h1>
 
-          <div className="mb-3 max-w-lg text-center lg:mb-4">
-            <h2 className="mb-2 text-lg font-bold text-gray-800 sm:text-xl lg:text-2xl">
+          <div className="mb-4 max-w-lg text-center lg:mb-6">
+            <h2 className="mb-3 text-lg font-bold text-gray-800 sm:text-xl lg:text-2xl">
               Platform Terpercaya untuk Menghubungkan Pelanggan dengan Jasa Tukang Profesional
             </h2>
 
-            <div className="grid grid-cols-2 gap-2 overflow-hidden text-left sm:gap-2">
+            <div className="grid max-h-[30vh] grid-cols-2 gap-2 overflow-y-auto text-left sm:gap-3">
               {[
                 'Layanan tukang profesional',
                 'Harga transparan',
@@ -190,21 +190,21 @@ export default function RegisterPage() {
                   key={index}
                   className="flex items-center gap-2 rounded-xl bg-white/50 p-2 shadow-sm transition-all hover:shadow-md backdrop-blur-sm"
                 >
-                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500/10 sm:h-7 sm:w-7">
-                    <CheckCircle className="h-3 w-3 text-blue-600 sm:h-3.5 sm:w-3.5" />
+                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500/10 sm:h-8 sm:w-8">
+                    <CheckCircle className="h-3 w-3 text-blue-600 sm:h-4 sm:w-4" />
                   </div>
-                  <span className="text-xs text-gray-700 sm:text-xs">{feature}</span>
+                  <span className="text-xs text-gray-700 sm:text-sm">{feature}</span>
                 </div>
               ))}
             </div>
           </div>
 
           <Link
-            href="#"
-            className="group flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-1.5 text-xs font-medium text-white shadow-md transition-all hover:from-blue-700 hover:to-blue-600 hover:shadow-lg"
+            href="/home"
+            className="group flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-2 text-sm font-medium text-white shadow-md transition-all hover:from-blue-700 hover:to-blue-600 hover:shadow-lg"
           >
             <span>Pelajari lebih lanjut</span>
-            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
       </div>

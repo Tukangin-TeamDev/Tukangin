@@ -1,0 +1,345 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+        
+
+// Enums
+enum LoginType {
+  standard
+  google
+}
+enum Role {
+  customer
+  provider
+  admin
+}
+enum Gender {
+  male
+  female
+  other
+}
+enum Unit {
+  hour
+  project
+  unit
+  custom
+}
+enum RequestStatus {
+  open
+  quoted
+  accepted
+  declined
+  completed
+}
+enum OrderStatus {
+  pending
+  confirmed
+  in_progress
+  completed
+  disputed
+  cancelled
+}
+enum EscrowStatus {
+  held
+  released
+  refunded
+}
+enum TransactionType {
+  hold
+  capture
+  release
+  refund
+}
+enum WalletTxType {
+  credit
+  debit
+}
+enum KYCStatus {
+  pending
+  approved
+  rejected
+}
+enum DocumentType {
+  ktp
+  sim
+  passport
+}
+enum ServiceType {
+  FIXED
+  CONSULT
+}
+enum ServiceStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+// Models
+model User {
+  id                String       @id @default(uuid())
+  email             String       @unique
+  passwordHash      String?      
+  loginType         LoginType    @default(standard)
+  role              Role         @default(customer)
+  emailVerified     Boolean      @default(false)
+  verificationToken String?      @unique
+  resetPasswordToken String?     @unique
+  failedLoginAttempts Int        @default(0)
+  lockedUntil       DateTime?
+  twoFactorSecret   String?      
+  twoFactorEnabled  Boolean      @default(false)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  profile           UserProfile?
+  customer          Customer?
+  provider          Provider?
+  chatsSent         Chat[]       @relation("ChatSender")
+  notifications     Notification[]
+  auditLogs         AuditLog[]
+}
+
+model UserProfile {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @unique
+  fullName   String
+  phone      String
+  avatarUrl  String?
+  address    String?
+  birthDate  DateTime?
+  gender     Gender?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Customer {
+  id               String    @id
+  companyName      String?
+  npwp             String?   @unique
+  preferredPayment String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  user             User      @relation(fields: [id], references: [id])
+  carts            Cart[]
+  customRequests   CustomRequest[]
+  orders           Order[]   @relation("CustomerOrders")
+}
+
+model Provider {
+  id                  String            @id
+  bio                 String?
+  verificationStatus  KYCStatus         @default(pending)
+  verificationDate    DateTime?
+  ratingAvg           Float             @default(0)
+  totalJobsCompleted  Int               @default(0)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  user                User              @relation(fields: [id], references: [id])
+  skills              ProviderSkill[]
+  services            Service[]
+  customRequests      CustomRequest[]
+  orders              Order[]           @relation("ProviderOrders")
+  wallet              Wallet?
+  kycDocuments        KYCDocument[]
+}
+
+model Skill {
+  id       String           @id @default(uuid())
+  name     String           @unique
+  providers ProviderSkill[]
+}
+
+model ProviderSkill {
+  id            String   @id @default(uuid())
+  provider      Provider @relation(fields: [providerId], references: [id])
+  providerId    String
+  skill         Skill    @relation(fields: [skillId], references: [id])
+  skillId       String
+  proficiency   String   @default("beginner")
+  @@unique([providerId, skillId])
+}
+
+model Service {
+  id          String      @id @default(uuid())
+  type        ServiceType
+  title       String      @db.VarChar(100)
+  description String      @db.Text
+  price       Float
+  duration    Int         // dalam menit
+  provider    Provider    @relation(fields: [providerId], references: [id])
+  providerId  String
+  status      ServiceStatus @default(ACTIVE)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relasi
+  cartItems   CartItem[]
+  orders      Order[]
+
+  @@index([providerId])
+  @@index([type])
+  @@index([status])
+}
+
+model CustomRequest {
+  id            String         @id @default(uuid())
+  customer      Customer       @relation(fields: [customerId], references: [id])
+  customerId    String
+  provider      Provider       @relation(fields: [providerId], references: [id])
+  providerId    String
+  description   String
+  status        RequestStatus  @default(open)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  offers        Offer[]
+}
+
+model Offer {
+  id                      String    @id @default(uuid())
+  customRequest           CustomRequest @relation(fields: [requestId], references: [id])
+  requestId               String
+  proposedPrice           Decimal
+  estimatedDurationHours  Int
+  message                 String
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  orders                  Order[]
+}
+
+model Cart {
+  id         String      @id @default(uuid())
+  customer   Customer    @relation(fields: [customerId], references: [id])
+  customerId String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  items      CartItem[]
+}
+
+model CartItem {
+  id         String   @id @default(uuid())
+  cart       Cart     @relation(fields: [cartId], references: [id])
+  cartId     String
+  service    Service  @relation(fields: [serviceId], references: [id])
+  serviceId  String
+  scheduledAt DateTime
+  quantity   Int
+  orders     Order[]
+  @@unique([cartId, serviceId])
+}
+
+model Order {
+  id            String        @id @default(uuid())
+  customer      Customer      @relation("CustomerOrders", fields: [customerId], references: [id])
+  customerId    String
+  provider      Provider      @relation("ProviderOrders", fields: [providerId], references: [id])
+  providerId    String
+  service       Service?      @relation(fields: [serviceId], references: [id])
+  serviceId     String?
+  cartItem      CartItem?     @relation(fields: [cartItemId], references: [id])
+  cartItemId    String?
+  offer         Offer?        @relation(fields: [offerId], references: [id])
+  offerId       String?
+  status        OrderStatus   @default(pending)
+  scheduledAt   DateTime
+  totalPrice    Decimal
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  payments      Payment[]
+  walletTx      WalletTransaction[]
+  chats         Chat[]        
+}
+
+model Payment {
+  id                   String       @id @default(uuid())
+  order                Order        @relation(fields: [orderId], references: [id])
+  orderId              String
+  amount               Decimal
+  method               String       @default("ipaymu")
+  escrowStatus         EscrowStatus @default(held)
+  ipaymuTransactionId  String
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  transactions         Transaction[]
+}
+
+model Transaction {
+  id          String          @id @default(uuid())
+  payment     Payment         @relation(fields: [paymentId], references: [id])
+  paymentId   String
+  type        TransactionType
+  amount      Decimal
+  timestamp   DateTime        @default(now())
+}
+
+model Wallet {
+  id            String             @id @default(uuid())
+  provider      Provider           @relation(fields: [providerId], references: [id])
+  providerId    String             @unique
+  balance       Decimal            @default(0)
+  currency      String             @default("IDR")
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  transactions  WalletTransaction[]
+}
+
+model WalletTransaction {
+  id            String        @id @default(uuid())
+  wallet        Wallet        @relation(fields: [walletId], references: [id])
+  walletId      String
+  order         Order?        @relation(fields: [orderId], references: [id])
+  orderId       String?
+  type          WalletTxType
+  amount        Decimal
+  description   String
+  createdAt     DateTime      @default(now())
+}
+
+model Chat {
+  id         String    @id @default(uuid())
+  order      Order     @relation(fields: [orderId], references: [id])
+  orderId    String
+  sender     User      @relation("ChatSender", fields: [senderId], references: [id])
+  senderId   String
+  message    String
+  attachment String?
+  createdAt  DateTime  @default(now())
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  title      String
+  body       String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  action     String
+  details    Json
+  ipAddress  String
+  createdAt  DateTime @default(now())
+}
+
+model KYCDocument {
+  id          String      @id @default(uuid())
+  provider    Provider    @relation(fields: [providerId], references: [id])
+  providerId  String
+  type        DocumentType
+  fileUrl     String
+  status      KYCStatus   @default(pending)
+  notes       String?     // Catatan dari admin saat reject
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}

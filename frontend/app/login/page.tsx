@@ -82,10 +82,10 @@ export default function LoginPage() {
             <div className="absolute -inset-8 rounded-full bg-gradient-to-r from-blue-500/30 to-primary/30 opacity-30 blur-3xl"></div>
             <div className="relative flex h-32 w-32 items-center justify-center rounded-full border border-white/10 bg-white/30 shadow-2xl backdrop-blur-md sm:h-40 sm:w-40 lg:h-48 lg:w-48">
               <Image
-                src="/placeholder.svg?height=306&width=306"
+                src="/logo-tukangin.png"
                 alt="Tukangin Logo"
-                width={306}
-                height={306}
+                width={150}
+                height={150}
                 className="object-contain drop-shadow-2xl"
               />
             </div>

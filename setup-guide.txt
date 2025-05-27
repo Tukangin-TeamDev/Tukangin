@@ -1,0 +1,94 @@
+# PANDUAN SETUP KONFIGURASI TUKANGIN APP
+
+## 1. SETUP GOOGLE OAUTH
+
+1. Buka Google Cloud Console: https://console.cloud.google.com/
+2. Buat project baru atau pilih project yang sudah ada
+3. Aktifkan "Google OAuth API" dari menu "APIs & Services"
+4. Buat Credential baru:
+   - Pilih "Create Credentials" → "OAuth client ID"
+   - Application type: Web application
+   - Nama bebas, misalnya "Tukangin App"
+   - Tambahkan URL yang diizinkan:
+     - Authorized JavaScript origins: http://localhost:3000
+     - Authorized redirect URIs: http://localhost:5000/api/auth/google/callback
+5. Copy Client ID dan Client Secret ke file .env:
+   GOOGLE_CLIENT_ID=your-client-id-here
+   GOOGLE_CLIENT_SECRET=your-client-secret-here
+   GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
+
+## 2. SETUP SMTP UNTUK EMAIL
+
+### Menggunakan Gmail:
+1. Login ke akun Google yang akan digunakan untuk mengirim email
+2. Buka https://myaccount.google.com/security
+3. Aktifkan 2-Step Verification jika belum
+4. Pilih "App passwords" 
+5. Pilih "Other (Custom name)" dan isi "Tukangin App"
+6. Klik "Generate" dan copy password yang muncul
+7. Isi file .env:
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=465
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASS=app-password-generated-earlier
+   SMTP_FROM=Tukangin <your-email@gmail.com>
+
+### Alternatif (Mailgun, SendGrid, dll):
+- Buat akun di layanan email seperti SendGrid/Mailgun
+- Dapatkan API key dan domain
+- Sesuaikan konfigurasi SMTP di .env
+
+## 3. SETUP SUPABASE STORAGE
+
+1. Buat akun di Supabase: https://supabase.com/
+2. Buat project baru
+3. Dari dashboard, pilih "Storage" di sidebar
+4. Buat bucket baru bernama "kyc-documents"
+5. Atur policy untuk bucket:
+   - Untuk upload: Memerlukan autentikasi
+   - Untuk download: Hanya admin yang bisa mengakses
+6. Dari "Settings" → "API", dapatkan:
+   - Project URL 
+   - anon/public key
+   - service_role key (jaga kerahasiaan key ini)
+7. Isi file .env:
+   SUPABASE_URL=https://your-project-id.supabase.co
+   SUPABASE_ANON_KEY=your-anon-key-here
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+   SUPABASE_STORAGE_BUCKET=kyc-documents
+
+## 4. PENGUJIAN KONFIGURASI
+
+1. Google OAuth:
+   - Jalankan aplikasi
+   - Coba login dengan Google
+   - Periksa log untuk error
+
+2. Email:
+   - Gunakan endpoint untuk reset password/verifikasi email
+   - Periksa inbox untuk email yang masuk
+
+3. Supabase Storage:
+   - Upload dokumen KYC dari aplikasi
+   - Periksa di dashboard Supabase apakah file muncul di bucket
+
+## TROUBLESHOOTING
+
+### Google OAuth:
+- Error "redirect_uri_mismatch": Pastikan URL callback di Google Cloud Console sama persis dengan yang di aplikasi
+- Error "invalid_client": Pastikan Client ID dan Secret sudah benar
+
+### SMTP:
+- Error koneksi: Pastikan port tidak diblokir oleh firewall/ISP
+- Error autentikasi: Pastikan password app sudah benar dan belum expired
+
+### Supabase:
+- Error CORS: Tambahkan origin aplikasi di settings Supabase
+- Error autentikasi: Periksa kembali keys
+
+## KEAMANAN
+
+- JANGAN commit file .env ke repo Git
+- Batasi IP yang bisa mengakses Supabase dashboard
+- Atur kebijakan keamanan storage bucket dengan cermat
+- Gunakan service account terpisah untuk Gmail 
