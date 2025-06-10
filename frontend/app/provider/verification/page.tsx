@@ -51,7 +51,7 @@ export default function ProviderVerificationPage() {
     setFileState: React.Dispatch<React.SetStateAction<FileUpload>>
   ) => {
     const file = e.target.files ? e.target.files[0] : null;
-    
+
     if (!file) {
       return;
     }
@@ -80,7 +80,7 @@ export default function ProviderVerificationPage() {
 
     // Create preview URL
     const previewUrl = URL.createObjectURL(file);
-    
+
     setFileState(prev => ({
       ...prev,
       file,
@@ -122,7 +122,7 @@ export default function ProviderVerificationPage() {
       // API call successful
       cleanupPreviews();
       setSubmissionSuccess(true);
-      
+
       // In real implementation, would upload files to Supabase Storage
       // and create verification record in the database
     } catch (error) {
@@ -143,10 +143,13 @@ export default function ProviderVerificationPage() {
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
                 <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
-              <h1 className="mb-3 text-2xl font-bold text-gray-900">Verifikasi Berhasil Dikirim!</h1>
+              <h1 className="mb-3 text-2xl font-bold text-gray-900">
+                Verifikasi Berhasil Dikirim!
+              </h1>
               <p className="mb-6 text-gray-600">
-                Dokumen verifikasi Anda telah berhasil dikirim. Tim kami akan memeriksanya dalam 1-3 hari kerja.
-                Anda akan menerima notifikasi via email setelah proses verifikasi selesai.
+                Dokumen verifikasi Anda telah berhasil dikirim. Tim kami akan memeriksanya dalam 1-3
+                hari kerja. Anda akan menerima notifikasi via email setelah proses verifikasi
+                selesai.
               </p>
               <div className="space-y-3">
                 <Link
@@ -195,8 +198,9 @@ export default function ProviderVerificationPage() {
             <div className="flex-1">
               <h2 className="mb-1 text-base font-medium text-gray-900">Verifikasi Diperlukan</h2>
               <p className="text-sm text-gray-600">
-                Untuk menjaga keamanan dan kepercayaan pengguna, kami memerlukan dokumen verifikasi identitas.
-                Data Anda disimpan dengan aman dan tidak akan dibagikan kepada pihak ketiga.
+                Untuk menjaga keamanan dan kepercayaan pengguna, kami memerlukan dokumen verifikasi
+                identitas. Data Anda disimpan dengan aman dan tidak akan dibagikan kepada pihak
+                ketiga.
               </p>
             </div>
           </div>
@@ -204,7 +208,10 @@ export default function ProviderVerificationPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* KTP Upload */}
             <div>
-              <label htmlFor={identityCard.id} className="mb-2 block text-sm font-medium text-gray-700">
+              <label
+                htmlFor={identityCard.id}
+                className="mb-2 block text-sm font-medium text-gray-700"
+              >
                 Foto KTP / Kartu Identitas <span className="text-red-500">*</span>
               </label>
               <div className="mt-1">
@@ -219,11 +226,27 @@ export default function ProviderVerificationPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => setIdentityCard({ id: identityCard.id, file: null, preview: null, error: null })}
+                      onClick={() =>
+                        setIdentityCard({
+                          id: identityCard.id,
+                          file: null,
+                          preview: null,
+                          error: null,
+                        })
+                      }
                       className="absolute right-2 top-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -242,7 +265,7 @@ export default function ProviderVerificationPage() {
                             name={identityCard.id}
                             type="file"
                             className="sr-only"
-                            onChange={(e) => handleFileChange(e, setIdentityCard)}
+                            onChange={e => handleFileChange(e, setIdentityCard)}
                             accept="image/*"
                           />
                         </label>
@@ -262,7 +285,10 @@ export default function ProviderVerificationPage() {
 
             {/* Selfie dengan KTP */}
             <div>
-              <label htmlFor={selfieWithID.id} className="mb-2 block text-sm font-medium text-gray-700">
+              <label
+                htmlFor={selfieWithID.id}
+                className="mb-2 block text-sm font-medium text-gray-700"
+              >
                 Foto Selfie dengan KTP <span className="text-red-500">*</span>
               </label>
               <div className="mt-1">
@@ -277,11 +303,27 @@ export default function ProviderVerificationPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => setSelfieWithID({ id: selfieWithID.id, file: null, preview: null, error: null })}
+                      onClick={() =>
+                        setSelfieWithID({
+                          id: selfieWithID.id,
+                          file: null,
+                          preview: null,
+                          error: null,
+                        })
+                      }
                       className="absolute right-2 top-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -300,7 +342,7 @@ export default function ProviderVerificationPage() {
                             name={selfieWithID.id}
                             type="file"
                             className="sr-only"
-                            onChange={(e) => handleFileChange(e, setSelfieWithID)}
+                            onChange={e => handleFileChange(e, setSelfieWithID)}
                             accept="image/*"
                           />
                         </label>
@@ -314,13 +356,17 @@ export default function ProviderVerificationPage() {
                 )}
               </div>
               <p className="mt-2 text-xs text-gray-500">
-                Foto diri Anda dengan memegang KTP di samping wajah. Pastikan wajah dan KTP terlihat jelas
+                Foto diri Anda dengan memegang KTP di samping wajah. Pastikan wajah dan KTP terlihat
+                jelas
               </p>
             </div>
 
             {/* Surat Izin Usaha (Optional) */}
             <div>
-              <label htmlFor={businessLicense.id} className="mb-2 block text-sm font-medium text-gray-700">
+              <label
+                htmlFor={businessLicense.id}
+                className="mb-2 block text-sm font-medium text-gray-700"
+              >
                 Surat Izin Usaha / SIUP (Opsional)
               </label>
               <div className="mt-1">
@@ -335,11 +381,27 @@ export default function ProviderVerificationPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => setBusinessLicense({ id: businessLicense.id, file: null, preview: null, error: null })}
+                      onClick={() =>
+                        setBusinessLicense({
+                          id: businessLicense.id,
+                          file: null,
+                          preview: null,
+                          error: null,
+                        })
+                      }
                       className="absolute right-2 top-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -358,7 +420,7 @@ export default function ProviderVerificationPage() {
                             name={businessLicense.id}
                             type="file"
                             className="sr-only"
-                            onChange={(e) => handleFileChange(e, setBusinessLicense)}
+                            onChange={e => handleFileChange(e, setBusinessLicense)}
                             accept="image/*"
                           />
                         </label>
@@ -372,13 +434,17 @@ export default function ProviderVerificationPage() {
                 )}
               </div>
               <p className="mt-2 text-xs text-gray-500">
-                Jika Anda memiliki usaha dengan SIUP, mohon unggah dokumennya untuk meningkatkan kepercayaan pelanggan
+                Jika Anda memiliki usaha dengan SIUP, mohon unggah dokumennya untuk meningkatkan
+                kepercayaan pelanggan
               </p>
             </div>
 
             {/* Sertifikat/Bukti Keterampilan (Optional) */}
             <div>
-              <label htmlFor={certificatesOrSkills.id} className="mb-2 block text-sm font-medium text-gray-700">
+              <label
+                htmlFor={certificatesOrSkills.id}
+                className="mb-2 block text-sm font-medium text-gray-700"
+              >
                 Sertifikat Keterampilan (Opsional)
               </label>
               <div className="mt-1">
@@ -393,11 +459,27 @@ export default function ProviderVerificationPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => setCertificatesOrSkills({ id: certificatesOrSkills.id, file: null, preview: null, error: null })}
+                      onClick={() =>
+                        setCertificatesOrSkills({
+                          id: certificatesOrSkills.id,
+                          file: null,
+                          preview: null,
+                          error: null,
+                        })
+                      }
                       className="absolute right-2 top-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -416,7 +498,7 @@ export default function ProviderVerificationPage() {
                             name={certificatesOrSkills.id}
                             type="file"
                             className="sr-only"
-                            onChange={(e) => handleFileChange(e, setCertificatesOrSkills)}
+                            onChange={e => handleFileChange(e, setCertificatesOrSkills)}
                             accept="image/*"
                           />
                         </label>
@@ -430,7 +512,8 @@ export default function ProviderVerificationPage() {
                 )}
               </div>
               <p className="mt-2 text-xs text-gray-500">
-                Unggah sertifikat keterampilan atau bukti pengalaman untuk meningkatkan kredibilitas profil Anda
+                Unggah sertifikat keterampilan atau bukti pengalaman untuk meningkatkan kredibilitas
+                profil Anda
               </p>
             </div>
 
@@ -467,8 +550,8 @@ export default function ProviderVerificationPage() {
 
             <div className="border-t border-gray-200 pt-4">
               <p className="text-xs text-gray-500">
-                Dengan mengirim dokumen ini, Anda menyetujui bahwa data Anda akan diverifikasi oleh tim Tukangin
-                untuk memastikan keamanan dan kualitas layanan.
+                Dengan mengirim dokumen ini, Anda menyetujui bahwa data Anda akan diverifikasi oleh
+                tim Tukangin untuk memastikan keamanan dan kualitas layanan.
               </p>
             </div>
           </form>
@@ -476,4 +559,4 @@ export default function ProviderVerificationPage() {
       </div>
     </div>
   );
-} 
+}

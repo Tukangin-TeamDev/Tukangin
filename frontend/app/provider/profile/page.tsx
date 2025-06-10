@@ -3,7 +3,17 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, Phone, Mail, Star, Shield, Clock, Calendar, CheckCircle, Info } from 'lucide-react';
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Star,
+  Shield,
+  Clock,
+  Calendar,
+  CheckCircle,
+  Info,
+} from 'lucide-react';
 
 export default function ProviderProfilePage() {
   // Data provider (dalam implementasi nyata, data ini akan diambil dari API)
@@ -16,7 +26,8 @@ export default function ProviderProfilePage() {
     verificationStatus: 'verified', // verified, pending, rejected
     verificationDate: '12 Mei 2023',
     joinDate: 'September 2022',
-    description: 'Bengkel Jaya adalah penyedia jasa perbaikan rumah yang berpengalaman lebih dari 10 tahun. Kami menawarkan berbagai layanan perbaikan rumah dengan kualitas terbaik dan harga yang terjangkau.',
+    description:
+      'Bengkel Jaya adalah penyedia jasa perbaikan rumah yang berpengalaman lebih dari 10 tahun. Kami menawarkan berbagai layanan perbaikan rumah dengan kualitas terbaik dan harga yang terjangkau.',
     contactInfo: {
       phone: '+62812-3456-7890',
       email: 'bengjay@example.com',
@@ -42,8 +53,8 @@ export default function ProviderProfilePage() {
       highlights: [
         'Pemasangan instalasi listrik di lebih dari 500 rumah',
         'Tersertifikasi dari Kementerian Ketenagakerjaan',
-        'Pernah menangani 150+ proyek besar'
-      ]
+        'Pernah menangani 150+ proyek besar',
+      ],
     },
     stats: {
       completedJobs: 245,
@@ -75,7 +86,7 @@ export default function ProviderProfilePage() {
         price: 'Rp 300.000 / rumah',
         rating: 4.8,
         reviewCount: 42,
-      }
+      },
     ],
     reviews: [
       {
@@ -84,7 +95,8 @@ export default function ProviderProfilePage() {
         userPhoto: '/placeholder.svg?height=40&width=40',
         date: '15 Mei 2023',
         rating: 5,
-        comment: 'Sangat puas dengan pekerjaan Bengkel Jaya. Mereka datang tepat waktu, profesional, dan hasil kerjanya rapi. Instalasi listrik saya sekarang bekerja dengan baik.',
+        comment:
+          'Sangat puas dengan pekerjaan Bengkel Jaya. Mereka datang tepat waktu, profesional, dan hasil kerjanya rapi. Instalasi listrik saya sekarang bekerja dengan baik.',
         serviceName: 'Perbaikan Instalasi Listrik',
       },
       {
@@ -93,7 +105,8 @@ export default function ProviderProfilePage() {
         userPhoto: '/placeholder.svg?height=40&width=40',
         date: '3 Mei 2023',
         rating: 5,
-        comment: 'Teknisi sangat terampil dan ramah. Menjelaskan dengan detail apa yang perlu diperbaiki dan memberikan tips cara perawatan. Sangat direkomendasikan!',
+        comment:
+          'Teknisi sangat terampil dan ramah. Menjelaskan dengan detail apa yang perlu diperbaiki dan memberikan tips cara perawatan. Sangat direkomendasikan!',
         serviceName: 'Pengecekan Beban Listrik',
       },
       {
@@ -102,10 +115,11 @@ export default function ProviderProfilePage() {
         userPhoto: '/placeholder.svg?height=40&width=40',
         date: '28 April 2023',
         rating: 4,
-        comment: 'Pelayanan baik dan cepat. Hanya saja ada sedikit keterlambatan dari jadwal yang sudah ditentukan. Tapi secara keseluruhan puas dengan hasilnya.',
+        comment:
+          'Pelayanan baik dan cepat. Hanya saja ada sedikit keterlambatan dari jadwal yang sudah ditentukan. Tapi secara keseluruhan puas dengan hasilnya.',
         serviceName: 'Instalasi Lampu dan Saklar',
       },
-    ]
+    ],
   });
 
   const [activeTab, setActiveTab] = useState('services'); // services, reviews, about
@@ -119,16 +133,16 @@ export default function ProviderProfilePage() {
             <div className="relative h-32 bg-gradient-to-r from-blue-500 to-blue-600">
               {/* Provider photo */}
               <div className="absolute bottom-0 left-6 -mb-12 overflow-hidden rounded-xl border-4 border-white bg-white shadow-md">
-                <Image 
-                  src={providerData.photo} 
-                  alt={providerData.name} 
-                  width={96} 
-                  height={96} 
+                <Image
+                  src={providerData.photo}
+                  alt={providerData.name}
+                  width={96}
+                  height={96}
                   className="h-24 w-24 object-cover"
                 />
               </div>
             </div>
-            
+
             <div className="p-4 pt-16 md:p-6 md:pt-16">
               <div className="flex flex-col justify-between md:flex-row md:items-center">
                 <div>
@@ -141,12 +155,12 @@ export default function ProviderProfilePage() {
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="mt-1 flex items-center text-sm text-gray-600">
                     <MapPin className="mr-1 h-4 w-4 text-gray-400" />
                     {providerData.contactInfo.address}
                   </div>
-                  
+
                   <div className="mt-2 flex items-center">
                     <div className="flex items-center">
                       <Star className="mr-1 h-5 w-5 fill-yellow-400 text-yellow-400" />
@@ -155,17 +169,19 @@ export default function ProviderProfilePage() {
                     <span className="mx-1.5 text-gray-400">•</span>
                     <span className="text-gray-600">{providerData.reviewCount} ulasan</span>
                     <span className="mx-1.5 text-gray-400">•</span>
-                    <span className="text-gray-600">{providerData.stats.completedJobs} pekerjaan selesai</span>
+                    <span className="text-gray-600">
+                      {providerData.stats.completedJobs} pekerjaan selesai
+                    </span>
                   </div>
                 </div>
                 <div className="mt-4 flex gap-3 md:mt-0">
-                  <Link 
+                  <Link
                     href={`/chat?provider=${providerData.id}`}
                     className="rounded-lg border border-blue-600 px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50"
                   >
                     Hubungi
                   </Link>
-                  <Link 
+                  <Link
                     href="#services"
                     className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
                     onClick={() => setActiveTab('services')}
@@ -184,7 +200,7 @@ export default function ProviderProfilePage() {
               {/* Provider information */}
               <div className="rounded-xl bg-white p-5 shadow">
                 <h2 className="mb-4 text-lg font-bold">Informasi Kontak</h2>
-                
+
                 <div className="space-y-4">
                   <div className="flex items-start">
                     <Phone className="mr-3 h-5 w-5 text-gray-500" />
@@ -193,7 +209,7 @@ export default function ProviderProfilePage() {
                       <p className="text-sm text-gray-600">{providerData.contactInfo.phone}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <Mail className="mr-3 h-5 w-5 text-gray-500" />
                     <div>
@@ -201,7 +217,7 @@ export default function ProviderProfilePage() {
                       <p className="text-sm text-gray-600">{providerData.contactInfo.email}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <MapPin className="mr-3 h-5 w-5 text-gray-500" />
                     <div>
@@ -214,27 +230,28 @@ export default function ProviderProfilePage() {
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <Clock className="mr-3 h-5 w-5 text-gray-500" />
                     <div>
                       <h4 className="text-sm font-medium text-gray-900">Jam Layanan</h4>
                       <p className="text-sm text-gray-600">
-                        {providerData.serviceHours.days.join(', ')}<br/>
+                        {providerData.serviceHours.days.join(', ')}
+                        <br />
                         {providerData.serviceHours.hours}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
-              
+
               {/* Skills */}
               <div className="rounded-xl bg-white p-5 shadow">
                 <h2 className="mb-4 text-lg font-bold">Keahlian</h2>
                 <div className="flex flex-wrap gap-2">
                   {providerData.skills.map((skill, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className="rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700"
                     >
                       {skill}
@@ -242,31 +259,39 @@ export default function ProviderProfilePage() {
                   ))}
                 </div>
               </div>
-              
+
               {/* Stats */}
               <div className="rounded-xl bg-white p-5 shadow">
                 <h2 className="mb-4 text-lg font-bold">Statistik</h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="rounded-lg bg-gray-50 p-3 text-center">
-                    <span className="block text-lg font-bold text-blue-600">{providerData.stats.completedJobs}</span>
+                    <span className="block text-lg font-bold text-blue-600">
+                      {providerData.stats.completedJobs}
+                    </span>
                     <span className="text-xs text-gray-500">Pekerjaan Selesai</span>
                   </div>
                   <div className="rounded-lg bg-gray-50 p-3 text-center">
-                    <span className="block text-lg font-bold text-green-600">{providerData.stats.onTimeRate}%</span>
+                    <span className="block text-lg font-bold text-green-600">
+                      {providerData.stats.onTimeRate}%
+                    </span>
                     <span className="text-xs text-gray-500">Tepat Waktu</span>
                   </div>
                   <div className="rounded-lg bg-gray-50 p-3 text-center">
-                    <span className="block text-lg font-bold text-blue-600">{providerData.stats.responseRate}%</span>
+                    <span className="block text-lg font-bold text-blue-600">
+                      {providerData.stats.responseRate}%
+                    </span>
                     <span className="text-xs text-gray-500">Rasio Respon</span>
                   </div>
                   <div className="rounded-lg bg-gray-50 p-3 text-center">
-                    <span className="block text-lg font-bold text-gray-600">{providerData.experience.years}</span>
+                    <span className="block text-lg font-bold text-gray-600">
+                      {providerData.experience.years}
+                    </span>
                     <span className="text-xs text-gray-500">Pengalaman</span>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             {/* Right column - Services/Reviews/About */}
             <div className="lg:col-span-2">
               {/* Tabs */}
@@ -302,16 +327,16 @@ export default function ProviderProfilePage() {
                   Tentang
                 </button>
               </div>
-              
+
               {/* Services Tab */}
               {activeTab === 'services' && (
                 <div className="space-y-4">
                   <h2 className="text-xl font-bold">Layanan yang Ditawarkan</h2>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {providerData.services.map(service => (
-                      <Link 
+                      <Link
                         href={`/services/${service.id}`}
-                        key={service.id} 
+                        key={service.id}
                         className="overflow-hidden rounded-lg bg-white shadow transition-shadow hover:shadow-md"
                       >
                         <div className="relative h-40">
@@ -328,7 +353,9 @@ export default function ProviderProfilePage() {
                           <div className="flex items-center text-sm">
                             <Star className="mr-1 h-4 w-4 fill-yellow-400 text-yellow-400" />
                             <span>{service.rating}</span>
-                            <span className="ml-1 text-gray-500">({service.reviewCount} ulasan)</span>
+                            <span className="ml-1 text-gray-500">
+                              ({service.reviewCount} ulasan)
+                            </span>
                           </div>
                         </div>
                       </Link>
@@ -336,7 +363,7 @@ export default function ProviderProfilePage() {
                   </div>
                 </div>
               )}
-              
+
               {/* Reviews Tab */}
               {activeTab === 'reviews' && (
                 <div className="space-y-4">
@@ -345,10 +372,12 @@ export default function ProviderProfilePage() {
                     <div className="flex items-center">
                       <Star className="mr-1 h-5 w-5 fill-yellow-400 text-yellow-400" />
                       <span className="font-medium">{providerData.rating}</span>
-                      <span className="ml-1 text-sm text-gray-500">({providerData.reviewCount} ulasan)</span>
+                      <span className="ml-1 text-sm text-gray-500">
+                        ({providerData.reviewCount} ulasan)
+                      </span>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     {providerData.reviews.map(review => (
                       <div key={review.id} className="rounded-lg bg-white p-4 shadow">
@@ -368,13 +397,13 @@ export default function ProviderProfilePage() {
                           </div>
                           <div className="flex items-center">
                             {[...Array(5)].map((_, i) => (
-                              <Star 
-                                key={i} 
+                              <Star
+                                key={i}
                                 className={`h-4 w-4 ${
                                   i < review.rating
                                     ? 'fill-yellow-400 text-yellow-400'
                                     : 'text-gray-300'
-                                }`} 
+                                }`}
                               />
                             ))}
                           </div>
@@ -385,7 +414,7 @@ export default function ProviderProfilePage() {
                         </div>
                       </div>
                     ))}
-                    
+
                     {providerData.reviews.length > 0 && (
                       <div className="mt-4 text-center">
                         <Link
@@ -399,7 +428,7 @@ export default function ProviderProfilePage() {
                   </div>
                 </div>
               )}
-              
+
               {/* About Tab */}
               {activeTab === 'about' && (
                 <div className="space-y-6">
@@ -407,19 +436,23 @@ export default function ProviderProfilePage() {
                     <h2 className="mb-3 text-xl font-bold">Tentang {providerData.name}</h2>
                     <p className="text-gray-700">{providerData.description}</p>
                   </div>
-                  
+
                   <div>
                     <h3 className="mb-3 text-lg font-semibold">Pengalaman</h3>
                     <div className="mb-2 flex items-center">
                       <Calendar className="mr-2 h-5 w-5 text-gray-500" />
-                      <span className="text-sm text-gray-600">Menjadi penyedia jasa sejak {providerData.joinDate}</span>
+                      <span className="text-sm text-gray-600">
+                        Menjadi penyedia jasa sejak {providerData.joinDate}
+                      </span>
                     </div>
                     <div className="rounded-lg bg-gray-50 p-4">
                       <div className="mb-3 flex items-center">
                         <span className="mr-2 rounded-full bg-blue-100 p-1.5">
                           <Briefcase className="h-4 w-4 text-blue-700" />
                         </span>
-                        <span className="font-medium">{providerData.experience.level} • {providerData.experience.years}</span>
+                        <span className="font-medium">
+                          {providerData.experience.level} • {providerData.experience.years}
+                        </span>
                       </div>
                       <ul className="ml-4 space-y-2">
                         {providerData.experience.highlights.map((highlight, index) => (
@@ -431,7 +464,7 @@ export default function ProviderProfilePage() {
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div>
                     <h3 className="mb-3 text-lg font-semibold">Verifikasi</h3>
                     <div className="rounded-lg bg-blue-50 p-4">
@@ -442,7 +475,8 @@ export default function ProviderProfilePage() {
                         <div>
                           <h4 className="font-medium">Penyedia Jasa Terverifikasi</h4>
                           <p className="text-sm text-gray-600">
-                            Identitas dan kualifikasi telah diverifikasi pada {providerData.verificationDate}
+                            Identitas dan kualifikasi telah diverifikasi pada{' '}
+                            {providerData.verificationDate}
                           </p>
                         </div>
                       </div>
@@ -456,4 +490,4 @@ export default function ProviderProfilePage() {
       </div>
     </div>
   );
-} 
+}

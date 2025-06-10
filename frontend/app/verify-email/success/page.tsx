@@ -15,7 +15,7 @@ export default function VerifyEmailSuccessPage() {
             {/* Logo */}
             <div className="mb-4 flex justify-center">
               <Image
-                src="/placeholder.svg?height=96&width=96" 
+                src="/placeholder.svg?height=96&width=96"
                 alt="Tukangin Logo"
                 width={80}
                 height={80}
@@ -29,12 +29,11 @@ export default function VerifyEmailSuccessPage() {
               </div>
             </div>
 
-            <h1 className="mb-2 text-2xl font-bold text-gray-900">
-              Email Berhasil Diverifikasi!
-            </h1>
-            
+            <h1 className="mb-2 text-2xl font-bold text-gray-900">Email Berhasil Diverifikasi!</h1>
+
             <p className="mb-6 text-gray-600">
-              Selamat! Email Anda telah berhasil diverifikasi. Akun Anda sekarang sudah aktif dan Anda dapat menggunakan layanan Tukangin.
+              Selamat! Email Anda telah berhasil diverifikasi. Akun Anda sekarang sudah aktif dan
+              Anda dapat menggunakan layanan Tukangin.
             </p>
 
             <div className="space-y-4">
@@ -61,4 +60,4 @@ export default function VerifyEmailSuccessPage() {
       </div>
     </div>
   );
-} 
+}

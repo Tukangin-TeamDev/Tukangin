@@ -24,25 +24,25 @@ export default function VerifyEmailPage() {
   // Handle countdown for resend cooldown
   useEffect(() => {
     if (secondsLeft <= 0) return;
-    
+
     const timer = setTimeout(() => {
       setSecondsLeft(prev => prev - 1);
     }, 1000);
-    
+
     return () => clearTimeout(timer);
   }, [secondsLeft]);
 
   const handleResendEmail = async () => {
     if (secondsLeft > 0) return;
-    
+
     setIsLoading(true);
     setResendSuccess(false);
     setResendError(false);
-    
+
     try {
       // Simulate API call for resending verification email
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // API call successful
       setResendSuccess(true);
       setSecondsLeft(60); // Set cooldown to 60 seconds
@@ -66,7 +66,7 @@ export default function VerifyEmailPage() {
             {/* Logo */}
             <div className="mb-4 flex justify-center">
               <Image
-                src="/placeholder.svg?height=96&width=96" 
+                src="/placeholder.svg?height=96&width=96"
                 alt="Tukangin Logo"
                 width={80}
                 height={80}
@@ -80,13 +80,12 @@ export default function VerifyEmailPage() {
               </div>
             </div>
 
-            <h1 className="mb-2 text-2xl font-bold text-gray-900">
-              Verifikasi Email Anda
-            </h1>
-            
+            <h1 className="mb-2 text-2xl font-bold text-gray-900">Verifikasi Email Anda</h1>
+
             <p className="mb-6 text-gray-600">
-              Kami telah mengirimkan email verifikasi ke <span className="font-medium">{email || 'alamat email Anda'}</span>. 
-              Silakan periksa inbox atau folder spam Anda dan klik link verifikasi untuk mengaktifkan akun.
+              Kami telah mengirimkan email verifikasi ke{' '}
+              <span className="font-medium">{email || 'alamat email Anda'}</span>. Silakan periksa
+              inbox atau folder spam Anda dan klik link verifikasi untuk mengaktifkan akun.
             </p>
 
             {/* Resend notification */}
@@ -131,11 +130,14 @@ export default function VerifyEmailPage() {
             </div>
 
             <div className="mt-6 text-center text-xs text-gray-500">
-              <p>Jika Anda tidak menerima email setelah beberapa menit, periksa folder spam Anda atau hubungi dukungan.</p>
+              <p>
+                Jika Anda tidak menerima email setelah beberapa menit, periksa folder spam Anda atau
+                hubungi dukungan.
+              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}

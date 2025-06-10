@@ -1,7 +1,7 @@
-import Image from "next/image"
-import { NavbarGuest } from "@/components/navbar-guest"
-import { Footer } from "@/components/footer"
-import { Award, CheckCircle, Mail, Shield, Star, Zap } from "lucide-react"
+import Image from 'next/image';
+import { NavbarGuest } from '@/components/navbar-guest';
+import { Footer } from '@/components/footer';
+import { Award, CheckCircle, Mail, Shield, Star, Zap } from 'lucide-react';
 
 export default function AboutPage() {
   return (
@@ -14,9 +14,9 @@ export default function AboutPage() {
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Tentang Tukangin</h1>
             <p className="text-lg text-gray-700 mb-8">
-              Revolusi digital dalam dunia jasa profesional Indonesia. Kami menghubungkan jutaan pelanggan dengan ribuan
-              ahli terpercaya, menciptakan ekosistem layanan yang transparan, aman, dan berkualitas tinggi di seluruh
-              nusantara.
+              Revolusi digital dalam dunia jasa profesional Indonesia. Kami menghubungkan jutaan
+              pelanggan dengan ribuan ahli terpercaya, menciptakan ekosistem layanan yang
+              transparan, aman, dan berkualitas tinggi di seluruh nusantara.
             </p>
             <div className="flex flex-wrap justify-center gap-8 mt-12">
               <div className="text-center">
@@ -50,10 +50,11 @@ export default function AboutPage() {
               </div>
               <h2 className="text-3xl font-bold mb-4">Visi Kami</h2>
               <p className="text-gray-700 text-lg leading-relaxed">
-                Menjadi platform digital terdepan yang mengubah cara Indonesia mengakses layanan jasa profesional. Kami
-                bermimpi menciptakan masa depan di mana setiap orang dapat dengan mudah menemukan ahli terpercaya untuk
-                kebutuhan mereka, sementara para profesional mendapat kesempatan yang adil untuk berkembang dan meraih
-                kesuksesan finansial yang berkelanjutan.
+                Menjadi platform digital terdepan yang mengubah cara Indonesia mengakses layanan
+                jasa profesional. Kami bermimpi menciptakan masa depan di mana setiap orang dapat
+                dengan mudah menemukan ahli terpercaya untuk kebutuhan mereka, sementara para
+                profesional mendapat kesempatan yang adil untuk berkembang dan meraih kesuksesan
+                finansial yang berkelanjutan.
               </p>
             </div>
             <div className="flex flex-col items-start">
@@ -65,26 +66,29 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />
                   <span>
-                    Membangun ekosistem layanan jasa yang transparan, aman, dan terpercaya dengan teknologi terdepan
+                    Membangun ekosistem layanan jasa yang transparan, aman, dan terpercaya dengan
+                    teknologi terdepan
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />
                   <span>
-                    Memberdayakan para profesional jasa dengan akses pasar yang lebih luas dan tools untuk berkembang
+                    Memberdayakan para profesional jasa dengan akses pasar yang lebih luas dan tools
+                    untuk berkembang
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />
                   <span>
-                    Memberikan pengalaman pelanggan yang luar biasa dengan layanan berkualitas dan harga yang fair
+                    Memberikan pengalaman pelanggan yang luar biasa dengan layanan berkualitas dan
+                    harga yang fair
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />
                   <span>
-                    Meningkatkan standar industri jasa melalui sistem verifikasi ketat dan program pelatihan
-                    berkelanjutan
+                    Meningkatkan standar industri jasa melalui sistem verifikasi ketat dan program
+                    pelatihan berkelanjutan
                   </span>
                 </li>
               </ul>
@@ -109,24 +113,28 @@ export default function AboutPage() {
             <div className="md:w-1/2">
               <h2 className="text-3xl font-bold mb-6">Perjalanan Kami</h2>
               <p className="text-gray-700 mb-4 leading-relaxed">
-                Tukangin lahir dari frustrasi personal para founder ketika mengalami kesulitan mencari tukang AC yang
-                terpercaya di tengah malam Jakarta yang panas. Setelah menunggu berjam-jam dan mendapat layanan yang
-                mengecewakan, kami menyadari ada masalah besar dalam industri jasa di Indonesia.
+                Tukangin lahir dari frustrasi personal para founder ketika mengalami kesulitan
+                mencari tukang AC yang terpercaya di tengah malam Jakarta yang panas. Setelah
+                menunggu berjam-jam dan mendapat layanan yang mengecewakan, kami menyadari ada
+                masalah besar dalam industri jasa di Indonesia.
               </p>
               <p className="text-gray-700 mb-4 leading-relaxed">
-                Didirikan pada Januari 2023 dengan modal awal Rp 500 juta, Tukangin memulai perjalanan dari sebuah
-                kantor kecil di Kemang dengan tim 5 orang. Kami menghabiskan 6 bulan pertama untuk riset mendalam,
-                wawancara dengan 500+ tukang dan 1000+ pelanggan potensial untuk memahami pain point yang sebenarnya.
+                Didirikan pada Januari 2023 dengan modal awal Rp 500 juta, Tukangin memulai
+                perjalanan dari sebuah kantor kecil di Kemang dengan tim 5 orang. Kami menghabiskan
+                6 bulan pertama untuk riset mendalam, wawancara dengan 500+ tukang dan 1000+
+                pelanggan potensial untuk memahami pain point yang sebenarnya.
               </p>
               <p className="text-gray-700 mb-4 leading-relaxed">
-                Hari ini, setelah 2 tahun beroperasi, Tukangin telah melayani lebih dari 50.000 pelanggan di 25 kota
-                besar Indonesia. Kami bangga menjadi rumah bagi 5.000+ profesional jasa yang telah meningkatkan
-                penghasilan mereka rata-rata 40% setelah bergabung dengan platform kami.
+                Hari ini, setelah 2 tahun beroperasi, Tukangin telah melayani lebih dari 50.000
+                pelanggan di 25 kota besar Indonesia. Kami bangga menjadi rumah bagi 5.000+
+                profesional jasa yang telah meningkatkan penghasilan mereka rata-rata 40% setelah
+                bergabung dengan platform kami.
               </p>
               <div className="bg-blue-50 p-4 rounded-lg mt-6">
                 <p className="text-blue-800 font-medium italic">
-                  "Dari 1 pesanan per hari di bulan pertama, hingga 1000+ pesanan per hari saat ini. Perjalanan ini
-                  membuktikan bahwa Indonesia siap untuk transformasi digital di sektor jasa."
+                  "Dari 1 pesanan per hari di bulan pertama, hingga 1000+ pesanan per hari saat ini.
+                  Perjalanan ini membuktikan bahwa Indonesia siap untuk transformasi digital di
+                  sektor jasa."
                 </p>
                 <p className="text-blue-600 text-sm mt-2">- Tim Founder Tukangin</p>
               </div>
@@ -141,7 +149,8 @@ export default function AboutPage() {
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl font-bold mb-4">Mengapa Memilih Tukangin?</h2>
             <p className="text-gray-700 text-lg">
-              Kami tidak hanya menghubungkan, tetapi memastikan setiap interaksi menciptakan nilai dan kepuasan maksimal
+              Kami tidak hanya menghubungkan, tetapi memastikan setiap interaksi menciptakan nilai
+              dan kepuasan maksimal
             </p>
           </div>
 
@@ -154,8 +163,9 @@ export default function AboutPage() {
               </div>
               <h3 className="text-xl font-semibold text-center mb-3">Verifikasi 7 Tahap</h3>
               <p className="text-gray-700 text-center mb-4">
-                Setiap penyedia jasa melalui 7 tahap verifikasi ketat: dokumen identitas, sertifikat keahlian, tes
-                praktik, background check, referensi, pelatihan platform, dan evaluasi berkala.
+                Setiap penyedia jasa melalui 7 tahap verifikasi ketat: dokumen identitas, sertifikat
+                keahlian, tes praktik, background check, referensi, pelatihan platform, dan evaluasi
+                berkala.
               </p>
               <div className="text-center">
                 <span className="text-sm text-blue-600 font-medium">Tingkat Kelulusan: 15%</span>
@@ -170,8 +180,8 @@ export default function AboutPage() {
               </div>
               <h3 className="text-xl font-semibold text-center mb-3">Garansi Kepuasan 100%</h3>
               <p className="text-gray-700 text-center mb-4">
-                Jaminan uang kembali jika tidak puas, asuransi kerusakan hingga Rp 10 juta, dan tim customer success
-                24/7 yang siap membantu menyelesaikan masalah apapun.
+                Jaminan uang kembali jika tidak puas, asuransi kerusakan hingga Rp 10 juta, dan tim
+                customer success 24/7 yang siap membantu menyelesaikan masalah apapun.
               </p>
               <div className="text-center">
                 <span className="text-sm text-blue-600 font-medium">Tingkat Kepuasan: 4.8/5</span>
@@ -186,11 +196,13 @@ export default function AboutPage() {
               </div>
               <h3 className="text-xl font-semibold text-center mb-3">Respons Super Cepat</h3>
               <p className="text-gray-700 text-center mb-4">
-                AI matching system kami mencarikan penyedia jasa terbaik dalam 3 menit, dengan rata-rata waktu
-                kedatangan 45 menit untuk layanan darurat.
+                AI matching system kami mencarikan penyedia jasa terbaik dalam 3 menit, dengan
+                rata-rata waktu kedatangan 45 menit untuk layanan darurat.
               </p>
               <div className="text-center">
-                <span className="text-sm text-blue-600 font-medium">Rata-rata Respons: 3 menit</span>
+                <span className="text-sm text-blue-600 font-medium">
+                  Rata-rata Respons: 3 menit
+                </span>
               </div>
             </div>
           </div>
@@ -203,8 +215,8 @@ export default function AboutPage() {
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl font-bold mb-4">Tim Visioner Kami</h2>
             <p className="text-gray-700 text-lg">
-              Dipimpin oleh para ahli berpengalaman dari berbagai industri, kami berkomitmen menghadirkan inovasi
-              terdepan
+              Dipimpin oleh para ahli berpengalaman dari berbagai industri, kami berkomitmen
+              menghadirkan inovasi terdepan
             </p>
           </div>
 
@@ -223,12 +235,16 @@ export default function AboutPage() {
                 <h3 className="text-xl font-semibold mb-1">Andi Wijaya</h3>
                 <p className="text-blue-600 mb-3 text-sm">CEO & Co-founder</p>
                 <p className="text-gray-700 text-sm mb-3">
-                  Ex-Product Director Gojek dengan 12 tahun pengalaman membangun produk digital yang digunakan jutaan
-                  orang. Alumni Stanford MBA.
+                  Ex-Product Director Gojek dengan 12 tahun pengalaman membangun produk digital yang
+                  digunakan jutaan orang. Alumni Stanford MBA.
                 </p>
                 <div className="flex gap-2">
-                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Strategy</span>
-                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Leadership</span>
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    Strategy
+                  </span>
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    Leadership
+                  </span>
                 </div>
               </div>
             </div>
@@ -247,12 +263,16 @@ export default function AboutPage() {
                 <h3 className="text-xl font-semibold mb-1">Budi Santoso</h3>
                 <p className="text-blue-600 mb-3 text-sm">CTO & Co-founder</p>
                 <p className="text-gray-700 text-sm mb-3">
-                  Former Senior Engineer di Google Singapore. Expert dalam AI/ML dan sistem terdistribusi. Pemegang 3
-                  paten teknologi.
+                  Former Senior Engineer di Google Singapore. Expert dalam AI/ML dan sistem
+                  terdistribusi. Pemegang 3 paten teknologi.
                 </p>
                 <div className="flex gap-2">
-                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">AI/ML</span>
-                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Backend</span>
+                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                    AI/ML
+                  </span>
+                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                    Backend
+                  </span>
                 </div>
               </div>
             </div>
@@ -271,12 +291,16 @@ export default function AboutPage() {
                 <h3 className="text-xl font-semibold mb-1">Dewi Lestari</h3>
                 <p className="text-blue-600 mb-3 text-sm">COO</p>
                 <p className="text-gray-700 text-sm mb-3">
-                  Ex-Operations Director Tokopedia dengan track record scaling operations dari 0 hingga 10M+ transaksi.
-                  Expert dalam process optimization.
+                  Ex-Operations Director Tokopedia dengan track record scaling operations dari 0
+                  hingga 10M+ transaksi. Expert dalam process optimization.
                 </p>
                 <div className="flex gap-2">
-                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Operations</span>
-                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Scaling</span>
+                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                    Operations
+                  </span>
+                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                    Scaling
+                  </span>
                 </div>
               </div>
             </div>
@@ -295,12 +319,16 @@ export default function AboutPage() {
                 <h3 className="text-xl font-semibold mb-1">Eko Priyanto</h3>
                 <p className="text-blue-600 mb-3 text-sm">Head of Marketing</p>
                 <p className="text-gray-700 text-sm mb-3">
-                  Growth hacker berpengalaman yang berhasil mengakuisisi 1M+ users untuk 3 startup unicorn. Specialist
-                  dalam digital marketing dan viral growth.
+                  Growth hacker berpengalaman yang berhasil mengakuisisi 1M+ users untuk 3 startup
+                  unicorn. Specialist dalam digital marketing dan viral growth.
                 </p>
                 <div className="flex gap-2">
-                  <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Growth</span>
-                  <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Marketing</span>
+                  <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">
+                    Growth
+                  </span>
+                  <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">
+                    Marketing
+                  </span>
                 </div>
               </div>
             </div>
@@ -316,8 +344,8 @@ export default function AboutPage() {
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold mb-2">Mari Berkolaborasi</h2>
                 <p className="text-gray-700 text-lg">
-                  Punya ide kerjasama, pertanyaan bisnis, atau ingin bergabung dengan tim kami? Kami selalu terbuka
-                  untuk diskusi yang membangun masa depan industri jasa Indonesia.
+                  Punya ide kerjasama, pertanyaan bisnis, atau ingin bergabung dengan tim kami? Kami
+                  selalu terbuka untuk diskusi yang membangun masa depan industri jasa Indonesia.
                 </p>
               </div>
 
@@ -384,7 +412,9 @@ export default function AboutPage() {
                   </div>
 
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <p className="text-blue-800 font-medium mb-2">Jam Operasional Customer Service:</p>
+                    <p className="text-blue-800 font-medium mb-2">
+                      Jam Operasional Customer Service:
+                    </p>
                     <p className="text-blue-700 text-sm">24/7 melalui aplikasi dan website</p>
                     <p className="text-blue-700 text-sm">Telepon: Senin-Minggu 06:00-24:00 WIB</p>
                   </div>
@@ -393,7 +423,10 @@ export default function AboutPage() {
                 <div>
                   <form className="space-y-4">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Nama Lengkap *
                       </label>
                       <input
@@ -406,7 +439,10 @@ export default function AboutPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Email *
                       </label>
                       <input
@@ -419,7 +455,10 @@ export default function AboutPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="subject"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Subjek
                       </label>
                       <select
@@ -436,7 +475,10 @@ export default function AboutPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="message"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Pesan *
                       </label>
                       <textarea
@@ -468,5 +510,5 @@ export default function AboutPage() {
 
       <Footer />
     </main>
-  )
+  );
 }

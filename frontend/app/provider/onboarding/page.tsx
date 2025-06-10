@@ -40,19 +40,19 @@ export default function ProviderOnboardingPage() {
     serviceTitle: '',
     serviceDescription: '',
     customServiceType: '',
-    
+
     // Lokasi Layanan
     serviceAreas: [],
     customServiceArea: '',
     maxDistance: 10,
-    
+
     // Keahlian dan Pengalaman
     yearsExperience: '',
     skillLevel: 'intermediate',
     specializations: [],
     customSpecialization: '',
     certifications: [],
-    
+
     // Tarif dan Ketersediaan
     baseRate: '',
     rateUnit: 'hourly', // hourly, daily, fixed
@@ -124,7 +124,7 @@ export default function ProviderOnboardingPage() {
   // Handler untuk array fields (service areas, specializations)
   const handleArrayFieldAdd = (field: string, value: string) => {
     if (!value.trim()) return;
-    
+
     setFormData(prev => ({
       ...prev,
       [field]: [...prev[field as keyof typeof prev], value.trim()],
@@ -185,9 +185,12 @@ export default function ProviderOnboardingPage() {
               <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
                 <Check className="h-10 w-10 text-green-600" />
               </div>
-              <h1 className="mb-4 text-2xl font-bold">Selamat! Profil Penyedia Jasa Anda Sudah Lengkap</h1>
+              <h1 className="mb-4 text-2xl font-bold">
+                Selamat! Profil Penyedia Jasa Anda Sudah Lengkap
+              </h1>
               <p className="mb-8 text-gray-600">
-                Informasi yang Anda berikan telah disimpan. Pelanggan sekarang dapat melihat profil dan layanan Anda.
+                Informasi yang Anda berikan telah disimpan. Pelanggan sekarang dapat melihat profil
+                dan layanan Anda.
               </p>
               <div className="space-y-4">
                 <Link
@@ -196,8 +199,8 @@ export default function ProviderOnboardingPage() {
                 >
                   Buka Dashboard
                 </Link>
-                <Link 
-                  href="/provider/services/new" 
+                <Link
+                  href="/provider/services/new"
                   className="block w-full rounded-lg border border-blue-600 px-5 py-3 text-center text-blue-600 hover:bg-blue-50"
                 >
                   Tambah Layanan Baru
@@ -225,32 +228,30 @@ export default function ProviderOnboardingPage() {
             {/* Sidebar Steps */}
             <div className="space-y-1">
               {steps.map((step, index) => (
-                <div 
-                  key={step.id} 
+                <div
+                  key={step.id}
                   className={`flex cursor-pointer items-center rounded-lg p-3 ${
                     activeStepId === step.id ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-100'
                   }`}
                   onClick={() => navigateToStep(step.id)}
                 >
-                  <div 
+                  <div
                     className={`mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full ${
-                      step.completed 
-                        ? 'bg-blue-600 text-white' 
-                        : activeStepId === step.id 
-                        ? 'border-2 border-blue-600 text-blue-600' 
-                        : 'border-2 border-gray-300 text-gray-500'
+                      step.completed
+                        ? 'bg-blue-600 text-white'
+                        : activeStepId === step.id
+                          ? 'border-2 border-blue-600 text-blue-600'
+                          : 'border-2 border-gray-300 text-gray-500'
                     }`}
                   >
-                    {step.completed ? (
-                      <Check className="h-4 w-4" />
-                    ) : (
-                      <span>{index + 1}</span>
-                    )}
+                    {step.completed ? <Check className="h-4 w-4" /> : <span>{index + 1}</span>}
                   </div>
                   <div className="flex-1">
-                    <h3 className={`text-sm font-medium ${
-                      activeStepId === step.id ? 'text-blue-600' : 'text-gray-900'
-                    }`}>
+                    <h3
+                      className={`text-sm font-medium ${
+                        activeStepId === step.id ? 'text-blue-600' : 'text-gray-900'
+                      }`}
+                    >
                       {step.title}
                     </h3>
                     <p className="text-xs text-gray-500">{step.description}</p>
@@ -301,7 +302,7 @@ export default function ProviderOnboardingPage() {
                           <input
                             type="text"
                             value={formData.customServiceType}
-                            onChange={(e) => updateFormData('customServiceType', e.target.value)}
+                            onChange={e => updateFormData('customServiceType', e.target.value)}
                             placeholder="Contoh: Jasa Taman, Jasa Teknisi, dll"
                             className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                             required={formData.serviceType === 'other'}
@@ -316,7 +317,7 @@ export default function ProviderOnboardingPage() {
                         <input
                           type="text"
                           value={formData.serviceTitle}
-                          onChange={(e) => updateFormData('serviceTitle', e.target.value)}
+                          onChange={e => updateFormData('serviceTitle', e.target.value)}
                           placeholder="Contoh: Jasa Perbaikan Listrik Rumah Tangga"
                           className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           required
@@ -329,13 +330,15 @@ export default function ProviderOnboardingPage() {
                         </label>
                         <textarea
                           value={formData.serviceDescription}
-                          onChange={(e) => updateFormData('serviceDescription', e.target.value)}
+                          onChange={e => updateFormData('serviceDescription', e.target.value)}
                           rows={4}
                           placeholder="Jelaskan dengan detail layanan yang Anda tawarkan. Cantumkan keunggulan dan spesifikasi jasa Anda."
                           className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           required
                         />
-                        <p className="mt-1 text-xs text-gray-500">Minimal 50 karakter, maksimal 1000 karakter</p>
+                        <p className="mt-1 text-xs text-gray-500">
+                          Minimal 50 karakter, maksimal 1000 karakter
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -358,29 +361,35 @@ export default function ProviderOnboardingPage() {
                           <input
                             type="text"
                             value={formData.customServiceArea}
-                            onChange={(e) => updateFormData('customServiceArea', e.target.value)}
+                            onChange={e => updateFormData('customServiceArea', e.target.value)}
                             placeholder="Contoh: Jakarta Selatan, Tangerang"
                             className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           />
                           <button
                             type="button"
-                            onClick={() => handleArrayFieldAdd('serviceAreas', formData.customServiceArea)}
+                            onClick={() =>
+                              handleArrayFieldAdd('serviceAreas', formData.customServiceArea)
+                            }
                             className="ml-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                           >
                             Tambah
                           </button>
                         </div>
-                        <p className="mt-1 text-xs text-gray-500">Tambahkan area atau kota tempat Anda bisa memberikan layanan</p>
+                        <p className="mt-1 text-xs text-gray-500">
+                          Tambahkan area atau kota tempat Anda bisa memberikan layanan
+                        </p>
                       </div>
 
                       {/* Display added service areas */}
                       {formData.serviceAreas.length > 0 && (
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-gray-700">Area Terdaftar:</label>
+                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                            Area Terdaftar:
+                          </label>
                           <div className="flex flex-wrap gap-2">
                             {formData.serviceAreas.map((area: string, index: number) => (
-                              <div 
-                                key={index} 
+                              <div
+                                key={index}
                                 className="flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-800"
                               >
                                 <MapPin className="mr-1 h-3 w-3" />
@@ -407,7 +416,7 @@ export default function ProviderOnboardingPage() {
                           min="1"
                           max="50"
                           value={formData.maxDistance}
-                          onChange={(e) => updateFormData('maxDistance', parseInt(e.target.value))}
+                          onChange={e => updateFormData('maxDistance', parseInt(e.target.value))}
                           className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
                         />
                         <div className="mt-1 flex justify-between text-xs text-gray-500">
@@ -435,7 +444,7 @@ export default function ProviderOnboardingPage() {
                         </label>
                         <select
                           value={formData.yearsExperience}
-                          onChange={(e) => updateFormData('yearsExperience', e.target.value)}
+                          onChange={e => updateFormData('yearsExperience', e.target.value)}
                           className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           required
                         >
@@ -456,7 +465,7 @@ export default function ProviderOnboardingPage() {
                           {[
                             { id: 'beginner', label: 'Pemula' },
                             { id: 'intermediate', label: 'Menengah' },
-                            { id: 'expert', label: 'Ahli' }
+                            { id: 'expert', label: 'Ahli' },
                           ].map(level => (
                             <div
                               key={level.id}
@@ -481,41 +490,49 @@ export default function ProviderOnboardingPage() {
                           <input
                             type="text"
                             value={formData.customSpecialization}
-                            onChange={(e) => updateFormData('customSpecialization', e.target.value)}
+                            onChange={e => updateFormData('customSpecialization', e.target.value)}
                             placeholder="Contoh: Instalasi Listrik, Perbaikan Kabel, dll"
                             className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           />
                           <button
                             type="button"
-                            onClick={() => handleArrayFieldAdd('specializations', formData.customSpecialization)}
+                            onClick={() =>
+                              handleArrayFieldAdd('specializations', formData.customSpecialization)
+                            }
                             className="ml-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                           >
                             Tambah
                           </button>
                         </div>
-                        <p className="mt-1 text-xs text-gray-500">Tambahkan keahlian khusus yang Anda miliki</p>
+                        <p className="mt-1 text-xs text-gray-500">
+                          Tambahkan keahlian khusus yang Anda miliki
+                        </p>
                       </div>
 
                       {/* Display added specializations */}
                       {formData.specializations.length > 0 && (
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-gray-700">Spesialisasi Terdaftar:</label>
+                          <label className="mb-1 block text-sm font-medium text-gray-700">
+                            Spesialisasi Terdaftar:
+                          </label>
                           <div className="flex flex-wrap gap-2">
-                            {formData.specializations.map((specialization: string, index: number) => (
-                              <div 
-                                key={index} 
-                                className="flex items-center rounded-full bg-green-100 px-3 py-1 text-xs text-green-800"
-                              >
-                                {specialization}
-                                <button
-                                  type="button"
-                                  onClick={() => handleArrayFieldRemove('specializations', index)}
-                                  className="ml-2 text-green-800 hover:text-green-900"
+                            {formData.specializations.map(
+                              (specialization: string, index: number) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center rounded-full bg-green-100 px-3 py-1 text-xs text-green-800"
                                 >
-                                  &times;
-                                </button>
-                              </div>
-                            ))}
+                                  {specialization}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleArrayFieldRemove('specializations', index)}
+                                    className="ml-2 text-green-800 hover:text-green-900"
+                                  >
+                                    &times;
+                                  </button>
+                                </div>
+                              )
+                            )}
                           </div>
                         </div>
                       )}
@@ -544,7 +561,7 @@ export default function ProviderOnboardingPage() {
                             <input
                               type="number"
                               value={formData.baseRate}
-                              onChange={(e) => updateFormData('baseRate', e.target.value)}
+                              onChange={e => updateFormData('baseRate', e.target.value)}
                               placeholder="100000"
                               className="w-full rounded-lg border border-gray-300 p-2 pl-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                               required
@@ -558,7 +575,7 @@ export default function ProviderOnboardingPage() {
                           </label>
                           <select
                             value={formData.rateUnit}
-                            onChange={(e) => updateFormData('rateUnit', e.target.value)}
+                            onChange={e => updateFormData('rateUnit', e.target.value)}
                             className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                             required
                           >
@@ -594,21 +611,23 @@ export default function ProviderOnboardingPage() {
                             { id: 'thursday', label: 'Kamis' },
                             { id: 'friday', label: 'Jumat' },
                             { id: 'saturday', label: 'Sabtu' },
-                            { id: 'sunday', label: 'Minggu' }
+                            { id: 'sunday', label: 'Minggu' },
                           ].map(day => (
-                            <div 
+                            <div
                               key={day.id}
                               onClick={() => handleAvailabilityChange(day.id)}
                               className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border p-2 text-center hover:border-blue-500 ${
-                                formData.availableDays[day.id as keyof typeof formData.availableDays]
+                                formData.availableDays[
+                                  day.id as keyof typeof formData.availableDays
+                                ]
                                   ? 'border-blue-500 bg-blue-50'
                                   : 'border-gray-200'
                               }`}
                             >
                               <span className="text-xs">{day.label}</span>
-                              {formData.availableDays[day.id as keyof typeof formData.availableDays] && (
-                                <Check className="h-4 w-4 text-blue-600" />
-                              )}
+                              {formData.availableDays[
+                                day.id as keyof typeof formData.availableDays
+                              ] && <Check className="h-4 w-4 text-blue-600" />}
                             </div>
                           ))}
                         </div>
@@ -622,7 +641,7 @@ export default function ProviderOnboardingPage() {
                           <input
                             type="time"
                             value={formData.availableTimeStart}
-                            onChange={(e) => updateFormData('availableTimeStart', e.target.value)}
+                            onChange={e => updateFormData('availableTimeStart', e.target.value)}
                             className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           />
                         </div>
@@ -633,7 +652,7 @@ export default function ProviderOnboardingPage() {
                           <input
                             type="time"
                             value={formData.availableTimeEnd}
-                            onChange={(e) => updateFormData('availableTimeEnd', e.target.value)}
+                            onChange={e => updateFormData('availableTimeEnd', e.target.value)}
                             className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           />
                         </div>
@@ -679,4 +698,4 @@ export default function ProviderOnboardingPage() {
       </div>
     </div>
   );
-} 
+}
