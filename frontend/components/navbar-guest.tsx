@@ -42,14 +42,14 @@ export function NavbarGuest() {
                 ></span>
               </Link>
               <Link
-                href="#"
+                href="/how-it-works"
                 className={`text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap`}
               >
                 <span className="relative z-10">Cara Kerja</span>
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 scale-x-0 group-hover:scale-x-100"></span>
               </Link>
               <Link
-                href="#"
+                href="/about"
                 className={`text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap`}
               >
                 <span className="relative z-10">Tentang Kami</span>
