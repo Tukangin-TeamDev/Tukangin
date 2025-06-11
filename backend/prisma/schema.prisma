@@ -173,8 +173,10 @@ model Booking {
   latitude      Float
   longitude     Float
   notes         String?
-  scheduledAt   DateTime
+  scheduledAt   DateTime?
   completedAt   DateTime?
+  bookingNumber String         @unique
+  estimatedArrival DateTime?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
@@ -186,6 +188,7 @@ model Booking {
   chatMessages  ChatMessage[]
   statusUpdates StatusUpdate[]
   invoices      Invoice[]
+  requotes      Requote[]
 }
 
 // BookingService model untuk relasi many-to-many antara Booking dan Service
@@ -223,11 +226,17 @@ model Payment {
   status        PaymentStatus @default(PENDING)
   paymentMethod String?
   transactionId String?
+  platformFee   Float         @default(0)
+  escrowNumber  String?
+  escrowDate    DateTime?
+  releaseDate   DateTime?
+  paymentProofUrl String?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   
   // Payment relationships
   invoices      Invoice[]
+  transactions  Transaction[]
 }
 
 // Status Payment
@@ -400,4 +409,48 @@ model AuditLog {
   ipAddress   String?
   userAgent   String?
   createdAt   DateTime @default(now())
+}
+
+// Transaction model
+model Transaction {
+  id             String   @id @default(uuid())
+  paymentId      String
+  payment        Payment  @relation(fields: [paymentId], references: [id])
+  userId         String
+  amount         Float
+  transactionType String  // "ESCROW_IN", "ESCROW_OUT", "WITHDRAWAL", "REFUND"
+  status         String   // "PENDING", "SUCCESS", "FAILED"
+  description    String
+  reference      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// Wallet model
+model Wallet {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  balance     Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Requote model
+model Requote {
+  id          String        @id @default(uuid())
+  bookingId   String
+  booking     Booking       @relation(fields: [bookingId], references: [id])
+  amount      Float
+  reason      String
+  description String
+  status      RequoteStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+// Status Requote
+enum RequoteStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 } 

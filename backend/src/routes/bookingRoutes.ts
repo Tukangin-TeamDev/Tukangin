@@ -4,14 +4,32 @@ import * as PaymentController from '../controllers/paymentController';
 import * as MessageController from '../controllers/messageController';
 import * as ReviewController from '../controllers/reviewController';
 import * as DisputeController from '../controllers/disputeController';
-import { authenticate, authorize } from '../middleware/authMiddleware';
-import { validateRequest } from '../middleware/validationMiddleware';
+import * as TrackingController from '../controllers/trackingController';
+import * as InvoiceController from '../controllers/invoiceController';
+import { authMiddleware as authenticate, authorize } from '../middleware/authMiddleware';
 import { upload } from '../middleware/multerMiddleware';
 import * as BookingSchema from '../schemas/bookingSchema';
 import * as PaymentSchema from '../schemas/paymentSchema';
 import * as MessageSchema from '../schemas/messageSchema';
 import * as ReviewSchema from '../schemas/reviewSchema';
 import * as DisputeSchema from '../schemas/disputeSchema';
+import * as TrackingSchema from '../schemas/trackingSchema';
+
+// Function untuk validasi request menggunakan schema
+const validateRequest = (schema: any) => {
+  return (req: any, res: any, next: any) => {
+    try {
+      schema.parse({
+        body: req.body,
+        query: req.query,
+        params: req.params
+      });
+      next();
+    } catch (error: any) {
+      next(error);
+    }
+  };
+};
 
 const router = Router();
 
@@ -227,6 +245,56 @@ router.post(
   authenticate,
   upload.single('file'),
   DisputeController.addDisputeAttachment
+);
+
+/**
+ * Tracking Routes
+ */
+// Update provider location
+router.post(
+  '/:bookingId/tracking/location',
+  authenticate,
+  authorize(['PROVIDER']),
+  validateRequest(TrackingSchema.updateLocationSchema),
+  TrackingController.updateProviderLocation
+);
+
+// Get tracking data
+router.get(
+  '/:bookingId/tracking',
+  authenticate,
+  TrackingController.getTrackingData
+);
+
+/**
+ * Invoice Routes
+ */
+// Generate invoice for booking
+router.post(
+  '/:bookingId/invoice',
+  authenticate,
+  InvoiceController.generateInvoice
+);
+
+// Get invoice by ID
+router.get(
+  '/invoice/:invoiceId',
+  authenticate,
+  InvoiceController.getInvoiceById
+);
+
+// Download invoice as PDF
+router.get(
+  '/invoice/:invoiceId/download',
+  authenticate,
+  InvoiceController.downloadInvoice
+);
+
+// Get all invoices for current user
+router.get(
+  '/invoices',
+  authenticate,
+  InvoiceController.getUserInvoices
 );
 
 export default router;

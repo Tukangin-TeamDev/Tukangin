@@ -1,36 +1,25 @@
 /**
- * Calculate distance between two coordinates using Haversine formula
- * @param lat1 Latitude of first point
- * @param lon1 Longitude of first point
- * @param lat2 Latitude of second point
- * @param lon2 Longitude of second point
+ * Calculate distance between two coordinate points using haversine formula
+ * @param lat1 Latitude of point 1
+ * @param lon1 Longitude of point 1
+ * @param lat2 Latitude of point 2
+ * @param lon2 Longitude of point 2
  * @returns Distance in kilometers
  */
-export const calculateDistance = (
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-): number => {
-  // Radius of the Earth in kilometers
-  const earthRadius = 6371;
+export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+  const R = 6371; // Radius of Earth in kilometers
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
 
-  // Convert degrees to radians
-  const toRadians = (degrees: number) => degrees * (Math.PI / 180);
-
-  // Calculate differences
-  const dLat = toRadians(lat2 - lat1);
-  const dLon = toRadians(lon2 - lon1);
-
-  // Calculate haversine formula
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  // Distance in kilometers
-  const distance = earthRadius * c;
+  const distance = R * c;
 
   return distance;
 };
@@ -65,19 +54,32 @@ export const formatLocation = (lat: number, lng: number): string => {
 };
 
 /**
- * Calculate ETA based on distance
- * @param distance Distance in kilometers
- * @param speedKmh Average speed in km/h (default: 30)
- * @returns ETA in minutes
+ * Calculate ETA (Estimated Time of Arrival) based on current location and destination
+ * @param origin Origin coordinates (provider's current location)
+ * @param destination Destination coordinates (customer's location)
+ * @param avgSpeedKmh Average speed in km/h, defaults to 30 km/h
+ * @returns Estimated time of arrival as a Date object
  */
-export const calculateETA = (distance: number, speedKmh: number = 30): number => {
-  // Time in hours = distance / speed
-  const timeHours = distance / speedKmh;
+export const calculateETA = (
+  origin: { latitude: number; longitude: number },
+  destination: { latitude: number; longitude: number },
+  avgSpeedKmh = 30
+): Date => {
+  const distance = calculateDistance(
+    origin.latitude,
+    origin.longitude,
+    destination.latitude,
+    destination.longitude
+  );
 
-  // Convert to minutes
-  const timeMinutes = Math.ceil(timeHours * 60);
-
-  return timeMinutes;
+  // Calculate travel time in milliseconds
+  const travelTimeMs = (distance / avgSpeedKmh) * 60 * 60 * 1000;
+  
+  // Add travel time to current time to get ETA
+  const eta = new Date();
+  eta.setTime(eta.getTime() + travelTimeMs);
+  
+  return eta;
 };
 
 /**
@@ -99,4 +101,41 @@ export const isWithinServiceRadius = (
   const distance = calculateDistance(providerLat, providerLng, customerLat, customerLng);
 
   return distance <= serviceRadius;
+};
+
+/**
+ * Get address from coordinates using geocoding service
+ * @param latitude Latitude
+ * @param longitude Longitude
+ * @returns Promise with address string
+ */
+export const getAddressFromCoords = async (
+  latitude: number,
+  longitude: number
+): Promise<string> => {
+  // Implementation would typically use a geocoding service like Google Maps API
+  // For now, just return the coordinates as a string
+  return `${latitude}, ${longitude}`;
+};
+
+/**
+ * Calculate region info for map display
+ * @param latitude Center latitude
+ * @param longitude Center longitude
+ * @param latitudeDelta Optional latitude delta, defaults to 0.01
+ * @param longitudeDelta Optional longitude delta, defaults to 0.01
+ * @returns Region object for map display
+ */
+export const calculateRegion = (
+  latitude: number,
+  longitude: number,
+  latitudeDelta = 0.01,
+  longitudeDelta = 0.01
+) => {
+  return {
+    latitude,
+    longitude,
+    latitudeDelta,
+    longitudeDelta,
+  };
 };

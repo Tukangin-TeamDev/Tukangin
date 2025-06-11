@@ -1,17 +1,52 @@
 /**
  * Generate unique booking number
- * Format: TKG-YYYYMMDD-XXXXX (TKG-20230523-12345)
+ * Format: BK-YYYYMMDD-XXXXX (X is random number)
+ * @returns Booking number string
  */
 export const generateBookingNumber = (): string => {
-  const prefix = 'TKG';
-  const today = new Date();
-  const dateStr =
-    today.getFullYear() +
-    String(today.getMonth() + 1).padStart(2, '0') +
-    String(today.getDate()).padStart(2, '0');
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
   const random = Math.floor(10000 + Math.random() * 90000);
+  
+  return `BK-${year}${month}${day}-${random}`;
+};
 
-  return `${prefix}-${dateStr}-${random}`;
+/**
+ * Generate unique invoice number
+ * Format: INV-YYYYMMDD-XXXX (X is random number)
+ * @returns Invoice number string
+ */
+export const generateInvoiceNumber = (): string => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  const random = Math.floor(1000 + Math.random() * 9000);
+  
+  return `INV-${year}${month}${day}-${random}`;
+};
+
+/**
+ * Generate unique transaction ID
+ * Format: TRX-YYYYMMDD-XXXXXX (X is random alphanumeric)
+ * @returns Transaction ID string
+ */
+export const generateTransactionId = (): string => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  
+  // Generate random alphanumeric string
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let random = '';
+  for (let i = 0; i < 6; i++) {
+    random += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  
+  return `TRX-${year}${month}${day}-${random}`;
 };
 
 /**

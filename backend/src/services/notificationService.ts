@@ -2,81 +2,149 @@ import prisma from '../config/prisma';
 import { io } from '../config/socket';
 import logger from '../utils/logger';
 
+interface NotificationMetadata {
+  [key: string]: any;
+}
+
 /**
- * Send notification to user
- * @param userId User ID to send notification to
- * @param title Title of notification
- * @param message Message content
- * @param type Notification type (booking, chat, payment, system, etc.)
- * @param data Additional data in JSON format
- * @returns Created notification
+ * Mengirim notifikasi ke pengguna
+ * @param userId ID pengguna yang akan menerima notifikasi
+ * @param title Judul notifikasi
+ * @param message Pesan notifikasi
+ * @param type Tipe notifikasi ('booking', 'payment', 'message', 'system', dll)
+ * @param metadata Data tambahan untuk notifikasi (untuk deeplink/action)
+ * @returns Boolean sukses atau tidak
  */
 export const sendNotification = async (
   userId: string,
   title: string,
   message: string,
   type: string,
-  data?: Record<string, any>
-) => {
+  metadata?: NotificationMetadata
+): Promise<boolean> => {
   try {
-    // Create notification in database
+    // Simpan notifikasi ke database
     const notification = await prisma.notification.create({
       data: {
         userId,
         title,
         message,
         type,
-        data: data || {},
-        read: false,
+        metadata: metadata ? JSON.stringify(metadata) : null,
       },
     });
 
-    // Emit notification via Socket.IO
-    io.to(`user:${userId}`).emit('notification', {
+    // Kirim notifikasi melalui WebSocket
+    io.to(`user_${userId}`).emit('notification', {
       id: notification.id,
       title,
       message,
       type,
-      data,
+      metadata,
       createdAt: notification.createdAt,
     });
 
-    // Return created notification
-    return notification;
+    // Jika kamu menggunakan push notification (FCM, APN), kode akan di sini
+    // Cari device tokens dan kirim push
+    const userDevices = await prisma.device.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    if (userDevices.length > 0) {
+      // Contoh implementasi akan memanggil Firebase atau service push notification lainnya
+      // await sendPushNotification(userDevices, title, message, metadata);
+      logger.info(`Push notification akan dikirim ke ${userDevices.length} device`);
+    }
+
+    return true;
   } catch (error) {
-    logger.error('Notification sending error:', error);
-    throw error;
+    logger.error('Error sending notification:', error);
+    return false;
   }
 };
 
 /**
- * Mark notification as read
- * @param notificationId Notification ID
- * @param userId User ID
- * @returns Updated notification
+ * Menandai notifikasi sebagai telah dibaca
+ * @param notificationId ID notifikasi
+ * @param userId ID pengguna (untuk verifikasi)
+ * @returns Boolean sukses atau tidak
  */
-export const markNotificationAsRead = async (notificationId: string, userId: string) => {
+export const markNotificationAsRead = async (
+  notificationId: string,
+  userId: string
+): Promise<boolean> => {
   try {
-    // Find notification
-    const notification = await prisma.notification.findUnique({
-      where: { id: notificationId },
+    const notification = await prisma.notification.findFirst({
+      where: {
+        id: notificationId,
+        userId,
+      },
     });
 
-    // Check if notification belongs to user
-    if (!notification || notification.userId !== userId) {
-      throw new Error('Notification not found or unauthorized');
+    if (!notification) {
+      return false;
     }
 
-    // Update notification
-    const updatedNotification = await prisma.notification.update({
-      where: { id: notificationId },
-      data: { read: true },
+    await prisma.notification.update({
+      where: {
+        id: notificationId,
+      },
+      data: {
+        isRead: true,
+      },
     });
 
-    return updatedNotification;
+    return true;
   } catch (error) {
-    logger.error('Mark notification as read error:', error);
-    throw error;
+    logger.error('Error marking notification as read:', error);
+    return false;
+  }
+};
+
+/**
+ * Menandai semua notifikasi pengguna sebagai telah dibaca
+ * @param userId ID pengguna
+ * @returns Boolean sukses atau tidak
+ */
+export const markAllNotificationsAsRead = async (userId: string): Promise<boolean> => {
+  try {
+    await prisma.notification.updateMany({
+      where: {
+        userId,
+        isRead: false,
+      },
+      data: {
+        isRead: true,
+      },
+    });
+
+    return true;
+  } catch (error) {
+    logger.error('Error marking all notifications as read:', error);
+    return false;
+  }
+};
+
+/**
+ * Mengambil jumlah notifikasi yang belum dibaca
+ * @param userId ID pengguna
+ * @returns Jumlah notifikasi yang belum dibaca
+ */
+export const getUnreadNotificationCount = async (userId: string): Promise<number> => {
+  try {
+    const count = await prisma.notification.count({
+      where: {
+        userId,
+        isRead: false,
+      },
+    });
+
+    return count;
+  } catch (error) {
+    logger.error('Error getting unread notification count:', error);
+    return 0;
   }
 };
 
@@ -126,30 +194,6 @@ export const getUserNotifications = async (
 };
 
 /**
- * Mark all notifications as read
- * @param userId User ID
- * @returns Number of notifications updated
- */
-export const markAllNotificationsAsRead = async (userId: string) => {
-  try {
-    const result = await prisma.notification.updateMany({
-      where: {
-        userId,
-        read: false,
-      },
-      data: {
-        read: true,
-      },
-    });
-
-    return result.count;
-  } catch (error) {
-    logger.error('Mark all notifications as read error:', error);
-    throw error;
-  }
-};
-
-/**
  * Delete notification
  * @param notificationId Notification ID
  * @param userId User ID
@@ -175,27 +219,6 @@ export const deleteNotification = async (notificationId: string, userId: string)
     return true;
   } catch (error) {
     logger.error('Delete notification error:', error);
-    throw error;
-  }
-};
-
-/**
- * Get unread notification count
- * @param userId User ID
- * @returns Count of unread notifications
- */
-export const getUnreadNotificationCount = async (userId: string) => {
-  try {
-    const count = await prisma.notification.count({
-      where: {
-        userId,
-        read: false,
-      },
-    });
-
-    return count;
-  } catch (error) {
-    logger.error('Get unread notification count error:', error);
     throw error;
   }
 };
