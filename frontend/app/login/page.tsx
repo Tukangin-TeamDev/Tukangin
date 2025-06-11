@@ -2,11 +2,14 @@
 
 import type React from 'react';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
 import { validateEmail } from '../../lib/validation';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -15,6 +18,19 @@ export default function LoginPage() {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  
+  const { login, isAuthenticated } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirectTo');
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push(redirectTo || '/dashboard');
+    }
+  }, [isAuthenticated, router, redirectTo]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -51,20 +67,114 @@ export default function LoginPage() {
 
     if (!isValid) return;
 
-    // Simulate login process
+    // Login process
     setIsLoading(true);
 
     try {
-      // Here you would normally call your authentication API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Redirect to dashboard or home page after successful login
-      window.location.href = '/dashboard';
+      const result = await login(email, password);
+      
+      if (result.success) {
+        toast.success('Login berhasil!');
+        if (result.redirectTo) {
+          router.push(result.redirectTo);
+        } else {
+          router.push(redirectTo || '/dashboard');
+        }
+      } else if (result.requireOtp) {
+        // Redirect to OTP verification
+        router.push(`/verify-otp?email=${encodeURIComponent(email)}&token=${encodeURIComponent(result.partialToken || '')}`);
+      } else if (result.needVerification) {
+        // Redirect to email verification
+        router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+      } else {
+        toast.error(result.message || 'Login gagal');
+        setPasswordError(result.message || 'Email atau password salah');
+      }
     } catch (error) {
       console.error('Login failed:', error);
+      toast.error('Terjadi kesalahan saat login');
       setPasswordError('Email atau password salah');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Handle Google login
+  const handleGoogleLogin = async () => {
+    setIsGoogleLoading(true);
+    
+    try {
+      // Memuat Google Auth script jika belum ada
+      if (!window.google) {
+        await loadGoogleAuthScript();
+      }
+      
+      window.google.accounts.id.initialize({
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        callback: handleGoogleResponse,
+      });
+
+      window.google.accounts.id.prompt();
+    } catch (error) {
+      console.error('Google auth error:', error);
+      toast.error('Gagal memuat autentikasi Google');
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
+  // Load Google Auth script
+  const loadGoogleAuthScript = () => {
+    return new Promise<void>((resolve, reject) => {
+      try {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Failed to load Google script'));
+        document.head.appendChild(script);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  // Handle Google response
+  const handleGoogleResponse = async (response: any) => {
+    if (!response || !response.credential) {
+      console.error('Invalid Google response');
+      toast.error('Autentikasi Google gagal');
+      return;
+    }
+
+    setIsGoogleLoading(true);
+    try {
+      const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/auth/google`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: response.credential,
+        }),
+      }).then(res => res.json());
+
+      if (result.success) {
+        // Save token
+        localStorage.setItem('accessToken', result.token);
+        localStorage.setItem('user', JSON.stringify(result.data));
+        
+        toast.success('Login dengan Google berhasil!');
+        router.push(result.redirectTo || redirectTo || '/dashboard');
+      } else {
+        toast.error(result.message || 'Login dengan Google gagal');
+      }
+    } catch (error) {
+      console.error('Google login API error:', error);
+      toast.error('Terjadi kesalahan saat login dengan Google');
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
@@ -121,7 +231,7 @@ export default function LoginPage() {
           </div>
 
           <Link
-            href="/home"
+            href="/how-it-works"
             className="group flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-2 text-sm font-medium text-white shadow-md transition-all hover:from-blue-700 hover:to-blue-600 hover:shadow-lg"
           >
             <span>Pelajari lebih lanjut</span>
@@ -136,7 +246,7 @@ export default function LoginPage() {
         <div className="mb-4 flex flex-col items-center lg:hidden">
           <div className="relative mb-2 h-16 w-16 sm:h-20 sm:w-20">
             <Image
-              src="/placeholder.svg?height=96&width=96"
+              src="/logo-tukangin.png"
               alt="Tukangin Logo"
               width={96}
               height={96}
@@ -251,74 +361,92 @@ export default function LoginPage() {
                           r="10"
                           stroke="currentColor"
                           strokeWidth="4"
-                        ></circle>
+                        />
                         <path
                           className="opacity-75"
                           fill="currentColor"
                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
+                        />
                       </svg>
-                      Memproses...
+                      Sedang Masuk...
                     </>
                   ) : (
                     'Masuk'
                   )}
                 </button>
-
-                <div className="text-center">
-                  <span className="text-xs text-gray-500 sm:text-sm">
-                    Belum punya akun Tukangin?
-                  </span>{' '}
-                  <Link
-                    href="/register"
-                    className="text-xs font-medium text-blue-600 transition-colors hover:text-blue-800 sm:text-sm"
-                  >
-                    Daftar Sekarang
-                  </Link>
+                
+                <div className="relative flex items-center py-1">
+                  <div className="flex-grow border-t border-gray-300"></div>
+                  <span className="mx-3 flex-shrink text-xs text-gray-400">atau</span>
+                  <div className="flex-grow border-t border-gray-300"></div>
                 </div>
+                
+                <button
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  disabled={isGoogleLoading}
+                  className="inline-flex h-10 w-full items-center justify-center rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-70 sm:h-11"
+                >
+                  {isGoogleLoading ? (
+                    <>
+                      <svg
+                        className="-ml-1 mr-2 h-4 w-4 animate-spin"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      Menghubungkan...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+                        <path
+                          fill="#4285F4"
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        />
+                        <path
+                          fill="#34A853"
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        />
+                        <path
+                          fill="#FBBC05"
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                        />
+                        <path
+                          fill="#EA4335"
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                        />
+                      </svg>
+                      Masuk dengan Google
+                    </>
+                  )}
+                </button>
               </form>
 
-              <div className="flex items-center">
-                <div className="h-px flex-grow bg-gray-200"></div>
-                <span className="px-3 text-xs text-gray-500">atau masuk dengan</span>
-                <div className="h-px flex-grow bg-gray-200"></div>
-              </div>
-
-              <button
-                type="button"
-                className="group flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-700 shadow-sm transition-all duration-300 hover:bg-gray-50 hover:shadow-md sm:h-11 sm:text-sm"
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+              <div className="text-center text-sm text-gray-600 sm:text-left">
+                Belum punya akun?{' '}
+                <Link
+                  href="/register"
+                  className="font-medium text-blue-600 transition-colors hover:text-blue-800"
                 >
-                  <path
-                    d="M18.1711 8.36788H17.5V8.33329H10V11.6666H14.6904C14.0309 13.6501 12.1866 15.0001 10 15.0001C7.23859 15.0001 5.00001 12.7615 5.00001 10.0001C5.00001 7.23868 7.23859 5.00009 10 5.00009C11.2958 5.00009 12.4799 5.48118 13.3867 6.27286L15.7921 3.86743C14.2929 2.45686 12.2645 1.66676 10 1.66676C5.39763 1.66676 1.66667 5.39771 1.66667 10.0001C1.66667 14.6025 5.39763 18.3334 10 18.3334C14.6024 18.3334 18.3333 14.6025 18.3333 10.0001C18.3333 9.44117 18.2746 8.89575 18.1711 8.36788Z"
-                    fill="#4285F4"
-                  />
-                  <path
-                    d="M2.62744 6.12116L5.36745 8.12953C6.10756 6.29511 7.90092 5.00009 10 5.00009C11.2958 5.00009 12.4799 5.48118 13.3867 6.27286L15.7921 3.86743C14.2929 2.45686 12.2645 1.66676 10 1.66676C6.79558 1.66676 4.02087 3.47042 2.62744 6.12116Z"
-                    fill="#EA4335"
-                  />
-                  <path
-                    d="M10 18.3334C12.2142 18.3334 14.2106 17.5832 15.7065 16.2208L13.0913 13.9792C12.2341 14.6335 11.1675 15.0001 10 15.0001C7.82262 15.0001 5.98371 13.6584 5.31731 11.6834L2.57733 13.8434C3.95659 16.5351 6.7615 18.3334 10 18.3334Z"
-                    fill="#34A853"
-                  />
-                  <path
-                    d="M18.1711 8.36788H17.5V8.33329H10V11.6666H14.6904C14.3751 12.6084 13.7692 13.4209 12.9902 13.9792L12.9917 13.9784L15.7069 16.22C15.5069 16.4034 18.3333 14.1667 18.3333 10.0001C18.3333 9.44117 18.2746 8.89575 18.1711 8.36788Z"
-                    fill="#FBBC05"
-                  />
-                </svg>
-                <span>Lanjutkan dengan Google</span>
-              </button>
+                  Daftar sekarang
+                </Link>
+              </div>
             </div>
-          </div>
-
-          <div className="mt-3 text-center text-xs text-gray-500">
-            <p>© {new Date().getFullYear()} Tukangin. Semua hak dilindungi.</p>
           </div>
         </div>
       </div>

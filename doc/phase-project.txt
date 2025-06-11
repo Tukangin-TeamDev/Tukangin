@@ -1,111 +1,59 @@
-Phase 0 – Desain Data & Kontrak (Sekali Saja)
-1.	ERD & schema.prisma
-o	Definisikan semua entitas, relasi, enum, properti (nullable, default).
-o	Simpan di schema.prisma.
-2.	Generate TS Types & Zod Schemas
-o	npx prisma generate + prisma-zod-generator → satu file schema.ts (Zod + TS types).
-o	Ini jadi “master” tipe/data.
-________________________________________
-Phase 1 – Inisiasi Infrastruktur & CI
-1.	Monorepo / Multi-repo Setup
-o	Backend: Express + TS + Prisma
-o	Frontend: Next.js + React + Tailwind + TS
-o	Schema di backend 
-2.	Tooling & Config
-o	TS strict mode, ESLint/Prettier, path alias
-o	CI pipeline:
-Step 1: prisma generate  
-Step 2: build backend  
-Step 3: build frontend  
-Step 4: lint & test  
-3.	Skeleton Code
-o	BE: Express app, middleware (JSON, CORS, Helmet, rate-limit), error handler, audit log.
-o	FE: Next.js config, Tailwind, global providers.
+Deskripsi Singkat & Tujuan Aplikasi
+Aplikasi ini adalah on-demand marketplace jasa teknisi/tukang yang menggabungkan konsep instant-booking ala Gojek dengan fleksibilitas katalog jasa ala e-commerce. Pelanggan memesan satu provider per transaksi, memilih service spesifik yang disediakan provider, tanpa keranjang atau multi-order. Semua pembayaran dikelola via escrow untuk menjamin keamanan dana.
 
-Phase 2 – Infrastruktur Auth & Core Services
-Siapkan fitur dasar yang menjadi prasyarat banyak flow:
-1.	User Authentication & Security
-o	Registrasi & Login (JWT + HTTP-only cookies)
-o	Google OAuth
-o	Email Verification & Forgot Password
-o	Refresh Token & Account Lockout
-o	Two-Factor Authentication
-2.	Provider Onboarding & KYC
-o	Upload & verifikasi dokumen (KTP/SIM/Passport)
-o	Status verifikasi (Pending → Approved → Rejected)
- 
-Phase 3 – Iterasi Feature Driven (MVP → v1.0)
-Urutkan berdasarkan dependency (schema sudah ada) dan value tertinggi:
-1.	Service Management
-o	CRUD layanan (FIXED vs CONSULT), Zod schema, API routes, React hooks, UI listing.
-2.	Fixed-Price Order Flow
-o	Cart per provider, scheduling, checkout → escrow initiation.
-o	Order lifecycle enum & pages/hooks.
-3.	Consultative Order Flow
-o	Chat konsultasi + form kebutuhan + upload media.
-o	Survei lapangan (opsional) → provider offer → customer approval → escrow.
-4.	Payments & Escrow Enhancements
-o	Idempotency key, retry logic, structured enum status.
-o	Komisi & fee otomatis.
-5.	Real-Time Chat & Notifications
-o	WebSocket (atau polling) chat, E2E encryption optional.
-o	Multi-channel notifications (email, SMS, FCM).
-6.	Review & Reputation System
-o	Gated review (hanya setelah COMPLETED/PAID).
-o	Admin moderation UI + aggregate rating caching.
-7.	Dashboards per Role
-o	Admin: user/provider management, dispute resolution, audit log viewer.
-o	Provider: order management, financial summary.
-o	Customer: order history, status tracking, review interface.
-8.	Security & Validation Cross-Cutting
-o	Zod for all request/response.
-o	Centralized error handling, audit-log middleware.
-o	Rate limiter, Helmet, CORS, input/output sanitization.
+Tujuan utama:
 
-Phase 4 – Testing & Quality Gates
-•	CI Job: jika schema.ts berubah tapi tidak ada route/hook yang mem-parsing schema baru → fail.
-•	Code Review Checklist:
-o	Pastikan langkah lengkap.
-o	Tidak ada import ganda atau definisi tipe lokal.
-o	Semua perubahan di-commit terpisah (one feature → one PR).
+Cepat & Instan: satu-klik order, estimasi kedatangan (ETA) real-time.
 
+Transparan: daftar jasa & harga jelas sebelum konfirmasi, status booking terpantau.
 
+Terpercaya: provider terverifikasi, audit log, dispute handling.
 
+Fleksibel: provider bebas menambah/mengelola jasa, promo & loyalty untuk mendorong repeat order.
 
-Phase 5 – Release & Iterasi
-1.	Staging Deploy
-o	Build & deploy BE/FE, jalankan smoke tests.
-2.	Production Release
-o	Monitor Zod parse errors di logs—menandakan ada schema mismatch.
-3.	Feature Toggle
-o	Gunakan feature flag untuk meluncurkan fitur tanpa deploy ulang seluruh aplikasi.
- 
-Phase	Langkah / Fitur	Status
-0 – Desain Data & Kontrak	Finalisasi ERD & schema.prisma	🔲
-	prisma migrate dev & prisma generate + Zod schemas	🔲
-1 – Setup & Infrastruktur	Inisialisasi repo & konfigurasi TS/ESLint/Prettier	🔲
-	CI pipeline (generate → build BE → build FE → lint → test)	🔲
-	Skeleton Express (middleware, error handler, audit-log)	🔲
-	Skeleton Next.js + Tailwind + global providers	🔲
-2 – Core Auth & Onboarding	Registrasi/Login JWT + HTTP-only cookies	🔲
-	Google OAuth	🔲
-	Email verification & forgot-password flow	🔲
-	Refresh token & account lockout	🔲
-	Two-Factor Authentication	🔲
-	Provider KYC (upload dokumen, status verifikasi)	🔲
-3 – Iterasi Feature Driven	Service Management (CRUD layanan FIXED/CONSULT)	🔲
-	Fixed-Price Flow (cart, scheduling, checkout, escrow)	🔲
-	Consultative Flow (chat + form + survei + offer + escrow)	🔲
-	Payments & Escrow (idempotency, retry, enums, komisi/fee)	🔲
-	Real-Time Chat & Notif (WebSocket/E2E, multi-channel)	🔲
-	Review & Reputation (gated review, moderation, caching)	🔲
-	Dashboards per role (Admin / Provider / Customer)	🔲
-	Security & Validation (Zod all req/res, centralized errors)	🔲
-4 – Testing & QA	Unit tests (Zod schemas, service)	🔲
-	Integration tests (Supertest)	🔲
-	E2E tests (Playwright/Cypress)	🔲
-	CI quality gates (fail on schema mismatch)	🔲
-5 – Release & Iterasi	Deploy staging + smoke tests	🔲
-	Production release & monitoring (Zod parse errors)	🔲
-	Feedback loop & backlog grooming	🔲
+1. Fitur Umum (Cross-Role)
+Fitur	Logika Singkat
+Autentikasi & 2FA	Registrasi (email/HP + OTP), login (password/OAuth), JWT di-cookie, OTP SMS/email untuk 2FA.
+Pencarian & Geo-Filter	Cari provider berdasar kategori & lokasi (GPS/radius), filter rating, harga service; infinite scroll + caching SWR.
+Profil & Service Listing	Tampilkan profil provider (nama, rating, badge Verified) dan daftar jasa (nama, deskripsi singkat, harga, unit).
+One-Click Booking	Pilih service → tampil ringkasan (harga final, ETA, durasi estimasi) → konfirmasi → potong dana ke escrow.
+Chat & Attachment	In-app chat pra-service: kirim instruksi, foto/video; quick-reply template untuk kebutuhan umum.
+Live Tracking & Status	Map widget lacak provider “En Route” → “On Site”; update status otomatis, recalculasi ETA jika lalu lintas berubah.
+Pembayaran & Escrow	Dana ditahan di escrow setelah konfirmasi, release otomatis saat pelanggan tekan “Selesai” atau manual release/admin override.
+Notifikasi & Reminder	Push/email/SMS untuk event: booking diterima, En Route, on-site, selesai, invoice ready, promo baru, reminder review.
+Rating & Review	After-service form rating bintang + komentar; provider bisa respond; admin moderasi jika perlu.
+Promo & Loyalty	Voucher (per service/provider/kategori), surge pricing (jam sibuk), poin loyalty (1 poin/Rp10.000) bisa ditukar diskon.
+Audit Log & Dispute	Catat semua aksi penting (booking, chat, payment, status); modul ticketing untuk dispute/refund; admin bisa override escrow.
+Static Content & FAQ	Halaman statis (FAQ, kebijakan) dengan SSG/ISR; search, link ke helpdesk.
+Settings & Preferences	Ubah password, kelola 2FA, notifikasi, metode pembayaran, preferensi bahasa/lokasi.
 
+2. Fitur per Role
+2.1 Admin
+Fitur	Logika Singkat
+Manajemen Kategori & Zona	CRUD kategori jasa & sub-kategori; atur tarif minimum atau zona harga per wilayah.
+Verifikasi & Moderasi	Review dokumen provider (KTP, sertifikat); ubah status Verified/On Hold/Banned; moderasi review dan chat jika dilaporkan.
+Dashboard & Laporan	Grafik real-time: jumlah booking, revenue, rata-rating, dispute rate; filter by periode; export CSV/PDF; drill-down per wilayah/kategori.
+Promo & Surge Pricing	Buat/edit voucher diskon (nominal/%, per service/provider/kategori); atur surge multiplier untuk jam sibuk, malam, weekend.
+Ticketing & Dispute	Daftar tiket dispute; review bukti chat & audit log; approve/refund; manual override escrow; kirim notifikasi hasil ke customer/provider.
+Platform Config	Atur komisi platform, fee survey gratis/berbayar, rate limits, template email/OTP, maintenance mode, integrasi pembayaran.
+
+2.2 Provider (Teknisi/Tukang)
+Fitur	Logika Singkat
+Kelola Profil & Dokumen	Update foto, deskripsi, sertifikasi; upload dokumen verifikasi (KTP, NPWP, sertifikat); pantau status verifikasi.
+Manage Services	CRUD service: nama, kategori, deskripsi, harga, unit (per jam/kunjungan), atribut custom; aktif/non-aktifkan service.
+Availability Toggle	Atur status Available/Offline; auto-reject booking saat offline.
+Order Management	Terima notifikasi booking; preview detail order (service, alamat, instruksi); Accept/Decline.
+Progression & Tracking	Tombol status: En Route → On Site → Completed; kirim notifikasi otomatis setiap transisi; location sharing saat En Route.
+Requote On-Site	Jika scope berubah: kirim penawaran tambahan (harga & deskripsi), customer terima & bayar selisih via escrow.
+Histori & Earnings	Lihat histori booking (tanggal, service, pendapatan, status); grafik ringkasan weekly/monthly; filter periode.
+Withdraw Funds	Ajukan withdraw dari walletBalance; fee komisi dipotong otomatis; notifikasi saat diproses.
+Feedback Management	Pantau review & rating; balas komentar; subscribe notifikasi review baru.
+
+2.3 Customer (Pelanggan)
+Fitur	Logika Singkat
+Find & Book	Pilih kategori → list provider terdekat; pilih provider → pilih service → cek harga final & ETA → konfirmasi booking.
+Chat Pra-Service	Kirim detail tambahan (foto kondisi, lokasi); tunggu balasan provider sebelum berangkat.
+Monitor & Confirm	Lihat map & ETA live; tombol “Selesai” aktif saat provider tandai selesai; tekan untuk release escrow otomatis.
+Payment & Invoice	Otomatis potong ke escrow; invoice in-app & via email; histori pembayaran tersimpan.
+Review & Loyalty	Isi rating + komentar; cek poin loyalty terkumpul; gunakan voucher/poin di booking berikutnya.
+History & Dispute	Daftar booking terdahulu; detail invoice & status; ajukan dispute tiket jika ada masalah; pantau status tiket via notifikasi.
