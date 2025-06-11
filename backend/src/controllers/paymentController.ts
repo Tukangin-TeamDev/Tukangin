@@ -7,11 +7,7 @@ import logger from '../utils/logger';
 /**
  * Get payment details
  */
-export const getPaymentDetails = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getPaymentDetails = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { paymentId } = req.params;
     const userId = req.user!.id;
@@ -20,8 +16,8 @@ export const getPaymentDetails = async (
       where: { id: paymentId },
       include: {
         booking: true,
-        transactions: true
-      }
+        transactions: true,
+      },
     });
 
     if (!payment) {
@@ -32,7 +28,7 @@ export const getPaymentDetails = async (
     const isCustomer = payment.booking.customerId === userId;
     const isProvider = payment.booking.providerId === userId;
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
     const isAdmin = user?.role === 'ADMIN';
 
@@ -42,7 +38,7 @@ export const getPaymentDetails = async (
 
     res.status(200).json({
       success: true,
-      data: payment
+      data: payment,
     });
   } catch (error) {
     next(error);
@@ -52,11 +48,7 @@ export const getPaymentDetails = async (
 /**
  * Process payment to escrow
  */
-export const processPayment = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const processPayment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { paymentId } = req.params;
     const { paymentMethod, paymentProofUrl } = req.body;
@@ -66,8 +58,8 @@ export const processPayment = async (
     const payment = await prisma.payment.findUnique({
       where: { id: paymentId },
       include: {
-        booking: true
-      }
+        booking: true,
+      },
     });
 
     if (!payment) {
@@ -81,11 +73,13 @@ export const processPayment = async (
 
     // Cek status payment
     if (payment.status !== 'PENDING') {
-      return next(new AppError(`Payment dengan status ${payment.status} tidak dapat diproses`, 400));
+      return next(
+        new AppError(`Payment dengan status ${payment.status} tidak dapat diproses`, 400)
+      );
     }
 
     // Proses payment
-    const updatedPayment = await prisma.$transaction(async (prisma) => {
+    const updatedPayment = await prisma.$transaction(async prisma => {
       // 1. Update payment ke status ESCROW
       const updated = await prisma.payment.update({
         where: { id: paymentId },
@@ -94,8 +88,8 @@ export const processPayment = async (
           paymentMethod,
           paymentProofUrl,
           escrowDate: new Date(),
-          escrowNumber: `ESCROW-${Date.now()}`
-        }
+          escrowNumber: `ESCROW-${Date.now()}`,
+        },
       });
 
       // 2. Catat transaksi
@@ -106,8 +100,8 @@ export const processPayment = async (
           transactionType: 'ESCROW_IN',
           amount: payment.amount,
           status: 'SUCCESS',
-          description: `Dana masuk ke escrow untuk booking #${payment.booking.bookingNumber}`
-        }
+          description: `Dana masuk ke escrow untuk booking #${payment.booking.bookingNumber}`,
+        },
       });
 
       return updated;
@@ -129,8 +123,8 @@ export const processPayment = async (
         id: updatedPayment.id,
         status: updatedPayment.status,
         escrowNumber: updatedPayment.escrowNumber,
-        escrowDate: updatedPayment.escrowDate
-      }
+        escrowDate: updatedPayment.escrowDate,
+      },
     });
   } catch (error) {
     next(error);
@@ -140,11 +134,7 @@ export const processPayment = async (
 /**
  * Release escrow to provider
  */
-export const releaseEscrow = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const releaseEscrow = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { paymentId } = req.params;
     const userId = req.user!.id;
@@ -153,8 +143,8 @@ export const releaseEscrow = async (
     const payment = await prisma.payment.findUnique({
       where: { id: paymentId },
       include: {
-        booking: true
-      }
+        booking: true,
+      },
     });
 
     if (!payment) {
@@ -171,46 +161,50 @@ export const releaseEscrow = async (
 
     // Cek status payment
     if (payment.status !== 'ESCROW') {
-      return next(new AppError(`Payment dengan status ${payment.status} tidak dapat direlease`, 400));
+      return next(
+        new AppError(`Payment dengan status ${payment.status} tidak dapat direlease`, 400)
+      );
     }
 
     // Cek status booking
     if (payment.booking.status !== 'COMPLETED') {
-      return next(new AppError('Booking harus dalam status COMPLETED untuk melepaskan dana escrow', 400));
+      return next(
+        new AppError('Booking harus dalam status COMPLETED untuk melepaskan dana escrow', 400)
+      );
     }
 
     // Release escrow dengan transaction
-    const updatedPayment = await prisma.$transaction(async (prisma) => {
+    const updatedPayment = await prisma.$transaction(async prisma => {
       // 1. Update payment ke status COMPLETED
       const updated = await prisma.payment.update({
         where: { id: paymentId },
         data: {
           status: 'COMPLETED',
-          releaseDate: new Date()
-        }
+          releaseDate: new Date(),
+        },
       });
 
       // 2. Hitung jumlah yang diterima provider (setelah dipotong platform fee)
       const netAmount = payment.amount - payment.platformFee;
-      
+
       // 3. Tambahkan ke wallet provider
       const providerWallet = await prisma.wallet.findFirst({
-        where: { userId: payment.booking.providerId }
+        where: { userId: payment.booking.providerId },
       });
 
       if (providerWallet) {
         await prisma.wallet.update({
           where: { id: providerWallet.id },
           data: {
-            balance: { increment: netAmount }
-          }
+            balance: { increment: netAmount },
+          },
         });
       } else {
         await prisma.wallet.create({
           data: {
             userId: payment.booking.providerId,
-            balance: netAmount
-          }
+            balance: netAmount,
+          },
         });
       }
 
@@ -222,8 +216,8 @@ export const releaseEscrow = async (
           transactionType: 'ESCROW_OUT',
           amount: netAmount,
           status: 'SUCCESS',
-          description: `Dana dari escrow untuk booking #${payment.booking.bookingNumber}`
-        }
+          description: `Dana dari escrow untuk booking #${payment.booking.bookingNumber}`,
+        },
       });
 
       return updated;
@@ -244,8 +238,8 @@ export const releaseEscrow = async (
       data: {
         id: updatedPayment.id,
         status: updatedPayment.status,
-        releaseDate: updatedPayment.releaseDate
-      }
+        releaseDate: updatedPayment.releaseDate,
+      },
     });
   } catch (error) {
     next(error);
@@ -255,11 +249,7 @@ export const releaseEscrow = async (
 /**
  * Refund payment to customer
  */
-export const refundPayment = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const refundPayment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { paymentId } = req.params;
     const { refundReason, refundAmount } = req.body;
@@ -269,8 +259,8 @@ export const refundPayment = async (
     const payment = await prisma.payment.findUnique({
       where: { id: paymentId },
       include: {
-        booking: true
-      }
+        booking: true,
+      },
     });
 
     if (!payment) {
@@ -284,7 +274,9 @@ export const refundPayment = async (
 
     // Cek status payment
     if (payment.status !== 'ESCROW') {
-      return next(new AppError(`Payment dengan status ${payment.status} tidak dapat direfund`, 400));
+      return next(
+        new AppError(`Payment dengan status ${payment.status} tidak dapat direfund`, 400)
+      );
     }
 
     // Validasi jumlah refund
@@ -294,7 +286,7 @@ export const refundPayment = async (
     }
 
     // Process refund
-    const updatedPayment = await prisma.$transaction(async (prisma) => {
+    const updatedPayment = await prisma.$transaction(async prisma => {
       // 1. Update payment ke status REFUNDED
       const updated = await prisma.payment.update({
         where: { id: paymentId },
@@ -302,8 +294,8 @@ export const refundPayment = async (
           status: 'REFUNDED',
           refundAmount,
           refundReason,
-          refundDate: new Date()
-        }
+          refundDate: new Date(),
+        },
       });
 
       // 2. Catat transaksi refund
@@ -314,8 +306,8 @@ export const refundPayment = async (
           transactionType: 'REFUND',
           amount: refundAmount,
           status: 'SUCCESS',
-          description: `Refund untuk booking #${payment.booking.bookingNumber}: ${refundReason}`
-        }
+          description: `Refund untuk booking #${payment.booking.bookingNumber}: ${refundReason}`,
+        },
       });
 
       return updated;
@@ -345,8 +337,8 @@ export const refundPayment = async (
         id: updatedPayment.id,
         status: updatedPayment.status,
         refundAmount: updatedPayment.refundAmount,
-        refundDate: updatedPayment.refundDate
-      }
+        refundDate: updatedPayment.refundDate,
+      },
     });
   } catch (error) {
     next(error);
@@ -356,11 +348,7 @@ export const refundPayment = async (
 /**
  * Get wallet balance and transactions
  */
-export const getWallet = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getWallet = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.user!.id;
     const { page = 1, limit = 10 } = req.query;
@@ -368,7 +356,7 @@ export const getWallet = async (
 
     // Get wallet
     let wallet = await prisma.wallet.findFirst({
-      where: { userId }
+      where: { userId },
     });
 
     if (!wallet) {
@@ -376,8 +364,8 @@ export const getWallet = async (
       wallet = await prisma.wallet.create({
         data: {
           userId,
-          balance: 0
-        }
+          balance: 0,
+        },
       });
     }
 
@@ -385,15 +373,15 @@ export const getWallet = async (
     const transactions = await prisma.transaction.findMany({
       where: { userId },
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'desc',
       },
       skip,
-      take: Number(limit)
+      take: Number(limit),
     });
 
     // Count total transactions
     const total = await prisma.transaction.count({
-      where: { userId }
+      where: { userId },
     });
 
     res.status(200).json({
@@ -405,9 +393,9 @@ export const getWallet = async (
           page: Number(page),
           limit: Number(limit),
           total,
-          totalPages: Math.ceil(total / Number(limit))
-        }
-      }
+          totalPages: Math.ceil(total / Number(limit)),
+        },
+      },
     });
   } catch (error) {
     next(error);
@@ -417,18 +405,14 @@ export const getWallet = async (
 /**
  * Request wallet withdrawal (provider)
  */
-export const withdrawWallet = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const withdrawWallet = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { amount, bankAccount, bankName, accountName, accountNumber } = req.body;
     const userId = req.user!.id;
 
     // Validasi user sebagai provider
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
 
     if (!user || user.role !== 'PROVIDER') {
@@ -437,7 +421,7 @@ export const withdrawWallet = async (
 
     // Get wallet
     const wallet = await prisma.wallet.findFirst({
-      where: { userId }
+      where: { userId },
     });
 
     if (!wallet) {
@@ -459,14 +443,14 @@ export const withdrawWallet = async (
     }
 
     // Process withdrawal
-    await prisma.$transaction(async (prisma) => {
+    await prisma.$transaction(async prisma => {
       // 1. Kurangi saldo wallet
       await prisma.wallet.update({
         where: { id: wallet.id },
         data: {
           balance: { decrement: amount },
-          lastWithdraw: new Date()
-        }
+          lastWithdraw: new Date(),
+        },
       });
 
       // 2. Catat transaksi
@@ -477,15 +461,15 @@ export const withdrawWallet = async (
           amount,
           status: 'PENDING', // Status awal pending, akan diubah admin
           description: `Withdrawal ke ${bankName} ${accountNumber}`,
-          referenceNumber: `WD-${Date.now()}`
-        }
+          referenceNumber: `WD-${Date.now()}`,
+        },
       });
     });
 
     // Kirim notifikasi ke admin
     const admins = await prisma.user.findMany({
       where: { role: 'ADMIN' },
-      select: { id: true }
+      select: { id: true },
     });
 
     for (const admin of admins) {
@@ -504,8 +488,8 @@ export const withdrawWallet = async (
       data: {
         amount,
         status: 'PENDING',
-        timestamp: new Date()
-      }
+        timestamp: new Date(),
+      },
     });
   } catch (error) {
     next(error);
@@ -515,11 +499,7 @@ export const withdrawWallet = async (
 /**
  * Process withdrawal (admin)
  */
-export const processWithdrawal = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const processWithdrawal = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { transactionId } = req.params;
     const { status, notes } = req.body;
@@ -537,7 +517,7 @@ export const processWithdrawal = async (
 
     // Validasi transaksi
     const transaction = await prisma.transaction.findUnique({
-      where: { id: transactionId }
+      where: { id: transactionId },
     });
 
     if (!transaction) {
@@ -549,7 +529,9 @@ export const processWithdrawal = async (
     }
 
     if (transaction.status !== 'PENDING') {
-      return next(new AppError(`Transaksi dengan status ${transaction.status} tidak dapat diproses`, 400));
+      return next(
+        new AppError(`Transaksi dengan status ${transaction.status} tidak dapat diproses`, 400)
+      );
     }
 
     // Update transaksi
@@ -557,22 +539,22 @@ export const processWithdrawal = async (
       where: { id: transactionId },
       data: {
         status,
-        description: notes ? `${transaction.description} - ${notes}` : transaction.description
-      }
+        description: notes ? `${transaction.description} - ${notes}` : transaction.description,
+      },
     });
 
     // Jika gagal, kembalikan dana ke wallet
     if (status === 'FAILED') {
       const wallet = await prisma.wallet.findFirst({
-        where: { userId: transaction.userId }
+        where: { userId: transaction.userId },
       });
 
       if (wallet) {
         await prisma.wallet.update({
           where: { id: wallet.id },
           data: {
-            balance: { increment: transaction.amount }
-          }
+            balance: { increment: transaction.amount },
+          },
         });
       }
     }
@@ -591,9 +573,9 @@ export const processWithdrawal = async (
     res.status(200).json({
       success: true,
       message: `Withdrawal berhasil diproses dengan status ${status}`,
-      data: updatedTransaction
+      data: updatedTransaction,
     });
   } catch (error) {
     next(error);
   }
-}; 
+};

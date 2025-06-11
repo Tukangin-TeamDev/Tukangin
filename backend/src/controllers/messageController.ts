@@ -9,18 +9,14 @@ import logger from '../utils/logger';
 /**
  * Send message
  */
-export const sendMessage = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const sendMessage = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId, content, receiverId } = req.body;
     const senderId = req.user!.id;
 
     // Validasi booking
     const booking = await prisma.booking.findUnique({
-      where: { id: bookingId }
+      where: { id: bookingId },
     });
 
     if (!booking) {
@@ -43,11 +39,11 @@ export const sendMessage = async (
 
     if (req.file) {
       const fileType = getFileType(req.file.mimetype);
-      
+
       if (!fileType) {
         return next(new AppError('Format file tidak didukung', 400));
       }
-      
+
       // Upload file ke cloud storage
       const uploadResult = await uploadFileToStorage(
         req.file.buffer,
@@ -67,7 +63,7 @@ export const sendMessage = async (
         receiverId,
         content,
         attachmentUrl,
-        attachmentType
+        attachmentType,
       },
       include: {
         sender: {
@@ -78,19 +74,19 @@ export const sendMessage = async (
             customer: {
               select: {
                 fullName: true,
-                avatarUrl: true
-              }
+                avatarUrl: true,
+              },
             },
             provider: {
               select: {
                 fullName: true,
                 businessName: true,
-                avatarUrl: true
-              }
-            }
-          }
-        }
-      }
+                avatarUrl: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     // Emit pesan via Socket.IO
@@ -101,7 +97,8 @@ export const sendMessage = async (
     if (message.sender.role === 'CUSTOMER' && message.sender.customer) {
       senderName = message.sender.customer.fullName;
     } else if (message.sender.role === 'PROVIDER' && message.sender.provider) {
-      senderName = message.sender.provider.fullName || message.sender.provider.businessName || 'Provider';
+      senderName =
+        message.sender.provider.fullName || message.sender.provider.businessName || 'Provider';
     }
 
     await sendNotification(
@@ -115,7 +112,7 @@ export const sendMessage = async (
     res.status(201).json({
       success: true,
       message: 'Pesan berhasil dikirim',
-      data: message
+      data: message,
     });
   } catch (error) {
     next(error);
@@ -125,11 +122,7 @@ export const sendMessage = async (
 /**
  * Get messages by booking ID
  */
-export const getMessagesByBooking = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getMessagesByBooking = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId } = req.params;
     const userId = req.user!.id;
@@ -138,7 +131,7 @@ export const getMessagesByBooking = async (
 
     // Validasi booking
     const booking = await prisma.booking.findUnique({
-      where: { id: bookingId }
+      where: { id: bookingId },
     });
 
     if (!booking) {
@@ -164,24 +157,24 @@ export const getMessagesByBooking = async (
             customer: {
               select: {
                 fullName: true,
-                avatarUrl: true
-              }
+                avatarUrl: true,
+              },
             },
             provider: {
               select: {
                 fullName: true,
                 businessName: true,
-                avatarUrl: true
-              }
-            }
-          }
-        }
+                avatarUrl: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'desc',
       },
       skip,
-      take: Number(limit)
+      take: Number(limit),
     });
 
     // Hitung total pesan
@@ -192,9 +185,9 @@ export const getMessagesByBooking = async (
       where: {
         bookingId,
         receiverId: userId,
-        read: false
+        read: false,
       },
-      data: { read: true }
+      data: { read: true },
     });
 
     res.status(200).json({
@@ -205,9 +198,9 @@ export const getMessagesByBooking = async (
           page: Number(page),
           limit: Number(limit),
           total,
-          totalPages: Math.ceil(total / Number(limit))
-        }
-      }
+          totalPages: Math.ceil(total / Number(limit)),
+        },
+      },
     });
   } catch (error) {
     next(error);
@@ -217,24 +210,20 @@ export const getMessagesByBooking = async (
 /**
  * Get unread message count
  */
-export const getUnreadMessageCount = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getUnreadMessageCount = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.user!.id;
 
     const count = await prisma.message.count({
       where: {
         receiverId: userId,
-        read: false
-      }
+        read: false,
+      },
     });
 
     res.status(200).json({
       success: true,
-      data: { unreadCount: count }
+      data: { unreadCount: count },
     });
   } catch (error) {
     next(error);
@@ -244,18 +233,14 @@ export const getUnreadMessageCount = async (
 /**
  * Mark message as read
  */
-export const markMessageAsRead = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const markMessageAsRead = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { messageId } = req.params;
     const userId = req.user!.id;
 
     // Validasi pesan
     const message = await prisma.message.findUnique({
-      where: { id: messageId }
+      where: { id: messageId },
     });
 
     if (!message) {
@@ -270,12 +255,12 @@ export const markMessageAsRead = async (
     // Update pesan
     await prisma.message.update({
       where: { id: messageId },
-      data: { read: true }
+      data: { read: true },
     });
 
     res.status(200).json({
       success: true,
-      message: 'Pesan berhasil ditandai sebagai telah dibaca'
+      message: 'Pesan berhasil ditandai sebagai telah dibaca',
     });
   } catch (error) {
     next(error);
@@ -285,18 +270,14 @@ export const markMessageAsRead = async (
 /**
  * Mark all messages as read for a booking
  */
-export const markAllMessagesAsRead = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const markAllMessagesAsRead = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId } = req.params;
     const userId = req.user!.id;
 
     // Validasi booking
     const booking = await prisma.booking.findUnique({
-      where: { id: bookingId }
+      where: { id: bookingId },
     });
 
     if (!booking) {
@@ -313,14 +294,14 @@ export const markAllMessagesAsRead = async (
       where: {
         bookingId,
         receiverId: userId,
-        read: false
+        read: false,
       },
-      data: { read: true }
+      data: { read: true },
     });
 
     res.status(200).json({
       success: true,
-      message: 'Semua pesan berhasil ditandai sebagai telah dibaca'
+      message: 'Semua pesan berhasil ditandai sebagai telah dibaca',
     });
   } catch (error) {
     next(error);
@@ -330,11 +311,7 @@ export const markAllMessagesAsRead = async (
 /**
  * Report message
  */
-export const reportMessage = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const reportMessage = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { messageId } = req.params;
     const { reason } = req.body;
@@ -350,18 +327,18 @@ export const reportMessage = async (
             email: true,
             customer: {
               select: {
-                fullName: true
-              }
+                fullName: true,
+              },
             },
             provider: {
               select: {
                 fullName: true,
-                businessName: true
-              }
-            }
-          }
-        }
-      }
+                businessName: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!message) {
@@ -376,12 +353,12 @@ export const reportMessage = async (
 
     // Get admins
     const admins = await prisma.user.findMany({
-      where: { 
+      where: {
         role: 'ADMIN',
         admin: {
-          adminRole: 'MODERATOR'
-        }
-      }
+          adminRole: 'MODERATOR',
+        },
+      },
     });
 
     // Kirim notifikasi ke admin
@@ -391,20 +368,20 @@ export const reportMessage = async (
         'Laporan Pesan',
         `Pesan di booking #${booking.bookingNumber} dilaporkan: ${reason}`,
         'message_report',
-        { 
-          bookingId: booking.id, 
-          messageId, 
+        {
+          bookingId: booking.id,
+          messageId,
           reportedBy: userId,
-          reason
+          reason,
         }
       );
     }
 
     res.status(200).json({
       success: true,
-      message: 'Laporan berhasil dikirim dan akan ditinjau oleh admin'
+      message: 'Laporan berhasil dikirim dan akan ditinjau oleh admin',
     });
   } catch (error) {
     next(error);
   }
-}; 
+};

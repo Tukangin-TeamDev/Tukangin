@@ -12,7 +12,7 @@ try {
   if (process.env.GOOGLE_CLOUD_PROJECT) {
     storage = new Storage({
       projectId: process.env.GOOGLE_CLOUD_PROJECT,
-      keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
+      keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     });
   } else {
     // Mock storage untuk development
@@ -47,7 +47,7 @@ export const uploadFileToStorage = async (
       // Upload file
       await file.save(fileBuffer, {
         contentType,
-        public: true
+        public: true,
       });
 
       // Return public URL
@@ -140,6 +140,6 @@ export const getFileType = (mimeType: string): string => {
 export const generateUniqueFilename = (originalFilename: string): string => {
   const fileExtension = originalFilename.split('.').pop() || '';
   const uniqueId = uuidv4();
-  
+
   return `${uniqueId}.${fileExtension}`;
-}; 
+};

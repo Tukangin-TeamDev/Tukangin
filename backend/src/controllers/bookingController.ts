@@ -10,26 +10,16 @@ import logger from '../utils/logger';
 /**
  * Create a new booking
  */
-export const createBooking = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const createBooking = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { 
-      providerId, 
-      services, 
-      notes, 
-      scheduledDate, 
-      locationAddress, 
-      locationCoordinates 
-    } = req.body;
+    const { providerId, services, notes, scheduledDate, locationAddress, locationCoordinates } =
+      req.body;
 
     // Pastikan user adalah customer
     const customerId = req.user!.id;
     const customer = await prisma.user.findUnique({
       where: { id: customerId },
-      include: { customer: true }
+      include: { customer: true },
     });
 
     if (!customer || customer.role !== 'CUSTOMER') {
@@ -38,14 +28,14 @@ export const createBooking = async (
 
     // Validasi provider
     const provider = await prisma.user.findFirst({
-      where: { 
+      where: {
         id: providerId,
         role: 'PROVIDER',
-        isActive: true
+        isActive: true,
       },
-      include: { 
-        provider: true
-      }
+      include: {
+        provider: true,
+      },
     });
 
     if (!provider || !provider.provider) {
@@ -68,8 +58,8 @@ export const createBooking = async (
       where: {
         id: { in: serviceIds },
         providerId: provider.provider.id,
-        isActive: true
-      }
+        isActive: true,
+      },
     });
 
     if (availableServices.length !== serviceIds.length) {
@@ -83,12 +73,16 @@ export const createBooking = async (
     for (const serviceItem of services) {
       const service = availableServices.find(s => s.id === serviceItem.serviceId);
       if (!service) {
-        return next(new AppError(`Layanan dengan ID ${serviceItem.serviceId} tidak ditemukan`, 400));
+        return next(
+          new AppError(`Layanan dengan ID ${serviceItem.serviceId} tidak ditemukan`, 400)
+        );
       }
 
       const quantity = serviceItem.quantity || 1;
       if (quantity < service.minimumOrder) {
-        return next(new AppError(`Minimal order untuk ${service.name} adalah ${service.minimumOrder}`, 400));
+        return next(
+          new AppError(`Minimal order untuk ${service.name} adalah ${service.minimumOrder}`, 400)
+        );
       }
 
       const itemTotalPrice = service.price * quantity;
@@ -99,7 +93,7 @@ export const createBooking = async (
         quantity: quantity,
         unitPrice: service.price,
         totalPrice: itemTotalPrice,
-        notes: serviceItem.notes
+        notes: serviceItem.notes,
       });
     }
 
@@ -108,14 +102,16 @@ export const createBooking = async (
     if (locationCoordinates && provider.provider.location) {
       const customerCoords = locationCoordinates.split(',').map(Number);
       const providerCoords = provider.provider.location.split(',').map(Number);
-      
+
       // Hitung estimasi waktu berdasarkan jarak dan kecepatan rata-rata
       if (customerCoords.length === 2 && providerCoords.length === 2) {
         const distance = calculateDistance(
-          customerCoords[0], customerCoords[1],
-          providerCoords[0], providerCoords[1]
+          customerCoords[0],
+          customerCoords[1],
+          providerCoords[0],
+          providerCoords[1]
         );
-        
+
         // Asumsi kecepatan rata-rata 30 km/jam
         const estimatedTravelTimeMs = (distance / 30) * 60 * 60 * 1000;
         estimatedArrival = new Date(Date.now() + estimatedTravelTimeMs);
@@ -126,7 +122,7 @@ export const createBooking = async (
     const bookingNumber = generateBookingNumber();
 
     // Create booking with transaction
-    const booking = await prisma.$transaction(async (prisma) => {
+    const booking = await prisma.$transaction(async prisma => {
       // 1. Buat booking
       const newBooking = await prisma.booking.create({
         data: {
@@ -141,20 +137,20 @@ export const createBooking = async (
           estimatedArrival,
           bookingItems: {
             createMany: {
-              data: bookingItems
-            }
-          }
+              data: bookingItems,
+            },
+          },
         },
         include: {
-          bookingItems: true
-        }
+          bookingItems: true,
+        },
       });
 
       // 2. Buat payment record dengan status PENDING
-      const paymentNumber = `PAY-${new Date().toISOString().slice(0,10).replace(/-/g, '')}${Math.floor(10000 + Math.random() * 90000)}`;
-      
+      const paymentNumber = `PAY-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}${Math.floor(10000 + Math.random() * 90000)}`;
+
       // Platform fee adalah 10% dari total amount
-      const platformFee = totalAmount * 0.1; 
+      const platformFee = totalAmount * 0.1;
 
       await prisma.payment.create({
         data: {
@@ -162,8 +158,8 @@ export const createBooking = async (
           paymentNumber,
           amount: totalAmount,
           platformFee,
-          status: 'PENDING'
-        }
+          status: 'PENDING',
+        },
       });
 
       return newBooking;
@@ -187,8 +183,8 @@ export const createBooking = async (
         bookingNumber: booking.bookingNumber,
         totalAmount,
         estimatedArrival,
-        status: booking.status
-      }
+        status: booking.status,
+      },
     });
   } catch (error) {
     logger.error('Create booking error:', error);
@@ -199,11 +195,7 @@ export const createBooking = async (
 /**
  * Get booking details
  */
-export const getBookingDetails = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getBookingDetails = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId } = req.params;
     const userId = req.user!.id;
@@ -213,8 +205,8 @@ export const getBookingDetails = async (
       include: {
         bookingItems: {
           include: {
-            service: true
-          }
+            service: true,
+          },
         },
         customer: {
           select: {
@@ -223,10 +215,10 @@ export const getBookingDetails = async (
             customer: {
               select: {
                 fullName: true,
-                avatarUrl: true
-              }
-            }
-          }
+                avatarUrl: true,
+              },
+            },
+          },
         },
         provider: {
           select: {
@@ -237,18 +229,18 @@ export const getBookingDetails = async (
                 fullName: true,
                 businessName: true,
                 avatarUrl: true,
-                isVerified: true
-              }
-            }
-          }
+                isVerified: true,
+              },
+            },
+          },
         },
         payment: true,
         trackingUpdates: {
           orderBy: {
-            createdAt: 'desc'
-          }
-        }
-      }
+            createdAt: 'desc',
+          },
+        },
+      },
     });
 
     if (!booking) {
@@ -259,7 +251,7 @@ export const getBookingDetails = async (
     const isCustomer = booking.customerId === userId;
     const isProvider = booking.providerId === userId;
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
     const isAdmin = user?.role === 'ADMIN';
 
@@ -269,7 +261,7 @@ export const getBookingDetails = async (
 
     res.status(200).json({
       success: true,
-      data: booking
+      data: booking,
     });
   } catch (error) {
     next(error);
@@ -279,11 +271,7 @@ export const getBookingDetails = async (
 /**
  * Get all bookings for user
  */
-export const getUserBookings = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getUserBookings = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.user!.id;
     const { status, page = 1, limit = 10 } = req.query;
@@ -291,7 +279,7 @@ export const getUserBookings = async (
 
     // Cek role user
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
 
     if (!user) {
@@ -300,7 +288,7 @@ export const getUserBookings = async (
 
     // Siapkan filter berdasarkan role dan status
     const filter: any = {};
-    
+
     if (user.role === 'CUSTOMER') {
       filter.customerId = userId;
     } else if (user.role === 'PROVIDER') {
@@ -324,10 +312,10 @@ export const getUserBookings = async (
             customer: {
               select: {
                 fullName: true,
-                avatarUrl: true
-              }
-            }
-          }
+                avatarUrl: true,
+              },
+            },
+          },
         },
         provider: {
           select: {
@@ -337,28 +325,28 @@ export const getUserBookings = async (
               select: {
                 fullName: true,
                 businessName: true,
-                avatarUrl: true
-              }
-            }
-          }
+                avatarUrl: true,
+              },
+            },
+          },
         },
         payment: {
           select: {
             status: true,
-            amount: true
-          }
-        }
+            amount: true,
+          },
+        },
       },
       orderBy: {
-        bookingDate: 'desc'
+        bookingDate: 'desc',
       },
       skip,
-      take: Number(limit)
+      take: Number(limit),
     });
 
     // Hitung total
     const total = await prisma.booking.count({
-      where: filter
+      where: filter,
     });
 
     res.status(200).json({
@@ -368,8 +356,8 @@ export const getUserBookings = async (
         page: Number(page),
         limit: Number(limit),
         total,
-        totalPages: Math.ceil(total / Number(limit))
-      }
+        totalPages: Math.ceil(total / Number(limit)),
+      },
     });
   } catch (error) {
     next(error);
@@ -379,11 +367,7 @@ export const getUserBookings = async (
 /**
  * Update booking status (provider)
  */
-export const updateBookingStatus = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const updateBookingStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId } = req.params;
     const { status, location, notes } = req.body;
@@ -393,8 +377,8 @@ export const updateBookingStatus = async (
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
       include: {
-        payment: true
-      }
+        payment: true,
+      },
     });
 
     if (!booking) {
@@ -403,7 +387,7 @@ export const updateBookingStatus = async (
 
     // Cek apakah user adalah provider dari booking ini atau admin
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
 
     const isProvider = booking.providerId === userId;
@@ -431,7 +415,7 @@ export const updateBookingStatus = async (
         isValidTransition = true;
       }
     }
-    
+
     // Customer only transitions
     if (isCustomer) {
       if (
@@ -449,17 +433,19 @@ export const updateBookingStatus = async (
     }
 
     if (!isValidTransition) {
-      return next(new AppError(`Tidak dapat mengubah status dari ${currentStatus} ke ${status}`, 400));
+      return next(
+        new AppError(`Tidak dapat mengubah status dari ${currentStatus} ke ${status}`, 400)
+      );
     }
 
     // Update booking dengan transaction
-    const updatedBooking = await prisma.$transaction(async (prisma) => {
+    const updatedBooking = await prisma.$transaction(async prisma => {
       // 1. Update booking status
       const updated = await prisma.booking.update({
         where: { id: bookingId },
         data: {
-          status: status as any
-        }
+          status: status as any,
+        },
       });
 
       // 2. Tambah tracking update
@@ -468,8 +454,8 @@ export const updateBookingStatus = async (
           bookingId,
           status: status as any,
           location,
-          notes
-        }
+          notes,
+        },
       });
 
       // 3. Jika status menjadi COMPLETED, catat waktu penyelesaian
@@ -477,8 +463,8 @@ export const updateBookingStatus = async (
         await prisma.booking.update({
           where: { id: bookingId },
           data: {
-            completionTime: new Date()
-          }
+            completionTime: new Date(),
+          },
         });
       }
 
@@ -487,8 +473,8 @@ export const updateBookingStatus = async (
         await prisma.booking.update({
           where: { id: bookingId },
           data: {
-            actualArrival: new Date()
-          }
+            actualArrival: new Date(),
+          },
         });
       }
 
@@ -498,31 +484,31 @@ export const updateBookingStatus = async (
           where: { bookingId },
           data: {
             status: 'COMPLETED',
-            releaseDate: new Date()
-          }
+            releaseDate: new Date(),
+          },
         });
 
         // Hitung jumlah yang diterima provider (setelah dipotong platform fee)
         const netAmount = booking.payment.amount - booking.payment.platformFee;
-        
+
         // Tambahkan ke wallet provider
         const providerWallet = await prisma.wallet.findFirst({
-          where: { userId: booking.providerId }
+          where: { userId: booking.providerId },
         });
 
         if (providerWallet) {
           await prisma.wallet.update({
             where: { id: providerWallet.id },
             data: {
-              balance: { increment: netAmount }
-            }
+              balance: { increment: netAmount },
+            },
           });
         } else {
           await prisma.wallet.create({
             data: {
               userId: booking.providerId,
-              balance: netAmount
-            }
+              balance: netAmount,
+            },
           });
         }
 
@@ -534,8 +520,8 @@ export const updateBookingStatus = async (
             transactionType: 'ESCROW_OUT',
             amount: netAmount,
             status: 'SUCCESS',
-            description: `Dana dari escrow untuk booking #${booking.bookingNumber}`
-          }
+            description: `Dana dari escrow untuk booking #${booking.bookingNumber}`,
+          },
         });
       }
 
@@ -588,8 +574,8 @@ export const updateBookingStatus = async (
       message: `Status booking berhasil diubah menjadi ${status}`,
       data: {
         id: updatedBooking.id,
-        status: updatedBooking.status
-      }
+        status: updatedBooking.status,
+      },
     });
   } catch (error) {
     next(error);
@@ -599,11 +585,7 @@ export const updateBookingStatus = async (
 /**
  * Cancel booking (customer)
  */
-export const cancelBooking = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const cancelBooking = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId } = req.params;
     const { reason } = req.body;
@@ -613,8 +595,8 @@ export const cancelBooking = async (
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
       include: {
-        payment: true
-      }
+        payment: true,
+      },
     });
 
     if (!booking) {
@@ -627,10 +609,7 @@ export const cancelBooking = async (
     }
 
     // Cek apakah booking masih dapat dibatalkan
-    if (
-      booking.status !== 'PENDING' && 
-      booking.status !== 'ACCEPTED'
-    ) {
+    if (booking.status !== 'PENDING' && booking.status !== 'ACCEPTED') {
       return next(new AppError('Booking ini tidak dapat dibatalkan', 400));
     }
 
@@ -642,15 +621,15 @@ export const cancelBooking = async (
     }
 
     // Update booking dengan transaction
-    const cancelledBooking = await prisma.$transaction(async (prisma) => {
+    const cancelledBooking = await prisma.$transaction(async prisma => {
       // 1. Update booking status
       const updated = await prisma.booking.update({
         where: { id: bookingId },
         data: {
           status: 'CANCELLED',
           cancellationReason: reason,
-          cancellationFee
-        }
+          cancellationFee,
+        },
       });
 
       // 2. Tambah tracking update
@@ -658,8 +637,8 @@ export const cancelBooking = async (
         data: {
           bookingId,
           status: 'CANCELLED',
-          notes: reason
-        }
+          notes: reason,
+        },
       });
 
       // 3. Update payment status jika perlu
@@ -667,15 +646,15 @@ export const cancelBooking = async (
         if (booking.payment.status === 'ESCROW') {
           // Refund dengan potongan cancellation fee
           const refundAmount = booking.payment.amount - cancellationFee;
-          
+
           await prisma.payment.update({
             where: { id: booking.payment.id },
             data: {
               status: 'REFUNDED',
               refundAmount,
               refundReason: 'Booking dibatalkan oleh customer',
-              refundDate: new Date()
-            }
+              refundDate: new Date(),
+            },
           });
 
           // Catat transaksi refund
@@ -686,15 +665,15 @@ export const cancelBooking = async (
               transactionType: 'REFUND',
               amount: refundAmount,
               status: 'SUCCESS',
-              description: `Refund untuk pembatalan booking #${booking.bookingNumber}`
-            }
+              description: `Refund untuk pembatalan booking #${booking.bookingNumber}`,
+            },
           });
         } else if (booking.payment.status === 'PENDING') {
           await prisma.payment.update({
             where: { id: booking.payment.id },
             data: {
-              status: 'FAILED'
-            }
+              status: 'FAILED',
+            },
           });
         }
       }
@@ -717,8 +696,8 @@ export const cancelBooking = async (
       data: {
         id: cancelledBooking.id,
         status: cancelledBooking.status,
-        cancellationFee
-      }
+        cancellationFee,
+      },
     });
   } catch (error) {
     next(error);
@@ -728,11 +707,7 @@ export const cancelBooking = async (
 /**
  * Create on-site requote (provider)
  */
-export const createRequote = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const createRequote = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId } = req.params;
     const { newAmount, reason } = req.body;
@@ -740,7 +715,7 @@ export const createRequote = async (
 
     // Validasi booking
     const booking = await prisma.booking.findUnique({
-      where: { id: bookingId }
+      where: { id: bookingId },
     });
 
     if (!booking) {
@@ -768,8 +743,8 @@ export const createRequote = async (
         bookingId,
         originalAmount: booking.totalAmount,
         newAmount,
-        reason
-      }
+        reason,
+      },
     });
 
     // Kirim notifikasi ke customer
@@ -784,7 +759,7 @@ export const createRequote = async (
     res.status(201).json({
       success: true,
       message: 'Requote berhasil dibuat',
-      data: requote
+      data: requote,
     });
   } catch (error) {
     next(error);
@@ -794,11 +769,7 @@ export const createRequote = async (
 /**
  * Response to requote (customer)
  */
-export const respondRequote = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const respondRequote = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { requoteId } = req.params;
     const { accept } = req.body;
@@ -808,8 +779,8 @@ export const respondRequote = async (
     const requote = await prisma.requote.findUnique({
       where: { id: requoteId },
       include: {
-        booking: true
-      }
+        booking: true,
+      },
     });
 
     if (!requote) {
@@ -830,27 +801,27 @@ export const respondRequote = async (
 
     // Update requote dan booking jika diterima
     if (accept) {
-      await prisma.$transaction(async (prisma) => {
+      await prisma.$transaction(async prisma => {
         // 1. Update requote
         await prisma.requote.update({
           where: { id: requoteId },
           data: {
             status: newStatus,
-            respondedAt: new Date()
-          }
+            respondedAt: new Date(),
+          },
         });
 
         // 2. Update booking amount
         await prisma.booking.update({
           where: { id: requote.bookingId },
           data: {
-            totalAmount: requote.newAmount
-          }
+            totalAmount: requote.newAmount,
+          },
         });
 
         // 3. Update payment
         const payment = await prisma.payment.findUnique({
-          where: { bookingId: requote.bookingId }
+          where: { bookingId: requote.bookingId },
         });
 
         if (payment) {
@@ -859,10 +830,10 @@ export const respondRequote = async (
             await prisma.payment.update({
               where: { id: payment.id },
               data: {
-                amount: requote.newAmount
-              }
+                amount: requote.newAmount,
+              },
             });
-          } 
+          }
           // Jika payment sudah ESCROW, perlu tambahan untuk selisih
           else if (payment.status === 'ESCROW') {
             const additionalAmount = requote.newAmount - requote.originalAmount;
@@ -873,8 +844,8 @@ export const respondRequote = async (
               where: { id: payment.id },
               data: {
                 amount: requote.newAmount,
-                platformFee: payment.platformFee + additionalPlatformFee
-              }
+                platformFee: payment.platformFee + additionalPlatformFee,
+              },
             });
 
             // Catat transaksi tambahan
@@ -885,8 +856,8 @@ export const respondRequote = async (
                 transactionType: 'PAYMENT',
                 amount: additionalAmount,
                 status: 'SUCCESS',
-                description: `Pembayaran tambahan untuk booking #${requote.booking.bookingNumber}`
-              }
+                description: `Pembayaran tambahan untuk booking #${requote.booking.bookingNumber}`,
+              },
             });
           }
         }
@@ -897,8 +868,8 @@ export const respondRequote = async (
         where: { id: requoteId },
         data: {
           status: newStatus,
-          respondedAt: new Date()
-        }
+          respondedAt: new Date(),
+        },
       });
     }
 
@@ -919,10 +890,10 @@ export const respondRequote = async (
       data: {
         id: requoteId,
         status: newStatus,
-        bookingId: requote.bookingId
-      }
+        bookingId: requote.bookingId,
+      },
     });
   } catch (error) {
     next(error);
   }
-}; 
+};

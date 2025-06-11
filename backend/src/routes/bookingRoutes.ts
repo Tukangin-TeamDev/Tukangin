@@ -28,18 +28,10 @@ router.post(
 );
 
 // Mendapatkan detail booking
-router.get(
-  '/:bookingId',
-  authenticate,
-  BookingController.getBookingDetails
-);
+router.get('/:bookingId', authenticate, BookingController.getBookingDetails);
 
 // Mendapatkan semua booking user
-router.get(
-  '/',
-  authenticate,
-  BookingController.getUserBookings
-);
+router.get('/', authenticate, BookingController.getUserBookings);
 
 // Update status booking
 router.patch(
@@ -79,11 +71,7 @@ router.patch(
  * Payment Routes
  */
 // Mendapatkan detail pembayaran
-router.get(
-  '/payment/:paymentId',
-  authenticate,
-  PaymentController.getPaymentDetails
-);
+router.get('/payment/:paymentId', authenticate, PaymentController.getPaymentDetails);
 
 // Memproses pembayaran ke escrow
 router.post(
@@ -95,11 +83,7 @@ router.post(
 );
 
 // Melepaskan dana escrow ke provider
-router.post(
-  '/payment/:paymentId/release',
-  authenticate,
-  PaymentController.releaseEscrow
-);
+router.post('/payment/:paymentId/release', authenticate, PaymentController.releaseEscrow);
 
 // Refund pembayaran (admin)
 router.post(
@@ -111,11 +95,7 @@ router.post(
 );
 
 // Mendapatkan wallet dan riwayat transaksi
-router.get(
-  '/wallet',
-  authenticate,
-  PaymentController.getWallet
-);
+router.get('/wallet', authenticate, PaymentController.getWallet);
 
 // Melakukan withdrawal dari wallet
 router.post(
@@ -148,32 +128,16 @@ router.post(
 );
 
 // Mendapatkan semua pesan untuk booking tertentu
-router.get(
-  '/:bookingId/messages',
-  authenticate,
-  MessageController.getMessagesByBooking
-);
+router.get('/:bookingId/messages', authenticate, MessageController.getMessagesByBooking);
 
 // Mendapatkan jumlah pesan yang belum dibaca
-router.get(
-  '/messages/unread',
-  authenticate,
-  MessageController.getUnreadMessageCount
-);
+router.get('/messages/unread', authenticate, MessageController.getUnreadMessageCount);
 
 // Menandai pesan sebagai telah dibaca
-router.patch(
-  '/message/:messageId/read',
-  authenticate,
-  MessageController.markMessageAsRead
-);
+router.patch('/message/:messageId/read', authenticate, MessageController.markMessageAsRead);
 
 // Menandai semua pesan sebagai telah dibaca
-router.patch(
-  '/:bookingId/messages/read',
-  authenticate,
-  MessageController.markAllMessagesAsRead
-);
+router.patch('/:bookingId/messages/read', authenticate, MessageController.markAllMessagesAsRead);
 
 // Melaporkan pesan
 router.post(
@@ -196,17 +160,10 @@ router.post(
 );
 
 // Mendapatkan review berdasarkan booking ID
-router.get(
-  '/:bookingId/review',
-  authenticate,
-  ReviewController.getReviewByBooking
-);
+router.get('/:bookingId/review', authenticate, ReviewController.getReviewByBooking);
 
 // Mendapatkan semua review provider
-router.get(
-  '/provider/:providerId/reviews',
-  ReviewController.getProviderReviews
-);
+router.get('/provider/:providerId/reviews', ReviewController.getProviderReviews);
 
 // Merespon review
 router.post(
@@ -247,26 +204,13 @@ router.post(
 );
 
 // Mendapatkan dispute berdasarkan booking ID
-router.get(
-  '/:bookingId/dispute',
-  authenticate,
-  DisputeController.getDisputeByBooking
-);
+router.get('/:bookingId/dispute', authenticate, DisputeController.getDisputeByBooking);
 
 // Mendapatkan semua dispute (admin)
-router.get(
-  '/disputes',
-  authenticate,
-  authorize(['ADMIN']),
-  DisputeController.getAllDisputes
-);
+router.get('/disputes', authenticate, authorize(['ADMIN']), DisputeController.getAllDisputes);
 
 // Mendapatkan dispute berdasarkan user
-router.get(
-  '/disputes/user',
-  authenticate,
-  DisputeController.getUserDisputes
-);
+router.get('/disputes/user', authenticate, DisputeController.getUserDisputes);
 
 // Menyelesaikan dispute (admin)
 router.patch(
@@ -285,4 +229,4 @@ router.post(
   DisputeController.addDisputeAttachment
 );
 
-export default router; 
+export default router;

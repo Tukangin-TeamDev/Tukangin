@@ -23,7 +23,7 @@ const allowedMimeTypes = [
   // Audio
   'audio/mpeg',
   'audio/ogg',
-  'audio/wav'
+  'audio/wav',
 ];
 
 // Ukuran file maksimum (5MB)
@@ -46,5 +46,5 @@ const storage = multer.memoryStorage();
 export const upload = multer({
   storage,
   limits: { fileSize: maxSize },
-  fileFilter
-}); 
+  fileFilter,
+});

@@ -14,25 +14,24 @@ export const calculateDistance = (
 ): number => {
   // Radius of the Earth in kilometers
   const earthRadius = 6371;
-  
+
   // Convert degrees to radians
   const toRadians = (degrees: number) => degrees * (Math.PI / 180);
-  
+
   // Calculate differences
   const dLat = toRadians(lat2 - lat1);
   const dLon = toRadians(lon2 - lon1);
-  
+
   // Calculate haversine formula
-  const a = 
+  const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * 
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  
+    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  
+
   // Distance in kilometers
   const distance = earthRadius * c;
-  
+
   return distance;
 };
 
@@ -41,19 +40,17 @@ export const calculateDistance = (
  * @param locationString Format: "lat,lng"
  * @returns Object with lat and lng
  */
-export const parseLocation = (
-  locationString: string
-): { lat: number, lng: number } | null => {
+export const parseLocation = (locationString: string): { lat: number; lng: number } | null => {
   if (!locationString) return null;
-  
+
   const parts = locationString.split(',');
   if (parts.length !== 2) return null;
-  
+
   const lat = parseFloat(parts[0]);
   const lng = parseFloat(parts[1]);
-  
+
   if (isNaN(lat) || isNaN(lng)) return null;
-  
+
   return { lat, lng };
 };
 
@@ -73,16 +70,13 @@ export const formatLocation = (lat: number, lng: number): string => {
  * @param speedKmh Average speed in km/h (default: 30)
  * @returns ETA in minutes
  */
-export const calculateETA = (
-  distance: number,
-  speedKmh: number = 30
-): number => {
+export const calculateETA = (distance: number, speedKmh: number = 30): number => {
   // Time in hours = distance / speed
   const timeHours = distance / speedKmh;
-  
+
   // Convert to minutes
   const timeMinutes = Math.ceil(timeHours * 60);
-  
+
   return timeMinutes;
 };
 
@@ -102,12 +96,7 @@ export const isWithinServiceRadius = (
   customerLng: number,
   serviceRadius: number
 ): boolean => {
-  const distance = calculateDistance(
-    providerLat,
-    providerLng,
-    customerLat,
-    customerLng
-  );
-  
+  const distance = calculateDistance(providerLat, providerLng, customerLat, customerLng);
+
   return distance <= serviceRadius;
-}; 
+};

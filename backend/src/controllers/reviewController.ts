@@ -7,11 +7,7 @@ import logger from '../utils/logger';
 /**
  * Create review
  */
-export const createReview = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const createReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId, rating, comment } = req.body;
     const reviewerId = req.user!.id;
@@ -23,7 +19,7 @@ export const createReview = async (
 
     // Validasi booking
     const booking = await prisma.booking.findUnique({
-      where: { id: bookingId }
+      where: { id: bookingId },
     });
 
     if (!booking) {
@@ -42,7 +38,7 @@ export const createReview = async (
 
     // Cek apakah sudah ada review untuk booking ini
     const existingReview = await prisma.review.findUnique({
-      where: { bookingId }
+      where: { bookingId },
     });
 
     if (existingReview) {
@@ -50,7 +46,7 @@ export const createReview = async (
     }
 
     // Buat review dengan transaction
-    const review = await prisma.$transaction(async (prisma) => {
+    const review = await prisma.$transaction(async prisma => {
       // 1. Buat review
       const newReview = await prisma.review.create({
         data: {
@@ -58,8 +54,8 @@ export const createReview = async (
           reviewerId,
           receiverId: booking.providerId,
           rating,
-          comment
-        }
+          comment,
+        },
       });
 
       // 2. Update booking status ke REVIEWED
@@ -67,22 +63,22 @@ export const createReview = async (
         where: { id: bookingId },
         data: {
           status: 'REVIEWED',
-          hasFeedback: true
-        }
+          hasFeedback: true,
+        },
       });
 
       // 3. Update provider average rating
       const provider = await prisma.user.findUnique({
         where: { id: booking.providerId },
-        include: { provider: true }
+        include: { provider: true },
       });
 
       if (provider?.provider) {
         // Get all reviews for this provider
         const providerReviews = await prisma.review.findMany({
           where: {
-            receiverId: booking.providerId
-          }
+            receiverId: booking.providerId,
+          },
         });
 
         // Calculate new average rating
@@ -93,8 +89,8 @@ export const createReview = async (
         await prisma.provider.update({
           where: { id: provider.provider.id },
           data: {
-            averageRating
-          }
+            averageRating,
+          },
         });
       }
 
@@ -113,7 +109,7 @@ export const createReview = async (
     res.status(201).json({
       success: true,
       message: 'Review berhasil dibuat',
-      data: review
+      data: review,
     });
   } catch (error) {
     next(error);
@@ -123,18 +119,14 @@ export const createReview = async (
 /**
  * Get review by booking ID
  */
-export const getReviewByBooking = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getReviewByBooking = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId } = req.params;
     const userId = req.user!.id;
 
     // Validasi booking
     const booking = await prisma.booking.findUnique({
-      where: { id: bookingId }
+      where: { id: bookingId },
     });
 
     if (!booking) {
@@ -160,10 +152,10 @@ export const getReviewByBooking = async (
             customer: {
               select: {
                 fullName: true,
-                avatarUrl: true
-              }
-            }
-          }
+                avatarUrl: true,
+              },
+            },
+          },
         },
         receiver: {
           select: {
@@ -173,12 +165,12 @@ export const getReviewByBooking = async (
               select: {
                 fullName: true,
                 businessName: true,
-                avatarUrl: true
-              }
-            }
-          }
-        }
-      }
+                avatarUrl: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!review) {
@@ -187,7 +179,7 @@ export const getReviewByBooking = async (
 
     res.status(200).json({
       success: true,
-      data: review
+      data: review,
     });
   } catch (error) {
     next(error);
@@ -197,11 +189,7 @@ export const getReviewByBooking = async (
 /**
  * Get reviews by provider ID
  */
-export const getProviderReviews = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getProviderReviews = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { providerId } = req.params;
     const { page = 1, limit = 10 } = req.query;
@@ -211,8 +199,8 @@ export const getProviderReviews = async (
     const provider = await prisma.user.findFirst({
       where: {
         id: providerId,
-        role: 'PROVIDER'
-      }
+        role: 'PROVIDER',
+      },
     });
 
     if (!provider) {
@@ -222,43 +210,43 @@ export const getProviderReviews = async (
     // Get reviews
     const reviews = await prisma.review.findMany({
       where: {
-        receiverId: providerId
+        receiverId: providerId,
       },
       include: {
         booking: {
           select: {
             bookingNumber: true,
-            bookingDate: true
-          }
+            bookingDate: true,
+          },
         },
         reviewer: {
           select: {
             customer: {
               select: {
                 fullName: true,
-                avatarUrl: true
-              }
-            }
-          }
-        }
+                avatarUrl: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'desc',
       },
       skip,
-      take: Number(limit)
+      take: Number(limit),
     });
 
     // Hitung total
     const total = await prisma.review.count({
-      where: { receiverId: providerId }
+      where: { receiverId: providerId },
     });
 
     // Hitung rata-rata rating
     const ratingData = await prisma.review.aggregate({
       where: { receiverId: providerId },
       _avg: { rating: true },
-      _count: true
+      _count: true,
     });
 
     res.status(200).json({
@@ -267,15 +255,15 @@ export const getProviderReviews = async (
         reviews,
         stats: {
           averageRating: ratingData._avg.rating || 0,
-          totalReviews: ratingData._count
+          totalReviews: ratingData._count,
         },
         pagination: {
           page: Number(page),
           limit: Number(limit),
           total,
-          totalPages: Math.ceil(total / Number(limit))
-        }
-      }
+          totalPages: Math.ceil(total / Number(limit)),
+        },
+      },
     });
   } catch (error) {
     next(error);
@@ -285,11 +273,7 @@ export const getProviderReviews = async (
 /**
  * Respond to review (provider)
  */
-export const respondToReview = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const respondToReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { reviewId } = req.params;
     const { response } = req.body;
@@ -299,8 +283,8 @@ export const respondToReview = async (
     const review = await prisma.review.findUnique({
       where: { id: reviewId },
       include: {
-        booking: true
-      }
+        booking: true,
+      },
     });
 
     if (!review) {
@@ -309,7 +293,9 @@ export const respondToReview = async (
 
     // Cek apakah user adalah provider yang direview
     if (review.receiverId !== userId) {
-      return next(new AppError('Hanya provider yang direview yang dapat memberikan tanggapan', 403));
+      return next(
+        new AppError('Hanya provider yang direview yang dapat memberikan tanggapan', 403)
+      );
     }
 
     // Cek apakah sudah ada tanggapan
@@ -322,8 +308,8 @@ export const respondToReview = async (
       where: { id: reviewId },
       data: {
         response,
-        responseAt: new Date()
-      }
+        responseAt: new Date(),
+      },
     });
 
     // Kirim notifikasi ke customer (reviewer)
@@ -338,7 +324,7 @@ export const respondToReview = async (
     res.status(200).json({
       success: true,
       message: 'Tanggapan berhasil ditambahkan',
-      data: updatedReview
+      data: updatedReview,
     });
   } catch (error) {
     next(error);
@@ -348,11 +334,7 @@ export const respondToReview = async (
 /**
  * Report review (for inappropriate content)
  */
-export const reportReview = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const reportReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { reviewId } = req.params;
     const { reason } = req.body;
@@ -368,12 +350,12 @@ export const reportReview = async (
             email: true,
             customer: {
               select: {
-                fullName: true
-              }
-            }
-          }
-        }
-      }
+                fullName: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!review) {
@@ -387,12 +369,12 @@ export const reportReview = async (
 
     // Get admins
     const admins = await prisma.user.findMany({
-      where: { 
+      where: {
         role: 'ADMIN',
         admin: {
-          adminRole: 'MODERATOR'
-        }
-      }
+          adminRole: 'MODERATOR',
+        },
+      },
     });
 
     // Kirim notifikasi ke admin
@@ -402,18 +384,18 @@ export const reportReview = async (
         'Laporan Review',
         `Review untuk booking #${review.booking.bookingNumber} dilaporkan: ${reason}`,
         'review_report',
-        { 
+        {
           reviewId,
           bookingId: review.bookingId,
           reportedBy: userId,
-          reason
+          reason,
         }
       );
     }
 
     res.status(200).json({
       success: true,
-      message: 'Laporan berhasil dikirim dan akan ditinjau oleh admin'
+      message: 'Laporan berhasil dikirim dan akan ditinjau oleh admin',
     });
   } catch (error) {
     next(error);
@@ -423,11 +405,7 @@ export const reportReview = async (
 /**
  * Delete review (admin only)
  */
-export const deleteReview = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const deleteReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { reviewId } = req.params;
     const { reason } = req.body;
@@ -441,8 +419,8 @@ export const deleteReview = async (
     const review = await prisma.review.findUnique({
       where: { id: reviewId },
       include: {
-        booking: true
-      }
+        booking: true,
+      },
     });
 
     if (!review) {
@@ -450,10 +428,10 @@ export const deleteReview = async (
     }
 
     // Hapus review dengan transaction
-    await prisma.$transaction(async (prisma) => {
+    await prisma.$transaction(async prisma => {
       // 1. Hapus review
       await prisma.review.delete({
-        where: { id: reviewId }
+        where: { id: reviewId },
       });
 
       // 2. Update booking, tandai tidak memiliki feedback
@@ -461,22 +439,22 @@ export const deleteReview = async (
         where: { id: review.bookingId },
         data: {
           hasFeedback: false,
-          status: 'COMPLETED' // Kembali ke status COMPLETED
-        }
+          status: 'COMPLETED', // Kembali ke status COMPLETED
+        },
       });
 
       // 3. Update provider average rating
       const provider = await prisma.user.findUnique({
         where: { id: review.receiverId },
-        include: { provider: true }
+        include: { provider: true },
       });
 
       if (provider?.provider) {
         // Get all reviews for this provider
         const providerReviews = await prisma.review.findMany({
           where: {
-            receiverId: review.receiverId
-          }
+            receiverId: review.receiverId,
+          },
         });
 
         // Calculate new average rating
@@ -490,8 +468,8 @@ export const deleteReview = async (
         await prisma.provider.update({
           where: { id: provider.provider.id },
           data: {
-            averageRating
-          }
+            averageRating,
+          },
         });
       }
     });
@@ -515,9 +493,9 @@ export const deleteReview = async (
 
     res.status(200).json({
       success: true,
-      message: 'Review berhasil dihapus'
+      message: 'Review berhasil dihapus',
     });
   } catch (error) {
     next(error);
   }
-}; 
+};

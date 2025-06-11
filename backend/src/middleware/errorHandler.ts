@@ -16,16 +16,16 @@ export class AppError extends Error {
 }
 
 const handleZodError = (err: ZodError) => {
-  const errors = err.errors.map((e) => {
+  const errors = err.errors.map(e => {
     return {
       field: e.path.join('.'),
-      message: e.message
+      message: e.message,
     };
   });
 
   return {
     message: 'Validation Error',
-    errors
+    errors,
   };
 };
 
@@ -40,9 +40,9 @@ const handleJWTExpiredError = () => {
 const handleDuplicateKeyError = (err: any) => {
   const field = Object.keys(err.keyValue)[0];
   const value = err.keyValue[field];
-  
+
   const message = `${field.charAt(0).toUpperCase() + field.slice(1)} '${value}' sudah digunakan.`;
-  
+
   return new AppError(message, 400);
 };
 
@@ -50,13 +50,13 @@ const handleValidationError = (err: any) => {
   const errors = Object.keys(err.errors).map(field => {
     return {
       field,
-      message: err.errors[field].message
+      message: err.errors[field].message,
     };
   });
-  
+
   return {
     message: 'Validation Error',
-    errors
+    errors,
   };
 };
 
@@ -65,7 +65,7 @@ const sendErrorDev = (err: any, res: Response) => {
     success: false,
     error: err,
     message: err.message,
-    stack: err.stack
+    stack: err.stack,
   });
 };
 
@@ -75,28 +75,23 @@ const sendErrorProd = (err: any, res: Response) => {
     res.status(err.statusCode).json({
       success: false,
       message: err.message,
-      ...(err.errors && { errors: err.errors })
+      ...(err.errors && { errors: err.errors }),
     });
-  } 
+  }
   // Programming or other unknown error: don't leak error details
   else {
     // Log error
     logger.error('ERROR 💥:', err);
-    
+
     // Send generic message
     res.status(500).json({
       success: false,
-      message: 'Terjadi kesalahan. Mohon coba lagi nanti.'
+      message: 'Terjadi kesalahan. Mohon coba lagi nanti.',
     });
   }
 };
 
-export const errorMiddleware = (
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
   err.statusCode = err.statusCode || 500;
 
   // Log all errors
@@ -115,10 +110,10 @@ export const errorMiddleware = (
       error = new AppError(validationErrors.message, 400);
       error.errors = validationErrors.errors;
     }
-    
+
     if (err.name === 'JsonWebTokenError') error = handleJWTError();
     if (err.name === 'TokenExpiredError') error = handleJWTExpiredError();
-    
+
     if (err.code === 11000) error = handleDuplicateKeyError(err);
     if (err.name === 'ValidationError') {
       const validationErrors = handleValidationError(err);

@@ -18,10 +18,10 @@ const colorize = (level: LogLevel, message: string): string => {
 
   const colors = {
     debug: '\x1b[34m', // blue
-    info: '\x1b[32m',  // green
-    warn: '\x1b[33m',  // yellow
+    info: '\x1b[32m', // green
+    warn: '\x1b[33m', // yellow
     error: '\x1b[31m', // red
-    reset: '\x1b[0m'   // reset
+    reset: '\x1b[0m', // reset
   };
 
   return `${colors[level]}${message}${colors.reset}`;
@@ -31,25 +31,16 @@ const colorize = (level: LogLevel, message: string): string => {
 const logger = {
   debug: (message: string, meta?: any): void => {
     if (process.env.NODE_ENV !== 'production') {
-      console.debug(
-        colorize('debug', `[${timestamp()}] [DEBUG] ${message}`),
-        meta ? meta : ''
-      );
+      console.debug(colorize('debug', `[${timestamp()}] [DEBUG] ${message}`), meta ? meta : '');
     }
   },
 
   info: (message: string, meta?: any): void => {
-    console.info(
-      colorize('info', `[${timestamp()}] [INFO] ${message}`),
-      meta ? meta : ''
-    );
+    console.info(colorize('info', `[${timestamp()}] [INFO] ${message}`), meta ? meta : '');
   },
 
   warn: (message: string, meta?: any): void => {
-    console.warn(
-      colorize('warn', `[${timestamp()}] [WARN] ${message}`),
-      meta ? meta : ''
-    );
+    console.warn(colorize('warn', `[${timestamp()}] [WARN] ${message}`), meta ? meta : '');
   },
 
   error: (message: string, error?: any): void => {
@@ -57,7 +48,7 @@ const logger = {
       colorize('error', `[${timestamp()}] [ERROR] ${message}`),
       error instanceof Error ? error.stack : error ? error : ''
     );
-  }
+  },
 };
 
 export default logger;

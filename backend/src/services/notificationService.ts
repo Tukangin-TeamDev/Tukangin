@@ -27,8 +27,8 @@ export const sendNotification = async (
         message,
         type,
         data: data || {},
-        read: false
-      }
+        read: false,
+      },
     });
 
     // Emit notification via Socket.IO
@@ -38,7 +38,7 @@ export const sendNotification = async (
       message,
       type,
       data,
-      createdAt: notification.createdAt
+      createdAt: notification.createdAt,
     });
 
     // Return created notification
@@ -55,14 +55,11 @@ export const sendNotification = async (
  * @param userId User ID
  * @returns Updated notification
  */
-export const markNotificationAsRead = async (
-  notificationId: string,
-  userId: string
-) => {
+export const markNotificationAsRead = async (notificationId: string, userId: string) => {
   try {
     // Find notification
     const notification = await prisma.notification.findUnique({
-      where: { id: notificationId }
+      where: { id: notificationId },
     });
 
     // Check if notification belongs to user
@@ -73,7 +70,7 @@ export const markNotificationAsRead = async (
     // Update notification
     const updatedNotification = await prisma.notification.update({
       where: { id: notificationId },
-      data: { read: true }
+      data: { read: true },
     });
 
     return updatedNotification;
@@ -102,15 +99,15 @@ export const getUserNotifications = async (
     const notifications = await prisma.notification.findMany({
       where: { userId },
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'desc',
       },
       skip,
-      take: limit
+      take: limit,
     });
 
     // Count total notifications
     const total = await prisma.notification.count({
-      where: { userId }
+      where: { userId },
     });
 
     return {
@@ -119,8 +116,8 @@ export const getUserNotifications = async (
         page,
         limit,
         total,
-        totalPages: Math.ceil(total / limit)
-      }
+        totalPages: Math.ceil(total / limit),
+      },
     };
   } catch (error) {
     logger.error('Get user notifications error:', error);
@@ -133,18 +130,16 @@ export const getUserNotifications = async (
  * @param userId User ID
  * @returns Number of notifications updated
  */
-export const markAllNotificationsAsRead = async (
-  userId: string
-) => {
+export const markAllNotificationsAsRead = async (userId: string) => {
   try {
     const result = await prisma.notification.updateMany({
       where: {
         userId,
-        read: false
+        read: false,
       },
       data: {
-        read: true
-      }
+        read: true,
+      },
     });
 
     return result.count;
@@ -160,14 +155,11 @@ export const markAllNotificationsAsRead = async (
  * @param userId User ID
  * @returns Boolean indicating if deletion was successful
  */
-export const deleteNotification = async (
-  notificationId: string,
-  userId: string
-) => {
+export const deleteNotification = async (notificationId: string, userId: string) => {
   try {
     // Find notification
     const notification = await prisma.notification.findUnique({
-      where: { id: notificationId }
+      where: { id: notificationId },
     });
 
     // Check if notification belongs to user
@@ -177,7 +169,7 @@ export const deleteNotification = async (
 
     // Delete notification
     await prisma.notification.delete({
-      where: { id: notificationId }
+      where: { id: notificationId },
     });
 
     return true;
@@ -192,15 +184,13 @@ export const deleteNotification = async (
  * @param userId User ID
  * @returns Count of unread notifications
  */
-export const getUnreadNotificationCount = async (
-  userId: string
-) => {
+export const getUnreadNotificationCount = async (userId: string) => {
   try {
     const count = await prisma.notification.count({
       where: {
         userId,
-        read: false
-      }
+        read: false,
+      },
     });
 
     return count;
@@ -208,4 +198,4 @@ export const getUnreadNotificationCount = async (
     logger.error('Get unread notification count error:', error);
     throw error;
   }
-}; 
+};

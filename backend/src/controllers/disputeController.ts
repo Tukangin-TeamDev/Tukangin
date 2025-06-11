@@ -9,11 +9,7 @@ import logger from '../utils/logger';
 /**
  * Create dispute/ticket
  */
-export const createDispute = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const createDispute = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId, title, description } = req.body;
     const userId = req.user!.id;
@@ -23,8 +19,8 @@ export const createDispute = async (
       where: { id: bookingId },
       include: {
         payment: true,
-        dispute: true
-      }
+        dispute: true,
+      },
     });
 
     if (!booking) {
@@ -47,19 +43,19 @@ export const createDispute = async (
         bookingId,
         userId,
         title,
-        description
-      }
+        description,
+      },
     });
 
     // Handle attachments jika ada
     if (req.files && Array.isArray(req.files)) {
       for (const file of req.files) {
         const fileType = getFileType(file.mimetype);
-        
+
         if (!fileType) {
           continue; // Skip file dengan format tidak didukung
         }
-        
+
         // Upload file ke cloud storage
         const uploadResult = await uploadFileToStorage(
           file.buffer,
@@ -73,15 +69,15 @@ export const createDispute = async (
             disputeId: dispute.id,
             fileUrl: uploadResult.url,
             fileName: file.originalname,
-            fileType: fileType
-          }
+            fileType: fileType,
+          },
         });
       }
     }
 
     // Kirim notifikasi ke pihak lain yang terlibat
     const otherUserId = booking.customerId === userId ? booking.providerId : booking.customerId;
-    
+
     await sendNotification(
       otherUserId,
       'Dispute Dibuat',
@@ -95,9 +91,9 @@ export const createDispute = async (
       where: {
         role: 'ADMIN',
         admin: {
-          adminRole: 'SUPPORT'
-        }
-      }
+          adminRole: 'SUPPORT',
+        },
+      },
     });
 
     for (const admin of admins) {
@@ -113,7 +109,7 @@ export const createDispute = async (
     res.status(201).json({
       success: true,
       message: 'Dispute berhasil dibuat',
-      data: dispute
+      data: dispute,
     });
   } catch (error) {
     next(error);
@@ -123,18 +119,14 @@ export const createDispute = async (
 /**
  * Get dispute by booking ID
  */
-export const getDisputeByBooking = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getDisputeByBooking = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId } = req.params;
     const userId = req.user!.id;
 
     // Validasi booking
     const booking = await prisma.booking.findUnique({
-      where: { id: bookingId }
+      where: { id: bookingId },
     });
 
     if (!booking) {
@@ -162,17 +154,17 @@ export const getDisputeByBooking = async (
             customer: {
               select: {
                 fullName: true,
-                avatarUrl: true
-              }
+                avatarUrl: true,
+              },
             },
             provider: {
               select: {
                 fullName: true,
                 businessName: true,
-                avatarUrl: true
-              }
-            }
-          }
+                avatarUrl: true,
+              },
+            },
+          },
         },
         admin: {
           select: {
@@ -181,13 +173,13 @@ export const getDisputeByBooking = async (
             admin: {
               select: {
                 fullName: true,
-                adminRole: true
-              }
-            }
-          }
+                adminRole: true,
+              },
+            },
+          },
         },
-        attachments: true
-      }
+        attachments: true,
+      },
     });
 
     if (!dispute) {
@@ -196,7 +188,7 @@ export const getDisputeByBooking = async (
 
     res.status(200).json({
       success: true,
-      data: dispute
+      data: dispute,
     });
   } catch (error) {
     next(error);
@@ -206,11 +198,7 @@ export const getDisputeByBooking = async (
 /**
  * Get all disputes (admin)
  */
-export const getAllDisputes = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getAllDisputes = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { status, page = 1, limit = 10 } = req.query;
     const skip = (Number(page) - 1) * Number(limit);
@@ -234,8 +222,8 @@ export const getAllDisputes = async (
           select: {
             bookingNumber: true,
             totalAmount: true,
-            status: true
-          }
+            status: true,
+          },
         },
         user: {
           select: {
@@ -244,28 +232,28 @@ export const getAllDisputes = async (
             role: true,
             customer: {
               select: {
-                fullName: true
-              }
+                fullName: true,
+              },
             },
             provider: {
               select: {
                 fullName: true,
-                businessName: true
-              }
-            }
-          }
-        }
+                businessName: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'desc',
       },
       skip,
-      take: Number(limit)
+      take: Number(limit),
     });
 
     // Hitung total
     const total = await prisma.dispute.count({
-      where: filter
+      where: filter,
     });
 
     res.status(200).json({
@@ -276,9 +264,9 @@ export const getAllDisputes = async (
           page: Number(page),
           limit: Number(limit),
           total,
-          totalPages: Math.ceil(total / Number(limit))
-        }
-      }
+          totalPages: Math.ceil(total / Number(limit)),
+        },
+      },
     });
   } catch (error) {
     next(error);
@@ -288,11 +276,7 @@ export const getAllDisputes = async (
 /**
  * Get disputes by user ID
  */
-export const getUserDisputes = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getUserDisputes = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.user!.id;
     const { status, page = 1, limit = 10 } = req.query;
@@ -300,10 +284,10 @@ export const getUserDisputes = async (
 
     // Siapkan filter
     const filter: any = {};
-    
+
     // Cek role user
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
 
     if (!user) {
@@ -312,14 +296,14 @@ export const getUserDisputes = async (
 
     // Get disputes sesuai role
     let bookingFilter = {};
-    
+
     if (user.role === 'CUSTOMER') {
       bookingFilter = {
-        customerId: userId
+        customerId: userId,
       };
     } else if (user.role === 'PROVIDER') {
       bookingFilter = {
-        providerId: userId
+        providerId: userId,
       };
     }
 
@@ -331,7 +315,7 @@ export const getUserDisputes = async (
     const disputes = await prisma.dispute.findMany({
       where: {
         ...filter,
-        booking: bookingFilter
+        booking: bookingFilter,
       },
       include: {
         booking: {
@@ -339,23 +323,23 @@ export const getUserDisputes = async (
             bookingNumber: true,
             totalAmount: true,
             status: true,
-            bookingDate: true
-          }
-        }
+            bookingDate: true,
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'desc',
       },
       skip,
-      take: Number(limit)
+      take: Number(limit),
     });
 
     // Hitung total
     const total = await prisma.dispute.count({
       where: {
         ...filter,
-        booking: bookingFilter
-      }
+        booking: bookingFilter,
+      },
     });
 
     res.status(200).json({
@@ -366,9 +350,9 @@ export const getUserDisputes = async (
           page: Number(page),
           limit: Number(limit),
           total,
-          totalPages: Math.ceil(total / Number(limit))
-        }
-      }
+          totalPages: Math.ceil(total / Number(limit)),
+        },
+      },
     });
   } catch (error) {
     next(error);
@@ -378,11 +362,7 @@ export const getUserDisputes = async (
 /**
  * Resolve dispute (admin)
  */
-export const resolveDispute = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const resolveDispute = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { disputeId } = req.params;
     const { resolution, status, refundAmount } = req.body;
@@ -394,13 +374,8 @@ export const resolveDispute = async (
     }
 
     // Validasi status
-    const validStatuses = [
-      'RESOLVED_REFUND',
-      'RESOLVED_RELEASE',
-      'RESOLVED_PARTIAL',
-      'REJECTED'
-    ];
-    
+    const validStatuses = ['RESOLVED_REFUND', 'RESOLVED_RELEASE', 'RESOLVED_PARTIAL', 'REJECTED'];
+
     if (!validStatuses.includes(status)) {
       return next(new AppError('Status tidak valid', 400));
     }
@@ -411,10 +386,10 @@ export const resolveDispute = async (
       include: {
         booking: {
           include: {
-            payment: true
-          }
-        }
-      }
+            payment: true,
+          },
+        },
+      },
     });
 
     if (!dispute) {
@@ -427,7 +402,7 @@ export const resolveDispute = async (
     }
 
     // Selesaikan dispute dengan transaction
-    await prisma.$transaction(async (prisma) => {
+    await prisma.$transaction(async prisma => {
       // 1. Update dispute
       await prisma.dispute.update({
         where: { id: disputeId },
@@ -435,8 +410,8 @@ export const resolveDispute = async (
           status: status as any,
           resolution,
           adminId,
-          resolvedAt: new Date()
-        }
+          resolvedAt: new Date(),
+        },
       });
 
       // 2. Process refund if needed
@@ -457,12 +432,16 @@ export const resolveDispute = async (
         }
 
         // Tentukan jumlah refund
-        const amountToRefund = status === 'RESOLVED_REFUND'
-          ? payment.amount // Full refund
-          : Number(refundAmount); // Partial refund
+        const amountToRefund =
+          status === 'RESOLVED_REFUND'
+            ? payment.amount // Full refund
+            : Number(refundAmount); // Partial refund
 
         // Validasi jumlah refund untuk partial
-        if (status === 'RESOLVED_PARTIAL' && (amountToRefund <= 0 || amountToRefund >= payment.amount)) {
+        if (
+          status === 'RESOLVED_PARTIAL' &&
+          (amountToRefund <= 0 || amountToRefund >= payment.amount)
+        ) {
           throw new AppError('Jumlah partial refund tidak valid', 400);
         }
 
@@ -473,8 +452,8 @@ export const resolveDispute = async (
             status: 'REFUNDED',
             refundAmount: amountToRefund,
             refundReason: resolution,
-            refundDate: new Date()
-          }
+            refundDate: new Date(),
+          },
         });
 
         // Catat transaksi refund
@@ -485,33 +464,33 @@ export const resolveDispute = async (
             transactionType: 'REFUND',
             amount: amountToRefund,
             status: 'SUCCESS',
-            description: `Refund karena dispute: ${resolution}`
-          }
+            description: `Refund karena dispute: ${resolution}`,
+          },
         });
 
         // Jika partial refund, release sisa dana ke provider
         if (status === 'RESOLVED_PARTIAL') {
           const remainingAmount = payment.amount - amountToRefund;
-          const netAmount = remainingAmount - (remainingAmount * 0.1); // Platform fee 10%
+          const netAmount = remainingAmount - remainingAmount * 0.1; // Platform fee 10%
 
           // Tambahkan ke wallet provider
           const providerWallet = await prisma.wallet.findFirst({
-            where: { userId: dispute.booking.providerId }
+            where: { userId: dispute.booking.providerId },
           });
 
           if (providerWallet) {
             await prisma.wallet.update({
               where: { id: providerWallet.id },
               data: {
-                balance: { increment: netAmount }
-              }
+                balance: { increment: netAmount },
+              },
             });
           } else {
             await prisma.wallet.create({
               data: {
                 userId: dispute.booking.providerId,
-                balance: netAmount
-              }
+                balance: netAmount,
+              },
             });
           }
 
@@ -523,8 +502,8 @@ export const resolveDispute = async (
               transactionType: 'ESCROW_OUT',
               amount: netAmount,
               status: 'SUCCESS',
-              description: `Dana dari partial refund untuk booking #${dispute.booking.bookingNumber}`
-            }
+              description: `Dana dari partial refund untuk booking #${dispute.booking.bookingNumber}`,
+            },
           });
         }
       }
@@ -545,31 +524,31 @@ export const resolveDispute = async (
           where: { id: payment.id },
           data: {
             status: 'COMPLETED',
-            releaseDate: new Date()
-          }
+            releaseDate: new Date(),
+          },
         });
 
         // Hitung jumlah yang diterima provider (setelah dipotong platform fee)
         const netAmount = payment.amount - payment.platformFee;
-        
+
         // Tambahkan ke wallet provider
         const providerWallet = await prisma.wallet.findFirst({
-          where: { userId: dispute.booking.providerId }
+          where: { userId: dispute.booking.providerId },
         });
 
         if (providerWallet) {
           await prisma.wallet.update({
             where: { id: providerWallet.id },
             data: {
-              balance: { increment: netAmount }
-            }
+              balance: { increment: netAmount },
+            },
           });
         } else {
           await prisma.wallet.create({
             data: {
               userId: dispute.booking.providerId,
-              balance: netAmount
-            }
+              balance: netAmount,
+            },
           });
         }
 
@@ -581,8 +560,8 @@ export const resolveDispute = async (
             transactionType: 'ESCROW_OUT',
             amount: netAmount,
             status: 'SUCCESS',
-            description: `Dana dari escrow untuk booking #${dispute.booking.bookingNumber}`
-          }
+            description: `Dana dari escrow untuk booking #${dispute.booking.bookingNumber}`,
+          },
         });
       }
     });
@@ -610,8 +589,8 @@ export const resolveDispute = async (
       data: {
         disputeId,
         status,
-        resolvedAt: new Date()
-      }
+        resolvedAt: new Date(),
+      },
     });
   } catch (error) {
     next(error);
@@ -621,11 +600,7 @@ export const resolveDispute = async (
 /**
  * Add dispute attachment
  */
-export const addDisputeAttachment = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const addDisputeAttachment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { disputeId } = req.params;
     const userId = req.user!.id;
@@ -634,8 +609,8 @@ export const addDisputeAttachment = async (
     const dispute = await prisma.dispute.findUnique({
       where: { id: disputeId },
       include: {
-        booking: true
-      }
+        booking: true,
+      },
     });
 
     if (!dispute) {
@@ -643,7 +618,8 @@ export const addDisputeAttachment = async (
     }
 
     // Cek apakah user terlibat dalam booking ini atau admin
-    const isInvolved = dispute.booking.customerId === userId || dispute.booking.providerId === userId;
+    const isInvolved =
+      dispute.booking.customerId === userId || dispute.booking.providerId === userId;
     const isAdmin = req.user!.role === 'ADMIN';
 
     if (!isInvolved && !isAdmin) {
@@ -652,7 +628,9 @@ export const addDisputeAttachment = async (
 
     // Cek apakah dispute masih dalam status PENDING atau IN_REVIEW
     if (dispute.status !== 'PENDING' && dispute.status !== 'IN_REVIEW') {
-      return next(new AppError('Tidak dapat menambahkan attachment ke dispute yang sudah diselesaikan', 400));
+      return next(
+        new AppError('Tidak dapat menambahkan attachment ke dispute yang sudah diselesaikan', 400)
+      );
     }
 
     // Handle file jika ada
@@ -662,11 +640,11 @@ export const addDisputeAttachment = async (
 
     const file = req.file;
     const fileType = getFileType(file.mimetype);
-    
+
     if (!fileType) {
       return next(new AppError('Format file tidak didukung', 400));
     }
-    
+
     // Upload file ke cloud storage
     const uploadResult = await uploadFileToStorage(
       file.buffer,
@@ -680,14 +658,14 @@ export const addDisputeAttachment = async (
         disputeId,
         fileUrl: uploadResult.url,
         fileName: file.originalname,
-        fileType
-      }
+        fileType,
+      },
     });
 
     res.status(201).json({
       success: true,
       message: 'Attachment berhasil ditambahkan',
-      data: attachment
+      data: attachment,
     });
   } catch (error) {
     next(error);
@@ -704,4 +682,4 @@ export const addDisputeAttachment = async (
 //   createdAt DateTime @default(now())
 //
 //   dispute   Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
-// } 
+// }

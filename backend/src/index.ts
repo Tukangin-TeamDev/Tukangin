@@ -23,13 +23,17 @@ const server = http.createServer(app);
 initSocketIO(server);
 
 // Middlewares
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
-}));
-app.use(helmet({
-  contentSecurityPolicy: NODE_ENV === 'production' ? undefined : false
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+  })
+);
+app.use(
+  helmet({
+    contentSecurityPolicy: NODE_ENV === 'production' ? undefined : false,
+  })
+);
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
