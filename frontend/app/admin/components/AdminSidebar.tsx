@@ -16,7 +16,7 @@ import {
   X,
   Menu,
   LogOut,
-  UserSquare
+  UserSquare,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -43,7 +43,7 @@ export default function AdminSidebar() {
     {
       title: 'Dashboard',
       icon: <LayoutDashboard className="h-5 w-5" />,
-      path: '/admin/dashboard'
+      path: '/admin/dashboard',
     },
     {
       title: 'Manajemen Kategori & Zona',
@@ -52,8 +52,8 @@ export default function AdminSidebar() {
       submenu: [
         { title: 'Kategori & Subkategori', path: '/admin/categories' },
         { title: 'Zona & Wilayah', path: '/admin/zones' },
-        { title: 'Harga Minimum', path: '/admin/pricing' }
-      ]
+        { title: 'Harga Minimum', path: '/admin/pricing' },
+      ],
     },
     {
       title: 'Verifikasi & Moderasi',
@@ -63,8 +63,8 @@ export default function AdminSidebar() {
       submenu: [
         { title: 'Provider Baru', path: '/admin/verification/providers', badge: '5' },
         { title: 'Laporan Review', path: '/admin/verification/reviews', badge: '2' },
-        { title: 'Laporan Chat', path: '/admin/verification/chats', badge: '1' }
-      ]
+        { title: 'Laporan Chat', path: '/admin/verification/chats', badge: '1' },
+      ],
     },
     {
       title: 'Laporan & Analitik',
@@ -75,8 +75,8 @@ export default function AdminSidebar() {
         { title: 'Performa Platform', path: '/admin/reports/platform' },
         { title: 'Performa Provider', path: '/admin/reports/providers' },
         { title: 'Analisis Pengguna', path: '/admin/reports/users' },
-        { title: 'Laporan Keuangan', path: '/admin/reports/finance' }
-      ]
+        { title: 'Laporan Keuangan', path: '/admin/reports/finance' },
+      ],
     },
     {
       title: 'Promo & Harga Dinamis',
@@ -85,8 +85,8 @@ export default function AdminSidebar() {
       submenu: [
         { title: 'Voucher & Diskon', path: '/admin/promotions/vouchers' },
         { title: 'Atur Surge Pricing', path: '/admin/promotions/surge' },
-        { title: 'Kampanye & Event', path: '/admin/promotions/campaigns' }
-      ]
+        { title: 'Kampanye & Event', path: '/admin/promotions/campaigns' },
+      ],
     },
     {
       title: 'Ticketing & Dispute',
@@ -96,8 +96,8 @@ export default function AdminSidebar() {
       submenu: [
         { title: 'Tiket Terbuka', path: '/admin/tickets/open', badge: '3' },
         { title: 'Histori Penyelesaian', path: '/admin/tickets/history' },
-        { title: 'Dispute Resolution', path: '/admin/tickets/disputes' }
-      ]
+        { title: 'Dispute Resolution', path: '/admin/tickets/disputes' },
+      ],
     },
     {
       title: 'Pengaturan Platform',
@@ -107,9 +107,9 @@ export default function AdminSidebar() {
         { title: 'Komisi & Biaya', path: '/admin/settings/fees' },
         { title: 'Integrasi Pembayaran', path: '/admin/settings/payments' },
         { title: 'Template Notifikasi', path: '/admin/settings/notifications' },
-        { title: 'Pengaturan Umum', path: '/admin/settings/general' }
-      ]
-    }
+        { title: 'Pengaturan Umum', path: '/admin/settings/general' },
+      ],
+    },
   ];
 
   const toggleSubmenu = (title: string) => {
@@ -139,7 +139,9 @@ export default function AdminSidebar() {
               <span className="text-lg font-bold text-blue-600">Admin Panel</span>
             </div>
           )}
-          {collapsed && <Image src="/logo-tukangin.png" width={30} height={30} alt="Tukangin Logo" />}
+          {collapsed && (
+            <Image src="/logo-tukangin.png" width={30} height={30} alt="Tukangin Logo" />
+          )}
         </Link>
         <button
           onClick={toggleSidebar}
@@ -156,7 +158,7 @@ export default function AdminSidebar() {
       </div>
 
       <div className="mt-2 space-y-1 px-3">
-        {menuItems.map((item) => {
+        {menuItems.map(item => {
           const isActive = pathname === item.path || pathname.startsWith(`${item.path}/`);
           const hasSubmenu = item.submenu && item.submenu.length > 0;
 
@@ -194,7 +196,7 @@ export default function AdminSidebar() {
 
                   {!collapsed && openSubmenu === item.title && (
                     <div className="ml-6 space-y-1 pl-2 border-l border-gray-200">
-                      {item.submenu?.map((subItem) => {
+                      {item.submenu?.map(subItem => {
                         const isSubActive = pathname === subItem.path;
                         return (
                           <Link
@@ -253,7 +255,9 @@ export default function AdminSidebar() {
               <UserSquare className="h-5 w-5" />
             </div>
             <div className="flex-1">
-              <h4 className="text-sm font-medium text-gray-900">{user?.profile?.fullName || 'Admin'}</h4>
+              <h4 className="text-sm font-medium text-gray-900">
+                {user?.profile?.fullName || 'Admin'}
+              </h4>
               <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
             <button
@@ -317,4 +321,4 @@ export default function AdminSidebar() {
       </button>
     </>
   );
-} 
+}

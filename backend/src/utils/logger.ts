@@ -1,56 +1,63 @@
-import winston from 'winston';
-import path from 'path';
+/**
+ * Simple logger utility
+ */
 
-// Define log format
-const logFormat = winston.format.combine(
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-  winston.format.errors({ stack: true }),
-  winston.format.printf(({ timestamp, level, message, stack }) => {
-    return `[${timestamp}] ${level.toUpperCase()}: ${message} ${stack ? '\n' + stack : ''}`;
-  })
-);
+// Logger levels
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-// Define log levels
-const logLevels = {
-  error: 0,
-  warn: 1,
-  info: 2,
-  http: 3,
-  debug: 4,
+// Function for adding timestamp prefix
+const timestamp = (): string => {
+  return new Date().toISOString();
 };
 
-// Determine log level based on environment
-const level = () => {
-  const env = process.env.NODE_ENV || 'development';
-  return env === 'development' ? 'debug' : 'info';
+// Function for colorizing console output in development
+const colorize = (level: LogLevel, message: string): string => {
+  if (process.env.NODE_ENV === 'production') {
+    return message;
+  }
+
+  const colors = {
+    debug: '\x1b[34m', // blue
+    info: '\x1b[32m',  // green
+    warn: '\x1b[33m',  // yellow
+    error: '\x1b[31m', // red
+    reset: '\x1b[0m'   // reset
+  };
+
+  return `${colors[level]}${message}${colors.reset}`;
 };
 
-// Create logger
-const logger = winston.createLogger({
-  level: level(),
-  levels: logLevels,
-  format: logFormat,
-  transports: [
-    // Console log for development
-    new winston.transports.Console({
-      format: winston.format.combine(winston.format.colorize({ all: true }), logFormat),
-    }),
+// Main logger
+const logger = {
+  debug: (message: string, meta?: any): void => {
+    if (process.env.NODE_ENV !== 'production') {
+      console.debug(
+        colorize('debug', `[${timestamp()}] [DEBUG] ${message}`),
+        meta ? meta : ''
+      );
+    }
+  },
 
-    // Save logs to file in production
-    ...(process.env.NODE_ENV === 'production'
-      ? [
-          // Error logs
-          new winston.transports.File({
-            filename: path.join('logs', 'error.log'),
-            level: 'error',
-          }),
-          // All logs
-          new winston.transports.File({
-            filename: path.join('logs', 'combined.log'),
-          }),
-        ]
-      : []),
-  ],
-});
+  info: (message: string, meta?: any): void => {
+    console.info(
+      colorize('info', `[${timestamp()}] [INFO] ${message}`),
+      meta ? meta : ''
+    );
+  },
+
+  warn: (message: string, meta?: any): void => {
+    console.warn(
+      colorize('warn', `[${timestamp()}] [WARN] ${message}`),
+      meta ? meta : ''
+    );
+  },
+
+  error: (message: string, error?: any): void => {
+    console.error(
+      colorize('error', `[${timestamp()}] [ERROR] ${message}`),
+      error instanceof Error ? error.stack : error ? error : ''
+    );
+  }
+};
 
 export default logger;

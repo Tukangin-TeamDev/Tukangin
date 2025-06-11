@@ -11,7 +11,7 @@ import {
   AlertCircle,
   ArrowRight,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
 } from 'lucide-react';
 import DashboardCard from '../components/DashboardCard';
 import BarChartComponent from '../components/charts/BarChartComponent';
@@ -21,7 +21,7 @@ import RecentActivityList from '../components/RecentActivityList';
 
 export default function AdminDashboard() {
   const [timeRange, setTimeRange] = useState<'today' | 'week' | 'month' | 'year'>('week');
-  
+
   // Dummy data untuk metrik
   const metrics = {
     total_bookings: {
@@ -30,7 +30,7 @@ export default function AdminDashboard() {
       isUp: true,
       label: 'Total Bookings',
       icon: <Briefcase className="h-8 w-8 text-blue-600" />,
-      color: 'blue'
+      color: 'blue',
     },
     active_users: {
       value: 8754,
@@ -38,7 +38,7 @@ export default function AdminDashboard() {
       isUp: true,
       label: 'Pengguna Aktif',
       icon: <Users className="h-8 w-8 text-green-600" />,
-      color: 'green'
+      color: 'green',
     },
     revenue: {
       value: 'Rp 87.5 jt',
@@ -46,7 +46,7 @@ export default function AdminDashboard() {
       isUp: true,
       label: 'Pendapatan',
       icon: <DollarSign className="h-8 w-8 text-purple-600" />,
-      color: 'purple' 
+      color: 'purple',
     },
     avg_rating: {
       value: '4.7',
@@ -54,7 +54,7 @@ export default function AdminDashboard() {
       isUp: true,
       label: 'Rating Rata-rata',
       icon: <TrendingUp className="h-8 w-8 text-amber-600" />,
-      color: 'amber'
+      color: 'amber',
     },
     disputes: {
       value: 27,
@@ -62,7 +62,7 @@ export default function AdminDashboard() {
       isUp: false,
       label: 'Disputes Aktif',
       icon: <AlertCircle className="h-8 w-8 text-red-600" />,
-      color: 'red'
+      color: 'red',
     },
     verification_queue: {
       value: 8,
@@ -70,8 +70,8 @@ export default function AdminDashboard() {
       isUp: true,
       label: 'Menunggu Verifikasi',
       icon: <Calendar className="h-8 w-8 text-indigo-600" />,
-      color: 'indigo'
-    }
+      color: 'indigo',
+    },
   };
 
   // Data untuk chart penjualan mingguan
@@ -83,16 +83,16 @@ export default function AdminDashboard() {
         data: [48, 65, 53, 71, 87, 96, 91],
         backgroundColor: 'rgba(59, 130, 246, 0.5)',
         borderColor: 'rgba(59, 130, 246, 1)',
-        borderWidth: 2
+        borderWidth: 2,
       },
       {
         label: 'Minggu lalu',
         data: [42, 55, 49, 62, 79, 85, 80],
         backgroundColor: 'rgba(209, 213, 219, 0.5)',
         borderColor: 'rgba(156, 163, 175, 1)',
-        borderWidth: 2
-      }
-    ]
+        borderWidth: 2,
+      },
+    ],
   };
 
   // Data untuk chart distribusi kategori
@@ -108,12 +108,12 @@ export default function AdminDashboard() {
           'rgba(139, 92, 246, 0.8)',
           'rgba(236, 72, 153, 0.8)',
           'rgba(245, 158, 11, 0.8)',
-          'rgba(107, 114, 128, 0.8)'
+          'rgba(107, 114, 128, 0.8)',
         ],
         borderColor: '#ffffff',
-        borderWidth: 2
-      }
-    ]
+        borderWidth: 2,
+      },
+    ],
   };
 
   // Data untuk chart tren pendapatan
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
         borderColor: 'rgba(147, 51, 234, 1)',
         backgroundColor: 'rgba(147, 51, 234, 0.1)',
         tension: 0.4,
-        fill: true
+        fill: true,
       },
       {
         label: 'Target (jt)',
@@ -135,9 +135,9 @@ export default function AdminDashboard() {
         backgroundColor: 'transparent',
         borderDash: [5, 5],
         tension: 0.4,
-        fill: false
-      }
-    ]
+        fill: false,
+      },
+    ],
   };
 
   // Activity log data
@@ -148,7 +148,7 @@ export default function AdminDashboard() {
       message: 'Budi S. telah diverifikasi sebagai provider baru',
       time: '10 menit yang lalu',
       icon: <Users className="h-4 w-4" />,
-      color: 'bg-green-100 text-green-600'
+      color: 'bg-green-100 text-green-600',
     },
     {
       id: 2,
@@ -156,7 +156,7 @@ export default function AdminDashboard() {
       message: 'Dispute #4582 telah diselesaikan',
       time: '45 menit yang lalu',
       icon: <AlertCircle className="h-4 w-4" />,
-      color: 'bg-blue-100 text-blue-600'
+      color: 'bg-blue-100 text-blue-600',
     },
     {
       id: 3,
@@ -164,7 +164,7 @@ export default function AdminDashboard() {
       message: 'Promo "Diskon 15%" telah dibuat dan aktif',
       time: '1 jam yang lalu',
       icon: <DollarSign className="h-4 w-4" />,
-      color: 'bg-purple-100 text-purple-600'
+      color: 'bg-purple-100 text-purple-600',
     },
     {
       id: 4,
@@ -172,7 +172,7 @@ export default function AdminDashboard() {
       message: 'Kategori baru "Smart Home" telah ditambahkan',
       time: '3 jam yang lalu',
       icon: <Briefcase className="h-4 w-4" />,
-      color: 'bg-amber-100 text-amber-600'
+      color: 'bg-amber-100 text-amber-600',
     },
     {
       id: 5,
@@ -180,8 +180,8 @@ export default function AdminDashboard() {
       message: 'Sistem surge pricing telah diperbarui',
       time: '5 jam yang lalu',
       icon: <LayoutDashboard className="h-4 w-4" />,
-      color: 'bg-indigo-100 text-indigo-600'
-    }
+      color: 'bg-indigo-100 text-indigo-600',
+    },
   ];
 
   return (
@@ -190,14 +190,12 @@ export default function AdminDashboard() {
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Dashboard Admin</h1>
-          <p className="text-sm text-gray-500">
-            Ringkasan performa platform dan metrik penting
-          </p>
+          <p className="text-sm text-gray-500">Ringkasan performa platform dan metrik penting</p>
         </div>
         <div className="flex space-x-2">
           <select
             value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value as any)}
+            onChange={e => setTimeRange(e.target.value as any)}
             className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
             <option value="today">Hari Ini</option>
@@ -330,4 +328,4 @@ export default function AdminDashboard() {
       </div>
     </div>
   );
-} 
+}

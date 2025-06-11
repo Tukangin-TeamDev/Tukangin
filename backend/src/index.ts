@@ -1,86 +1,47 @@
-import express, { Express } from 'express';
+import express, { Application } from 'express';
+import http from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
-import dotenv from 'dotenv';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
+import cookieParser from 'cookie-parser';
+import routes from './routes';
+import { errorMiddleware } from './middleware/errorHandler';
+import { initSocketIO } from './config/socket';
+import logger from './utils/logger';
 
-// Import database connection
-import { connectDB } from './config/prisma';
+// Environment variables
+const PORT = parseInt(process.env.PORT || '8080', 10);
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// Import routes
-import indexRouter from './routes';
+// Initialize Express app
+const app: Application = express();
 
-// Import middlewares
-import { errorHandler } from './middleware/errorHandler';
+// Create HTTP server
+const server = http.createServer(app);
 
-// Load environment variables
-dotenv.config();
-
-// Initialize express app
-const app: Express = express();
-const PORT = process.env.PORT || 5000;
-
-// Connect to database
-connectDB()
-  .then(() => {
-    console.log('Connected to database');
-  })
-  .catch(err => {
-    console.error('Failed to connect to database', err);
-    process.exit(1);
-  });
+// Initialize Socket.IO
+initSocketIO(server);
 
 // Middlewares
-app.use(cors());
-app.use(helmet());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
+app.use(helmet({
+  contentSecurityPolicy: NODE_ENV === 'production' ? undefined : false
+}));
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Routes
-app.use('/api', indexRouter);
+// API routes
+app.use('/api', routes);
 
 // Error handling middleware
-app.use(errorHandler);
+app.use(errorMiddleware);
 
-// Create HTTP server
-const httpServer = createServer(app);
-
-// Initialize Socket.IO
-const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-  },
-});
-
-// Socket.IO events
-io.on('connection', socket => {
-  console.log('User connected:', socket.id);
-
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
-  });
-
-  // Handle chat messages
-  socket.on('send_message', data => {
-    socket.to(data.bookingId).emit('receive_message', data);
-  });
-
-  // Handle location tracking
-  socket.on('update_location', data => {
-    socket.to(data.bookingId).emit('provider_location', data);
-  });
-
-  // Join booking room for real-time updates
-  socket.on('join_booking', bookingId => {
-    socket.join(bookingId);
-  });
-});
-
-// Start server
-httpServer.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
+// Start the server
+server.listen(PORT, () => {
+  logger.info(`Server running in ${NODE_ENV} mode on port ${PORT}`);
 });

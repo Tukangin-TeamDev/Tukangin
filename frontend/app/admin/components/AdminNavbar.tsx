@@ -118,13 +118,17 @@ export default function AdminNavbar() {
                       >
                         <div className="flex items-start">
                           <div className="flex-1">
-                            <p className={`text-sm font-medium ${notification.read ? '' : 'text-blue-600'}`}>
+                            <p
+                              className={`text-sm font-medium ${notification.read ? '' : 'text-blue-600'}`}
+                            >
                               {notification.title}
                             </p>
                             <p className="text-xs text-gray-500">{notification.message}</p>
                             <p className="mt-1 text-xs text-gray-400">{notification.time}</p>
                           </div>
-                          {!notification.read && <span className="h-2 w-2 rounded-full bg-blue-600" />}
+                          {!notification.read && (
+                            <span className="h-2 w-2 rounded-full bg-blue-600" />
+                          )}
                         </div>
                       </div>
                     ))
@@ -203,4 +207,4 @@ export default function AdminNavbar() {
       </div>
     </header>
   );
-} 
+}

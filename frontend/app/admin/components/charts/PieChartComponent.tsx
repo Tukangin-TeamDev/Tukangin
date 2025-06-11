@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
-} from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface PieChartProps {
   data: {
@@ -44,25 +37,27 @@ export default function PieChartComponent({ data, height = 300 }: PieChartProps)
           label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
         >
           {chartData.map((entry, index) => (
-            <Cell 
-              key={`cell-${index}`} 
-              fill={data.datasets[0].backgroundColor[index % data.datasets[0].backgroundColor.length]} 
+            <Cell
+              key={`cell-${index}`}
+              fill={
+                data.datasets[0].backgroundColor[index % data.datasets[0].backgroundColor.length]
+              }
               stroke={data.datasets[0].borderColor}
               strokeWidth={data.datasets[0].borderWidth}
             />
           ))}
         </Pie>
-        <Tooltip 
-          formatter={(value) => [`${value} pesanan`, 'Jumlah']}
+        <Tooltip
+          formatter={value => [`${value} pesanan`, 'Jumlah']}
           labelStyle={{ color: '#111827', fontWeight: 500 }}
         />
-        <Legend 
-          layout="vertical" 
-          verticalAlign="middle" 
+        <Legend
+          layout="vertical"
+          verticalAlign="middle"
           align="right"
           wrapperStyle={{ fontSize: '12px' }}
         />
       </PieChart>
     </ResponsiveContainer>
   );
-} 
+}
