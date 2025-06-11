@@ -16,8 +16,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 
 // Klien Supabase untuk operasi server-side (akses penuh ke database)
-export const supabaseAdmin = supabaseServiceKey 
+export const supabaseAdmin = supabaseServiceKey
   ? createClient(supabaseUrl, supabaseServiceKey)
   : supabaseClient; // fallback
 
-export default supabaseAdmin; 
+export default supabaseAdmin;

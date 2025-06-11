@@ -35,4 +35,4 @@ router.use('/reviews', reviewRoutes);
 router.use('/disputes', disputeRoutes);
 router.use('/chat', chatRoutes);
 
-export default router; 
+export default router;

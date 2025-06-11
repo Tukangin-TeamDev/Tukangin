@@ -46,4 +46,4 @@ export const errorHandler = (
     message,
     stack: process.env.NODE_ENV === 'development' ? errorStack : undefined,
   });
-}; 
+};

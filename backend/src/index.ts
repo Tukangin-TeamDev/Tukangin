@@ -27,7 +27,7 @@ connectDB()
   .then(() => {
     console.log('Connected to database');
   })
-  .catch((err) => {
+  .catch(err => {
     console.error('Failed to connect to database', err);
     process.exit(1);
   });
@@ -57,25 +57,25 @@ const io = new Server(httpServer, {
 });
 
 // Socket.IO events
-io.on('connection', (socket) => {
+io.on('connection', socket => {
   console.log('User connected:', socket.id);
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
-  
+
   // Handle chat messages
-  socket.on('send_message', (data) => {
+  socket.on('send_message', data => {
     socket.to(data.bookingId).emit('receive_message', data);
   });
 
   // Handle location tracking
-  socket.on('update_location', (data) => {
+  socket.on('update_location', data => {
     socket.to(data.bookingId).emit('provider_location', data);
   });
 
   // Join booking room for real-time updates
-  socket.on('join_booking', (bookingId) => {
+  socket.on('join_booking', bookingId => {
     socket.join(bookingId);
   });
 });
@@ -83,4 +83,4 @@ io.on('connection', (socket) => {
 // Start server
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
-}); 
+});

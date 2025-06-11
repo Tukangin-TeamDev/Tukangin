@@ -16,7 +16,7 @@ const logLevels = {
   warn: 1,
   info: 2,
   http: 3,
-  debug: 4
+  debug: 4,
 };
 
 // Determine log level based on environment
@@ -33,25 +33,24 @@ const logger = winston.createLogger({
   transports: [
     // Console log for development
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize({ all: true }),
-        logFormat
-      )
+      format: winston.format.combine(winston.format.colorize({ all: true }), logFormat),
     }),
-    
+
     // Save logs to file in production
-    ...(process.env.NODE_ENV === 'production' ? [
-      // Error logs
-      new winston.transports.File({
-        filename: path.join('logs', 'error.log'),
-        level: 'error'
-      }),
-      // All logs
-      new winston.transports.File({
-        filename: path.join('logs', 'combined.log')
-      })
-    ] : [])
-  ]
+    ...(process.env.NODE_ENV === 'production'
+      ? [
+          // Error logs
+          new winston.transports.File({
+            filename: path.join('logs', 'error.log'),
+            level: 'error',
+          }),
+          // All logs
+          new winston.transports.File({
+            filename: path.join('logs', 'combined.log'),
+          }),
+        ]
+      : []),
+  ],
 });
 
-export default logger; 
+export default logger;

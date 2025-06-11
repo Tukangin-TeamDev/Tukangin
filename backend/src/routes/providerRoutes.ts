@@ -13,15 +13,15 @@ router.use(authorize('PROVIDER', 'ADMIN'));
 router.get('/profile', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Provider profile'
+    message: 'Provider profile',
   });
 });
 
 router.get('/services', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Provider services'
+    message: 'Provider services',
   });
 });
 
-export default router; 
+export default router;

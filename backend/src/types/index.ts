@@ -50,4 +50,4 @@ export enum DisputeStatus {
   IN_REVIEW = 'IN_REVIEW',
   RESOLVED = 'RESOLVED',
   REJECTED = 'REJECTED',
-} 
+}

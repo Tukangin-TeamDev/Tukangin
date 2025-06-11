@@ -10,11 +10,9 @@ import logger from '../utils/logger';
 
 // Helpers
 const generateToken = (userId: string, role: string): string => {
-  return jwt.sign(
-    { id: userId, role },
-    process.env.JWT_SECRET || 'secret',
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-  );
+  return jwt.sign({ id: userId, role }, process.env.JWT_SECRET || 'secret', {
+    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  });
 };
 
 // Generate partial token (untuk 2FA)
@@ -32,7 +30,12 @@ const generateOTP = (): string => {
 };
 
 // Store OTP in database
-const storeOTP = async (userId: string, otp: string, type: string, expiresInMinutes: number = 10): Promise<void> => {
+const storeOTP = async (
+  userId: string,
+  otp: string,
+  type: string,
+  expiresInMinutes: number = 10
+): Promise<void> => {
   const expiresAt = new Date();
   expiresAt.setMinutes(expiresAt.getMinutes() + expiresInMinutes);
 
@@ -49,22 +52,15 @@ const storeOTP = async (userId: string, otp: string, type: string, expiresInMinu
 /**
  * Register a new user
  */
-export const registerUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password, phoneNumber, fullName, role, businessName, address, bio } = req.body;
 
     // Check if user already exists
     const existingUser = await prisma.user.findFirst({
       where: {
-        OR: [
-          { email },
-          { phoneNumber }
-        ]
-      }
+        OR: [{ email }, { phoneNumber }],
+      },
     });
 
     if (existingUser) {
@@ -75,7 +71,7 @@ export const registerUser = async (
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user with transaction
-    const result = await prisma.$transaction(async (prismaClient) => {
+    const result = await prisma.$transaction(async prismaClient => {
       // Create user record
       const user = await prismaClient.user.create({
         data: {
@@ -85,7 +81,7 @@ export const registerUser = async (
           role: role as Role,
           provider: Provider.EMAIL,
           verificationToken: crypto.randomBytes(32).toString('hex'),
-        }
+        },
       });
 
       // Create profile based on role
@@ -93,8 +89,8 @@ export const registerUser = async (
         await prismaClient.customer.create({
           data: {
             userId: user.id,
-            fullName
-          }
+            fullName,
+          },
         });
       } else if (role === 'PROVIDER') {
         await prismaClient.provider.create({
@@ -103,15 +99,15 @@ export const registerUser = async (
             fullName,
             businessName: businessName || fullName,
             address,
-            bio
-          }
+            bio,
+          },
         });
       } else if (role === 'ADMIN') {
         await prismaClient.admin.create({
           data: {
             userId: user.id,
-            fullName
-          }
+            fullName,
+          },
         });
       }
 
@@ -138,10 +134,10 @@ export const registerUser = async (
         role: result.role,
         phoneNumber: result.phoneNumber,
         emailVerified: result.emailVerified,
-        needVerification: true
+        needVerification: true,
       },
       token,
-      redirectTo: `/verify-email?email=${encodeURIComponent(email)}`
+      redirectTo: `/verify-email?email=${encodeURIComponent(email)}`,
     });
   } catch (error) {
     logger.error('Registration error:', error);
@@ -152,17 +148,13 @@ export const registerUser = async (
 /**
  * Verify email with OTP
  */
-export const verifyEmail = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, otp } = req.body;
 
     // Find user by email
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
@@ -181,9 +173,9 @@ export const verifyEmail = async (
         type: 'VERIFY_EMAIL',
         used: false,
         expiresAt: {
-          gt: new Date()
-        }
-      }
+          gt: new Date(),
+        },
+      },
     });
 
     if (!otpRecord) {
@@ -193,7 +185,7 @@ export const verifyEmail = async (
     // Mark OTP as used
     await prisma.otpCode.update({
       where: { id: otpRecord.id },
-      data: { used: true }
+      data: { used: true },
     });
 
     // Update user as verified
@@ -202,8 +194,8 @@ export const verifyEmail = async (
       data: {
         emailVerified: true,
         verifiedAt: new Date(),
-        verificationToken: null
-      }
+        verificationToken: null,
+      },
     });
 
     // Generate token
@@ -211,7 +203,7 @@ export const verifyEmail = async (
 
     // Determine where to redirect based on role
     let redirectTo = '/dashboard';
-    
+
     if (user.role === 'PROVIDER') {
       redirectTo = '/provider/dashboard';
     } else if (user.role === 'ADMIN') {
@@ -222,7 +214,7 @@ export const verifyEmail = async (
       success: true,
       message: 'Email berhasil diverifikasi',
       token,
-      redirectTo
+      redirectTo,
     });
   } catch (error) {
     next(error);
@@ -232,16 +224,12 @@ export const verifyEmail = async (
 /**
  * Resend verification email
  */
-export const resendVerification = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const resendVerification = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email } = req.body;
 
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
@@ -257,11 +245,11 @@ export const resendVerification = async (
       where: {
         userId: user.id,
         type: 'VERIFY_EMAIL',
-        used: false
+        used: false,
       },
       data: {
-        used: true
-      }
+        used: true,
+      },
     });
 
     // Generate new OTP
@@ -273,7 +261,7 @@ export const resendVerification = async (
 
     return res.status(200).json({
       success: true,
-      message: 'Email verifikasi telah dikirim ulang'
+      message: 'Email verifikasi telah dikirim ulang',
     });
   } catch (error) {
     next(error);
@@ -283,11 +271,7 @@ export const resendVerification = async (
 /**
  * Login user
  */
-export const loginUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
 
@@ -295,10 +279,10 @@ export const loginUser = async (
     const user = await prisma.user.findUnique({
       where: { email },
       include: {
-        customer: true, 
-        provider: true, 
-        admin: true
-      }
+        customer: true,
+        provider: true,
+        admin: true,
+      },
     });
 
     if (!user || user.provider !== Provider.EMAIL) {
@@ -322,7 +306,7 @@ export const loginUser = async (
       // Generate OTP untuk verifikasi email
       const otp = generateOTP();
       await storeOTP(user.id, otp, 'VERIFY_EMAIL', 30);
-      
+
       // Send verification email
       await sendOtpEmail(email, otp, 30, 'VERIFY_EMAIL');
 
@@ -330,7 +314,7 @@ export const loginUser = async (
         success: false,
         message: 'Email belum diverifikasi. Silakan cek email Anda untuk kode verifikasi.',
         needVerification: true,
-        redirectTo: `/verify-email?email=${encodeURIComponent(email)}`
+        redirectTo: `/verify-email?email=${encodeURIComponent(email)}`,
       });
     }
 
@@ -339,19 +323,19 @@ export const loginUser = async (
     if (user.role === 'CUSTOMER' && user.customer) {
       profileData = {
         fullName: user.customer.fullName,
-        avatarUrl: user.customer.avatarUrl
+        avatarUrl: user.customer.avatarUrl,
       };
     } else if (user.role === 'PROVIDER' && user.provider) {
       profileData = {
         fullName: user.provider.fullName,
         businessName: user.provider.businessName,
         isVerified: user.provider.isVerified,
-        avatarUrl: user.provider.avatarUrl
+        avatarUrl: user.provider.avatarUrl,
       };
     } else if (user.role === 'ADMIN' && user.admin) {
       profileData = {
         fullName: user.admin.fullName,
-        adminRole: user.admin.role
+        adminRole: user.admin.role,
       };
     }
 
@@ -360,19 +344,19 @@ export const loginUser = async (
       // Generate OTP untuk 2FA
       const otp = generateOTP();
       await storeOTP(user.id, otp, '2FA', 10); // 2FA OTP berlaku 10 menit
-      
+
       // Send 2FA email
       await sendOtpEmail(email, otp, 10, '2FA');
-      
+
       // Generate partial token
       const partialToken = generatePartialToken(user.id, user.role);
-      
+
       return res.status(200).json({
         success: true,
         message: 'Kode OTP telah dikirim ke email Anda',
         requireOtp: true,
         partialToken,
-        redirectTo: `/verify-otp?email=${encodeURIComponent(email)}`
+        redirectTo: `/verify-otp?email=${encodeURIComponent(email)}`,
       });
     }
 
@@ -381,7 +365,7 @@ export const loginUser = async (
 
     // Determine where to redirect based on role
     let redirectTo = '/dashboard';
-    
+
     if (user.role === 'PROVIDER') {
       redirectTo = '/provider/dashboard';
     } else if (user.role === 'ADMIN') {
@@ -396,10 +380,10 @@ export const loginUser = async (
         email: user.email,
         role: user.role,
         phoneNumber: user.phoneNumber,
-        profile: profileData
+        profile: profileData,
       },
       token,
-      redirectTo
+      redirectTo,
     });
   } catch (error) {
     next(error);
@@ -409,11 +393,7 @@ export const loginUser = async (
 /**
  * Verify 2FA OTP
  */
-export const verifyOtp = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, otp, partialToken } = req.body;
 
@@ -437,13 +417,13 @@ export const verifyOtp = async (
     const user = await prisma.user.findFirst({
       where: {
         id: decoded.id,
-        email
+        email,
       },
       include: {
-        customer: true, 
-        provider: true, 
-        admin: true
-      }
+        customer: true,
+        provider: true,
+        admin: true,
+      },
     });
 
     if (!user) {
@@ -458,9 +438,9 @@ export const verifyOtp = async (
         type: '2FA',
         used: false,
         expiresAt: {
-          gt: new Date()
-        }
-      }
+          gt: new Date(),
+        },
+      },
     });
 
     if (!otpRecord) {
@@ -470,7 +450,7 @@ export const verifyOtp = async (
     // Mark OTP as used
     await prisma.otpCode.update({
       where: { id: otpRecord.id },
-      data: { used: true }
+      data: { used: true },
     });
 
     // Get profile data
@@ -478,19 +458,19 @@ export const verifyOtp = async (
     if (user.role === 'CUSTOMER' && user.customer) {
       profileData = {
         fullName: user.customer.fullName,
-        avatarUrl: user.customer.avatarUrl
+        avatarUrl: user.customer.avatarUrl,
       };
     } else if (user.role === 'PROVIDER' && user.provider) {
       profileData = {
         fullName: user.provider.fullName,
         businessName: user.provider.businessName,
         isVerified: user.provider.isVerified,
-        avatarUrl: user.provider.avatarUrl
+        avatarUrl: user.provider.avatarUrl,
       };
     } else if (user.role === 'ADMIN' && user.admin) {
       profileData = {
         fullName: user.admin.fullName,
-        adminRole: user.admin.role
+        adminRole: user.admin.role,
       };
     }
 
@@ -499,7 +479,7 @@ export const verifyOtp = async (
 
     // Determine where to redirect based on role
     let redirectTo = '/dashboard';
-    
+
     if (user.role === 'PROVIDER') {
       redirectTo = '/provider/dashboard';
     } else if (user.role === 'ADMIN') {
@@ -514,10 +494,10 @@ export const verifyOtp = async (
         email: user.email,
         role: user.role,
         phoneNumber: user.phoneNumber,
-        profile: profileData
+        profile: profileData,
       },
       token,
-      redirectTo
+      redirectTo,
     });
   } catch (error) {
     next(error);
@@ -527,33 +507,31 @@ export const verifyOtp = async (
 /**
  * Toggle 2FA
  */
-export const toggleTwoFactor = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const toggleTwoFactor = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.user.id;
-    
+
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
-    
+
     if (!user) {
       return next(new AppError('User tidak ditemukan', 404));
     }
-    
+
     await prisma.user.update({
       where: { id: userId },
-      data: { twoFactorEnabled: !user.twoFactorEnabled }
+      data: { twoFactorEnabled: !user.twoFactorEnabled },
     });
-    
+
     return res.status(200).json({
       success: true,
-      message: user.twoFactorEnabled ? 'Autentikasi dua faktor dinonaktifkan' : 'Autentikasi dua faktor diaktifkan',
+      message: user.twoFactorEnabled
+        ? 'Autentikasi dua faktor dinonaktifkan'
+        : 'Autentikasi dua faktor diaktifkan',
       data: {
-        twoFactorEnabled: !user.twoFactorEnabled
-      }
+        twoFactorEnabled: !user.twoFactorEnabled,
+      },
     });
   } catch (error) {
     next(error);
@@ -563,28 +541,24 @@ export const toggleTwoFactor = async (
 /**
  * Google OAuth Login/Register
  */
-export const googleAuth = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const googleAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { token, profile } = req.body;
-    
+
     if (!token || !profile || !profile.email) {
       return next(new AppError('Data Google tidak lengkap', 400));
     }
-    
+
     // Check if user exists
     let user = await prisma.user.findUnique({
       where: { email: profile.email },
       include: {
-        customer: true, 
-        provider: true, 
-        admin: true
-      }
+        customer: true,
+        provider: true,
+        admin: true,
+      },
     });
-    
+
     if (user) {
       // Existing user - update Google ID if needed
       if (user.provider !== Provider.GOOGLE) {
@@ -593,18 +567,18 @@ export const googleAuth = async (
           data: {
             provider: Provider.GOOGLE,
             providerAccountId: profile.sub || profile.id,
-            emailVerified: true
+            emailVerified: true,
           },
           include: {
-            customer: true, 
-            provider: true, 
-            admin: true
-          }
+            customer: true,
+            provider: true,
+            admin: true,
+          },
         });
       }
     } else {
       // New user - create account
-      user = await prisma.$transaction(async (prismaClient) => {
+      user = await prisma.$transaction(async prismaClient => {
         // Generate random phone placeholder
         const phoneNumber = `g-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
@@ -616,59 +590,59 @@ export const googleAuth = async (
             role: Role.CUSTOMER,
             provider: Provider.GOOGLE,
             providerAccountId: profile.sub || profile.id,
-            emailVerified: true
-          }
+            emailVerified: true,
+          },
         });
-        
+
         // Create customer profile
         await prismaClient.customer.create({
           data: {
             userId: newUser.id,
             fullName: profile.name || 'Google User',
-            avatarUrl: profile.picture
-          }
+            avatarUrl: profile.picture,
+          },
         });
-        
+
         return prismaClient.user.findUnique({
           where: { id: newUser.id },
           include: {
-            customer: true, 
-            provider: true, 
-            admin: true
-          }
+            customer: true,
+            provider: true,
+            admin: true,
+          },
         });
       });
     }
-    
+
     if (!user) {
       return next(new AppError('Gagal membuat atau menemukan akun', 500));
     }
-    
+
     // Get profile data
     let profileData = null;
     if (user.role === 'CUSTOMER' && user.customer) {
       profileData = {
         fullName: user.customer.fullName,
-        avatarUrl: user.customer.avatarUrl
+        avatarUrl: user.customer.avatarUrl,
       };
     } else if (user.role === 'PROVIDER' && user.provider) {
       profileData = {
         fullName: user.provider.fullName,
         businessName: user.provider.businessName,
         isVerified: user.provider.isVerified,
-        avatarUrl: user.provider.avatarUrl
+        avatarUrl: user.provider.avatarUrl,
       };
     }
 
     // Generate JWT token
     const jwtToken = generateToken(user.id, user.role);
-    
+
     // Determine where to redirect
     let redirectTo = '/dashboard';
     if (user.role === 'PROVIDER') {
       redirectTo = '/provider/dashboard';
     }
-    
+
     return res.status(200).json({
       success: true,
       message: 'Login dengan Google berhasil',
@@ -676,10 +650,10 @@ export const googleAuth = async (
         id: user.id,
         email: user.email,
         role: user.role,
-        profile: profileData
+        profile: profileData,
       },
       token: jwtToken,
-      redirectTo
+      redirectTo,
     });
   } catch (error) {
     next(error);
@@ -689,11 +663,7 @@ export const googleAuth = async (
 /**
  * Refresh JWT token
  */
-export const refreshToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { token } = req.body;
 
@@ -709,7 +679,7 @@ export const refreshToken = async (
 
     // Check if user exists
     const user = await prisma.user.findUnique({
-      where: { id: decoded.id }
+      where: { id: decoded.id },
     });
 
     if (!user || !user.isActive) {
@@ -721,7 +691,7 @@ export const refreshToken = async (
 
     return res.status(200).json({
       success: true,
-      token: newToken
+      token: newToken,
     });
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
@@ -738,24 +708,20 @@ export const logoutUser = (req: Request, res: Response) => {
   // Client-side should remove token
   return res.status(200).json({
     success: true,
-    message: 'Logout berhasil'
+    message: 'Logout berhasil',
   });
 };
 
 /**
  * Request password reset
  */
-export const forgotPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email } = req.body;
 
     // Check if user exists
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
@@ -778,15 +744,15 @@ export const forgotPassword = async (
       where: { id: user.id },
       data: {
         resetToken,
-        resetTokenExpiry
-      }
+        resetTokenExpiry,
+      },
     });
 
     return res.status(200).json({
       success: true,
       message: 'Email reset password telah dikirim',
       resetToken,
-      redirectTo: `/reset-password?token=${resetToken}`
+      redirectTo: `/reset-password?token=${resetToken}`,
     });
   } catch (error) {
     next(error);
@@ -796,11 +762,7 @@ export const forgotPassword = async (
 /**
  * Verify reset password OTP
  */
-export const verifyResetOtp = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const verifyResetOtp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, otp, resetToken } = req.body;
 
@@ -810,9 +772,9 @@ export const verifyResetOtp = async (
         email,
         resetToken,
         resetTokenExpiry: {
-          gt: new Date()
-        }
-      }
+          gt: new Date(),
+        },
+      },
     });
 
     if (!user) {
@@ -827,9 +789,9 @@ export const verifyResetOtp = async (
         type: 'PASSWORD_RESET',
         used: false,
         expiresAt: {
-          gt: new Date()
-        }
-      }
+          gt: new Date(),
+        },
+      },
     });
 
     if (!otpRecord) {
@@ -839,14 +801,14 @@ export const verifyResetOtp = async (
     // Mark OTP as used
     await prisma.otpCode.update({
       where: { id: otpRecord.id },
-      data: { used: true }
+      data: { used: true },
     });
 
     return res.status(200).json({
       success: true,
       message: 'Verifikasi OTP berhasil',
       resetToken,
-      canResetPassword: true
+      canResetPassword: true,
     });
   } catch (error) {
     next(error);
@@ -856,11 +818,7 @@ export const verifyResetOtp = async (
 /**
  * Reset password with token
  */
-export const resetPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { resetToken, password } = req.body;
 
@@ -869,9 +827,9 @@ export const resetPassword = async (
       where: {
         resetToken,
         resetTokenExpiry: {
-          gt: new Date()
-        }
-      }
+          gt: new Date(),
+        },
+      },
     });
 
     if (!user) {
@@ -887,16 +845,16 @@ export const resetPassword = async (
       data: {
         password: hashedPassword,
         resetToken: null,
-        resetTokenExpiry: null
-      }
+        resetTokenExpiry: null,
+      },
     });
 
     return res.status(200).json({
       success: true,
       message: 'Password berhasil diubah',
-      redirectTo: '/login'
+      redirectTo: '/login',
     });
   } catch (error) {
     next(error);
   }
-}; 
+};

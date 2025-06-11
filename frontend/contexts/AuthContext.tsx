@@ -1,17 +1,17 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  getUser, 
-  getToken, 
-  setToken, 
-  setUser, 
-  removeToken, 
+import {
+  getUser,
+  getToken,
+  setToken,
+  setUser,
+  removeToken,
   isValidToken,
   login as loginApi,
   register as registerApi,
   logout as logoutApi,
   verifyOtp as verifyOtpApi,
-  verifyEmail as verifyEmailApi
+  verifyEmail as verifyEmailApi,
 } from '@/lib/auth';
 
 interface User {
@@ -35,7 +35,10 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<{
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{
     success: boolean;
     requireOtp?: boolean;
     needVerification?: boolean;
@@ -50,12 +53,19 @@ interface AuthContextType {
     message?: string;
   }>;
   logout: () => void;
-  verifyOtp: (email: string, otp: string, token: string) => Promise<{
+  verifyOtp: (
+    email: string,
+    otp: string,
+    token: string
+  ) => Promise<{
     success: boolean;
     redirectTo?: string;
     message?: string;
   }>;
-  verifyEmail: (email: string, otp: string) => Promise<{
+  verifyEmail: (
+    email: string,
+    otp: string
+  ) => Promise<{
     success: boolean;
     redirectTo?: string;
     message?: string;
@@ -76,10 +86,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const initAuth = () => {
       try {
         const token = getToken();
-        
+
         if (token && isValidToken(token)) {
           const user = getUser();
-          
+
           if (user) {
             setUserState(user);
             setIsAuthenticated(true);
@@ -108,15 +118,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await loginApi(email, password);
-      
-      if (response.success && response.token && !response.requireOtp && !response.needVerification) {
+
+      if (
+        response.success &&
+        response.token &&
+        !response.requireOtp &&
+        !response.needVerification
+      ) {
         setUserState(response.data || null);
         setIsAuthenticated(true);
       }
-      
+
       setLoading(false);
       return {
         success: response.success,
@@ -124,7 +139,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         needVerification: response.needVerification,
         partialToken: response.partialToken,
         redirectTo: response.redirectTo,
-        message: response.message
+        message: response.message,
       };
     } catch (error) {
       setLoading(false);
@@ -136,21 +151,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (userData: any) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await registerApi(userData);
-      
+
       if (response.success && response.token && !response.needVerification) {
         setUserState(response.data || null);
         setIsAuthenticated(true);
       }
-      
+
       setLoading(false);
       return {
         success: response.success,
         needVerification: response.needVerification,
         redirectTo: response.redirectTo,
-        message: response.message
+        message: response.message,
       };
     } catch (error) {
       setLoading(false);
@@ -169,20 +184,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const verifyOtp = async (email: string, otp: string, partialToken: string) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await verifyOtpApi(email, otp, partialToken);
-      
+
       if (response.success && response.token) {
         setUserState(response.data || null);
         setIsAuthenticated(true);
       }
-      
+
       setLoading(false);
       return {
         success: response.success,
         redirectTo: response.redirectTo,
-        message: response.message
+        message: response.message,
       };
     } catch (error) {
       setLoading(false);
@@ -194,10 +209,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const verifyEmail = async (email: string, otp: string) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await verifyEmailApi(email, otp);
-      
+
       if (response.success && response.token) {
         // Update status emailVerified pada user state
         if (user) {
@@ -207,12 +222,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
         setIsAuthenticated(true);
       }
-      
+
       setLoading(false);
       return {
         success: response.success,
         redirectTo: response.redirectTo,
-        message: response.message
+        message: response.message,
       };
     } catch (error) {
       setLoading(false);
@@ -232,7 +247,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         register,
         logout,
         verifyOtp,
-        verifyEmail
+        verifyEmail,
       }}
     >
       {children}
@@ -242,10 +257,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  
+
   return context;
-}; 
+};

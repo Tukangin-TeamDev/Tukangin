@@ -118,14 +118,14 @@ export const hasRole = (role: string | string[]): boolean => {
 export const login = async (email: string, password: string): Promise<LoginResponse> => {
   try {
     const response = await axios.post(`${API_URL}/auth/login`, { email, password });
-    
+
     if (response.data.success && response.data.token) {
       setToken(response.data.token);
       if (response.data.data) {
         setUser(response.data.data);
       }
     }
-    
+
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -147,14 +147,14 @@ export const verifyOtp = async (
       otp,
       partialToken,
     });
-    
+
     if (response.data.success && response.data.token) {
       setToken(response.data.token);
       if (response.data.data) {
         setUser(response.data.data);
       }
     }
-    
+
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -175,14 +175,14 @@ export const register = async (userData: {
 }): Promise<LoginResponse> => {
   try {
     const response = await axios.post(`${API_URL}/auth/register`, userData);
-    
+
     if (response.data.success && response.data.token) {
       setToken(response.data.token);
       if (response.data.data) {
         setUser(response.data.data);
       }
     }
-    
+
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -196,11 +196,11 @@ export const register = async (userData: {
 export const verifyEmail = async (email: string, otp: string): Promise<VerifyOtpResponse> => {
   try {
     const response = await axios.post(`${API_URL}/auth/verify-email`, { email, otp });
-    
+
     if (response.data.success && response.data.token) {
       setToken(response.data.token);
     }
-    
+
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -211,7 +211,9 @@ export const verifyEmail = async (email: string, otp: string): Promise<VerifyOtp
 };
 
 // Fungsi untuk mengirim ulang email verifikasi
-export const resendVerification = async (email: string): Promise<{ success: boolean; message: string }> => {
+export const resendVerification = async (
+  email: string
+): Promise<{ success: boolean; message: string }> => {
   try {
     const response = await axios.post(`${API_URL}/auth/resend-verification`, { email });
     return response.data;
@@ -230,8 +232,10 @@ export const logout = (): void => {
 };
 
 // Fungsi untuk reset password
-export const forgotPassword = async (email: string): Promise<{ 
-  success: boolean; 
+export const forgotPassword = async (
+  email: string
+): Promise<{
+  success: boolean;
   message: string;
   resetToken?: string;
   redirectTo?: string;
@@ -315,7 +319,7 @@ export const toggleTwoFactor = async (): Promise<{
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    
+
     // Update data user di localStorage
     const user = getUser();
     if (user && response.data.success) {
@@ -324,7 +328,7 @@ export const toggleTwoFactor = async (): Promise<{
         twoFactorEnabled: response.data.data.twoFactorEnabled,
       });
     }
-    
+
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -338,14 +342,14 @@ export const toggleTwoFactor = async (): Promise<{
 export const googleLogin = async (token: string, profile: any): Promise<LoginResponse> => {
   try {
     const response = await axios.post(`${API_URL}/auth/google`, { token, profile });
-    
+
     if (response.data.success && response.data.token) {
       setToken(response.data.token);
       if (response.data.data) {
         setUser(response.data.data);
       }
     }
-    
+
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -353,4 +357,4 @@ export const googleLogin = async (token: string, profile: any): Promise<LoginRes
     }
     throw error;
   }
-}; 
+};

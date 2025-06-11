@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
 import { validateEmail } from '../../lib/validation';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from "sonner";
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -19,7 +19,7 @@ export default function LoginPage() {
   const [passwordError, setPasswordError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  
+
   const { login, isAuthenticated } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -72,7 +72,7 @@ export default function LoginPage() {
 
     try {
       const result = await login(email, password);
-      
+
       if (result.success) {
         toast.success('Login berhasil!');
         if (result.redirectTo) {
@@ -82,7 +82,9 @@ export default function LoginPage() {
         }
       } else if (result.requireOtp) {
         // Redirect to OTP verification
-        router.push(`/verify-otp?email=${encodeURIComponent(email)}&token=${encodeURIComponent(result.partialToken || '')}`);
+        router.push(
+          `/verify-otp?email=${encodeURIComponent(email)}&token=${encodeURIComponent(result.partialToken || '')}`
+        );
       } else if (result.needVerification) {
         // Redirect to email verification
         router.push(`/verify-email?email=${encodeURIComponent(email)}`);
@@ -102,13 +104,13 @@ export default function LoginPage() {
   // Handle Google login
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
-    
+
     try {
       // Memuat Google Auth script jika belum ada
       if (!window.google) {
         await loadGoogleAuthScript();
       }
-      
+
       window.google.accounts.id.initialize({
         client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
         callback: handleGoogleResponse,
@@ -150,21 +152,24 @@ export default function LoginPage() {
 
     setIsGoogleLoading(true);
     try {
-      const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/auth/google`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: response.credential,
-        }),
-      }).then(res => res.json());
+      const result = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/auth/google`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token: response.credential,
+          }),
+        }
+      ).then(res => res.json());
 
       if (result.success) {
         // Save token
         localStorage.setItem('accessToken', result.token);
         localStorage.setItem('user', JSON.stringify(result.data));
-        
+
         toast.success('Login dengan Google berhasil!');
         router.push(result.redirectTo || redirectTo || '/dashboard');
       } else {
@@ -374,13 +379,13 @@ export default function LoginPage() {
                     'Masuk'
                   )}
                 </button>
-                
+
                 <div className="relative flex items-center py-1">
                   <div className="flex-grow border-t border-gray-300"></div>
                   <span className="mx-3 flex-shrink text-xs text-gray-400">atau</span>
                   <div className="flex-grow border-t border-gray-300"></div>
                 </div>
-                
+
                 <button
                   type="button"
                   onClick={handleGoogleLogin}

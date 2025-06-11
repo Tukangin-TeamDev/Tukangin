@@ -11,8 +11,8 @@ router.get('/me', (req, res) => {
   // Auth middleware adds user to req object
   res.status(200).json({
     success: true,
-    data: req.user
+    data: req.user,
   });
 });
 
-export default router; 
+export default router;

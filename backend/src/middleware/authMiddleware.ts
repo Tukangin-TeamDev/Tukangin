@@ -18,15 +18,11 @@ declare global {
   }
 }
 
-export const authMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Get token from headers
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return next(new AppError('Token akses tidak ditemukan', 401));
     }
@@ -49,10 +45,10 @@ export const authMiddleware = async (
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
       include: {
-        customer: true, 
-        provider: true, 
-        admin: true
-      }
+        customer: true,
+        provider: true,
+        admin: true,
+      },
     });
 
     if (!user) {
@@ -65,23 +61,23 @@ export const authMiddleware = async (
 
     // Get profile data based on role
     let profileData = {};
-    
+
     if (user.role === 'CUSTOMER' && user.customer) {
       profileData = {
         fullName: user.customer.fullName,
-        avatarUrl: user.customer.avatarUrl
+        avatarUrl: user.customer.avatarUrl,
       };
     } else if (user.role === 'PROVIDER' && user.provider) {
       profileData = {
         fullName: user.provider.fullName,
         businessName: user.provider.businessName,
         isVerified: user.provider.isVerified,
-        avatarUrl: user.provider.avatarUrl
+        avatarUrl: user.provider.avatarUrl,
       };
     } else if (user.role === 'ADMIN' && user.admin) {
       profileData = {
         fullName: user.admin.fullName,
-        adminRole: user.admin.role
+        adminRole: user.admin.role,
       };
     }
 
@@ -92,7 +88,7 @@ export const authMiddleware = async (
       role: user.role,
       twoFactorEnabled: user.twoFactorEnabled,
       emailVerified: user.emailVerified,
-      profile: profileData
+      profile: profileData,
     };
 
     next();
@@ -120,4 +116,4 @@ export const authorize = (...roles: Role[]) => {
 
     next();
   };
-}; 
+};

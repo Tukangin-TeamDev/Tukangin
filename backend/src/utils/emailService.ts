@@ -16,7 +16,7 @@ const createTransporter = () => {
     // Buat test account di ethereal
     return nodemailer.createTestAccount().then(account => {
       logger.info(`Created Ethereal test account: ${account.user}, ${account.pass}`);
-      
+
       return nodemailer.createTransport({
         host: 'smtp.ethereal.email',
         port: 587,
@@ -28,24 +28,26 @@ const createTransporter = () => {
       });
     });
   }
-  
+
   // Untuk production atau testing dengan SMTP yang dikonfigurasi
-  return Promise.resolve(nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587', 10),
-    secure: process.env.SMTP_PORT === '465', // true untuk port 465, false untuk port lain
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  }));
+  return Promise.resolve(
+    nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '587', 10),
+      secure: process.env.SMTP_PORT === '465', // true untuk port 465, false untuk port lain
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    })
+  );
 };
 
 // Fungsi untuk mengirim email
 export const sendEmail = async (options: EmailOptions): Promise<void> => {
   try {
     const transporter = await createTransporter();
-    
+
     const mailOptions = {
       from: process.env.EMAIL_FROM || '"Tukangin App" <no-reply@tukangin.com>',
       to: options.to,
@@ -53,13 +55,13 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
       text: options.text,
       html: options.html,
     };
-    
+
     const info = await transporter.sendMail(mailOptions);
-    
+
     if (process.env.NODE_ENV === 'development' && !process.env.SMTP_HOST) {
       logger.info(`Email preview URL: ${nodemailer.getTestMessageUrl(info)}`);
     }
-    
+
     logger.info(`Email sent to ${options.to}`);
   } catch (error) {
     logger.error('Error sending email:', error);
@@ -69,15 +71,15 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
 
 // Template untuk email OTP verifikasi
 export const sendOtpEmail = async (
-  email: string, 
-  otp: string, 
-  expiresInMinutes: number, 
+  email: string,
+  otp: string,
+  expiresInMinutes: number,
   type: string
 ): Promise<void> => {
   let subject = '';
   let text = '';
   let html = '';
-  
+
   if (type === 'VERIFY_EMAIL') {
     subject = 'Verifikasi Email Akun Tukangin';
     text = `Kode OTP untuk verifikasi email Anda adalah: ${otp}. Kode ini berlaku selama ${expiresInMinutes} menit.`;
@@ -145,11 +147,11 @@ export const sendOtpEmail = async (
       </div>
     `;
   }
-  
+
   await sendEmail({
     to: email,
     subject,
     text,
     html,
   });
-}; 
+};

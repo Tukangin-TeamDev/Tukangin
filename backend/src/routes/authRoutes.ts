@@ -1,24 +1,24 @@
 import express from 'express';
-import { 
-  registerUser, 
-  loginUser, 
-  refreshToken, 
-  logoutUser, 
-  forgotPassword, 
+import {
+  registerUser,
+  loginUser,
+  refreshToken,
+  logoutUser,
+  forgotPassword,
   resetPassword,
   verifyEmail,
   resendVerification,
   verifyOtp,
   toggleTwoFactor,
   googleAuth,
-  verifyResetOtp
+  verifyResetOtp,
 } from '../controllers/authController';
-import { 
-  validateRegister, 
-  validateLogin, 
+import {
+  validateRegister,
+  validateLogin,
   validateOtp,
-  validateForgotPassword, 
-  validateResetPassword 
+  validateForgotPassword,
+  validateResetPassword,
 } from '../middleware/validators/authValidator';
 import { authMiddleware } from '../middleware/authMiddleware';
 
@@ -47,4 +47,4 @@ router.post('/google', googleAuth);
 router.use(authMiddleware);
 router.post('/toggle-two-factor', toggleTwoFactor);
 
-export default router; 
+export default router;
