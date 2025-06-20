@@ -21,9 +21,9 @@ export const updateProviderLocation = async (req: Request, res: Response, next: 
         provider: {
           select: {
             userId: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     if (!booking) {
@@ -47,32 +47,32 @@ export const updateProviderLocation = async (req: Request, res: Response, next: 
         status: 'LOCATION_UPDATE',
         latitude,
         longitude,
-        notes: 'Provider updated location'
-      }
+        notes: 'Provider updated location',
+      },
     });
 
     // Hitung ETA baru
     const customerCoords = {
       latitude: booking.latitude,
-      longitude: booking.longitude
+      longitude: booking.longitude,
     };
-    
+
     const providerCoords = {
       latitude,
-      longitude
+      longitude,
     };
-    
+
     const eta = calculateETA(providerCoords, customerCoords);
-    
+
     // Update ETA di booking jika berubah signifikan
     if (Math.abs(eta.getTime() - (booking.estimatedArrival?.getTime() || 0)) > 5 * 60 * 1000) {
       await prisma.booking.update({
         where: { id: bookingId },
         data: {
-          estimatedArrival: eta
-        }
+          estimatedArrival: eta,
+        },
       });
-      
+
       // Notifikasi customer tentang perubahan ETA
       await sendNotification(
         booking.customerId,
@@ -90,8 +90,8 @@ export const updateProviderLocation = async (req: Request, res: Response, next: 
         id: statusUpdate.id,
         latitude,
         longitude,
-        estimatedArrival: eta
-      }
+        estimatedArrival: eta,
+      },
     });
   } catch (error) {
     logger.error('Update provider location error:', error);
@@ -114,24 +114,24 @@ export const getTrackingData = async (req: Request, res: Response, next: NextFun
         provider: {
           select: {
             userId: true,
-            fullName: true
-          }
+            fullName: true,
+          },
         },
         customer: {
           select: {
-            userId: true
-          }
+            userId: true,
+          },
         },
         statusUpdates: {
           orderBy: {
-            createdAt: 'desc'
+            createdAt: 'desc',
           },
           take: 1,
           where: {
-            status: 'LOCATION_UPDATE'
-          }
-        }
-      }
+            status: 'LOCATION_UPDATE',
+          },
+        },
+      },
     });
 
     if (!booking) {
@@ -150,7 +150,7 @@ export const getTrackingData = async (req: Request, res: Response, next: NextFun
 
     // Ambil lokasi terakhir provider
     const lastLocation = booking.statusUpdates.length > 0 ? booking.statusUpdates[0] : null;
-    
+
     res.status(200).json({
       success: true,
       data: {
@@ -160,17 +160,19 @@ export const getTrackingData = async (req: Request, res: Response, next: NextFun
         customerLocation: {
           latitude: booking.latitude,
           longitude: booking.longitude,
-          address: booking.address
+          address: booking.address,
         },
-        providerLocation: lastLocation ? {
-          latitude: lastLocation.latitude,
-          longitude: lastLocation.longitude,
-          updatedAt: lastLocation.createdAt
-        } : null
-      }
+        providerLocation: lastLocation
+          ? {
+              latitude: lastLocation.latitude,
+              longitude: lastLocation.longitude,
+              updatedAt: lastLocation.createdAt,
+            }
+          : null,
+      },
     });
   } catch (error) {
     logger.error('Get tracking data error:', error);
     next(error);
   }
-}; 
+};

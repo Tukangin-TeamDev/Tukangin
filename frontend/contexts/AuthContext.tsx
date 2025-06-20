@@ -1,18 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+"use client";
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  getUser,
-  getToken,
-  setToken,
-  setUser,
-  removeToken,
-  isValidToken,
-  login as loginApi,
-  register as registerApi,
-  logout as logoutApi,
-  verifyOtp as verifyOtpApi,
-  verifyEmail as verifyEmailApi,
-} from '@/lib/auth';
 
 interface User {
   id: string;
@@ -35,113 +23,74 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
-  login: (
-    email: string,
-    password: string
-  ) => Promise<{
-    success: boolean;
-    requireOtp?: boolean;
-    needVerification?: boolean;
-    partialToken?: string;
-    redirectTo?: string;
-    message?: string;
-  }>;
-  register: (userData: any) => Promise<{
-    success: boolean;
-    needVerification?: boolean;
-    redirectTo?: string;
-    message?: string;
-  }>;
-  logout: () => void;
-  verifyOtp: (
-    email: string,
-    otp: string,
-    token: string
-  ) => Promise<{
-    success: boolean;
-    redirectTo?: string;
-    message?: string;
-  }>;
-  verifyEmail: (
-    email: string,
-    otp: string
-  ) => Promise<{
-    success: boolean;
-    redirectTo?: string;
-    message?: string;
-  }>;
+  login: (email: string, password: string) => Promise<any>;
+  register: (userData: any) => Promise<any>;
+  logout: () => Promise<void>;
+  verifyOtp: (email: string, otp: string, token: string) => Promise<any>;
+  verifyEmail: (email: string, otp: string) => Promise<any>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUserState] = useState<User | null>(null);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const router = useRouter();
 
+  // Fetch user from backend on mount
   useEffect(() => {
-    const initAuth = () => {
+    const fetchUser = async () => {
+      setLoading(true);
       try {
-        const token = getToken();
-
-        if (token && isValidToken(token)) {
-          const user = getUser();
-
-          if (user) {
-            setUserState(user);
-            setIsAuthenticated(true);
-          } else {
-            // Token valid tapi data user tidak ada, hapus token
-            removeToken();
-            setIsAuthenticated(false);
-          }
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+          credentials: 'include',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+          setIsAuthenticated(true);
         } else {
-          // Token tidak valid, hapus token
-          if (token) removeToken();
+          setUser(null);
           setIsAuthenticated(false);
         }
-      } catch (error) {
-        console.error('Error initializing auth:', error);
-        removeToken();
+      } catch {
+        setUser(null);
         setIsAuthenticated(false);
       } finally {
         setLoading(false);
       }
     };
-
-    initAuth();
+    fetchUser();
   }, []);
 
   const login = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
-
     try {
-      const response = await loginApi(email, password);
-
-      if (
-        response.success &&
-        response.token &&
-        !response.requireOtp &&
-        !response.needVerification
-      ) {
-        setUserState(response.data || null);
-        setIsAuthenticated(true);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password }),
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        // Fetch user after login
+        const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+          credentials: 'include',
+        });
+        if (meRes.ok) {
+          const meData = await meRes.json();
+          setUser(meData.user);
+          setIsAuthenticated(true);
+        }
       }
-
       setLoading(false);
-      return {
-        success: response.success,
-        requireOtp: response.requireOtp,
-        needVerification: response.needVerification,
-        partialToken: response.partialToken,
-        redirectTo: response.redirectTo,
-        message: response.message,
-      };
-    } catch (error) {
+      return result;
+    } catch (err) {
       setLoading(false);
       setError('Login gagal. Silakan coba lagi.');
       return { success: false, message: 'Login gagal. Silakan coba lagi.' };
@@ -151,55 +100,74 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (userData: any) => {
     setLoading(true);
     setError(null);
-
     try {
-      const response = await registerApi(userData);
-
-      if (response.success && response.token && !response.needVerification) {
-        setUserState(response.data || null);
-        setIsAuthenticated(true);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(userData),
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        // Fetch user after register
+        const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+          credentials: 'include',
+        });
+        if (meRes.ok) {
+          const meData = await meRes.json();
+          setUser(meData.user);
+          setIsAuthenticated(true);
+        }
       }
-
       setLoading(false);
-      return {
-        success: response.success,
-        needVerification: response.needVerification,
-        redirectTo: response.redirectTo,
-        message: response.message,
-      };
-    } catch (error) {
+      return result;
+    } catch (err) {
       setLoading(false);
       setError('Registrasi gagal. Silakan coba lagi.');
       return { success: false, message: 'Registrasi gagal. Silakan coba lagi.' };
     }
   };
 
-  const logout = () => {
-    logoutApi();
-    setUserState(null);
-    setIsAuthenticated(false);
-    router.push('/login');
+  const logout = async () => {
+    setLoading(true);
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      setLoading(false);
+      router.push('/login');
+    }
   };
 
-  const verifyOtp = async (email: string, otp: string, partialToken: string) => {
+  const verifyOtp = async (email: string, otp: string, token: string) => {
     setLoading(true);
     setError(null);
-
     try {
-      const response = await verifyOtpApi(email, otp, partialToken);
-
-      if (response.success && response.token) {
-        setUserState(response.data || null);
-        setIsAuthenticated(true);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, otp, token }),
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        // Fetch user after OTP
+        const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+          credentials: 'include',
+        });
+        if (meRes.ok) {
+          const meData = await meRes.json();
+          setUser(meData.user);
+          setIsAuthenticated(true);
+        }
       }
-
       setLoading(false);
-      return {
-        success: response.success,
-        redirectTo: response.redirectTo,
-        message: response.message,
-      };
-    } catch (error) {
+      return result;
+    } catch (err) {
       setLoading(false);
       setError('Verifikasi OTP gagal. Silakan coba lagi.');
       return { success: false, message: 'Verifikasi OTP gagal. Silakan coba lagi.' };
@@ -209,27 +177,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const verifyEmail = async (email: string, otp: string) => {
     setLoading(true);
     setError(null);
-
     try {
-      const response = await verifyEmailApi(email, otp);
-
-      if (response.success && response.token) {
-        // Update status emailVerified pada user state
-        if (user) {
-          const updatedUser = { ...user, emailVerified: true };
-          setUser(updatedUser);
-          setUserState(updatedUser);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, otp }),
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        // Fetch user after email verification
+        const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+          credentials: 'include',
+        });
+        if (meRes.ok) {
+          const meData = await meRes.json();
+          setUser(meData.user);
+          setIsAuthenticated(true);
         }
-        setIsAuthenticated(true);
       }
-
       setLoading(false);
-      return {
-        success: response.success,
-        redirectTo: response.redirectTo,
-        message: response.message,
-      };
-    } catch (error) {
+      return result;
+    } catch (err) {
       setLoading(false);
       setError('Verifikasi email gagal. Silakan coba lagi.');
       return { success: false, message: 'Verifikasi email gagal. Silakan coba lagi.' };
@@ -257,10 +226,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-
   return context;
 };

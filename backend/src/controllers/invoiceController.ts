@@ -23,22 +23,22 @@ export const generateInvoice = async (req: Request, res: Response, next: NextFun
             userId: true,
             fullName: true,
             businessName: true,
-            isVerified: true
-          }
+            isVerified: true,
+          },
         },
         services: {
           include: {
-            service: true
-          }
+            service: true,
+          },
         },
         payments: {
           where: {
-            status: 'COMPLETED'
+            status: 'COMPLETED',
           },
-          take: 1
+          take: 1,
         },
-        requotes: true
-      }
+        requotes: true,
+      },
     });
 
     if (!booking) {
@@ -67,8 +67,8 @@ export const generateInvoice = async (req: Request, res: Response, next: NextFun
     // Cek apakah invoice sudah ada
     const existingInvoice = await prisma.invoice.findFirst({
       where: {
-        bookingId
-      }
+        bookingId,
+      },
     });
 
     if (existingInvoice) {
@@ -80,7 +80,7 @@ export const generateInvoice = async (req: Request, res: Response, next: NextFun
 
     // Hitung total awal dari services
     let subtotal = booking.services.reduce((sum: number, item: any) => {
-      return sum + (item.price * item.quantity);
+      return sum + item.price * item.quantity;
     }, 0);
 
     // Tambahkan biaya dari requote yang diterima
@@ -109,7 +109,7 @@ export const generateInvoice = async (req: Request, res: Response, next: NextFun
         issuedAt: new Date(),
         dueAt: dueDate,
         status: 'PAID', // Karena payment sudah completed
-      }
+      },
     });
 
     // Kirim email invoice jika user adalah customer
@@ -118,14 +118,14 @@ export const generateInvoice = async (req: Request, res: Response, next: NextFun
       await sendEmail({
         to: req.user!.email,
         subject: `Invoice #${invoiceNumber} untuk layanan Tukangin`,
-        text: `Invoice #${invoiceNumber} untuk booking #${booking.bookingNumber}\nTotal: Rp ${totalAmount.toLocaleString('id-ID')}\nTerima kasih telah menggunakan layanan Tukangin!`
+        text: `Invoice #${invoiceNumber} untuk booking #${booking.bookingNumber}\nTotal: Rp ${totalAmount.toLocaleString('id-ID')}\nTerima kasih telah menggunakan layanan Tukangin!`,
       });
     }
 
     res.status(201).json({
       success: true,
       message: 'Invoice berhasil dibuat',
-      data: invoice
+      data: invoice,
     });
   } catch (error) {
     logger.error('Generate invoice error:', error);
@@ -150,18 +150,18 @@ export const getInvoiceById = async (req: Request, res: Response, next: NextFunc
             provider: true,
             services: {
               include: {
-                service: true
-              }
+                service: true,
+              },
             },
             requotes: {
               where: {
-                status: 'ACCEPTED'
-              }
-            }
-          }
+                status: 'ACCEPTED',
+              },
+            },
+          },
         },
-        payment: true
-      }
+        payment: true,
+      },
     });
 
     if (!invoice) {
@@ -179,7 +179,7 @@ export const getInvoiceById = async (req: Request, res: Response, next: NextFunc
 
     res.status(200).json({
       success: true,
-      data: invoice
+      data: invoice,
     });
   } catch (error) {
     logger.error('Get invoice error:', error);
@@ -201,11 +201,11 @@ export const downloadInvoice = async (req: Request, res: Response, next: NextFun
         booking: {
           include: {
             customer: true,
-            provider: true
-          }
+            provider: true,
+          },
         },
-        payment: true
-      }
+        payment: true,
+      },
     });
 
     if (!invoice) {
@@ -229,8 +229,8 @@ export const downloadInvoice = async (req: Request, res: Response, next: NextFun
       data: {
         invoiceId,
         invoiceNumber: invoice.invoiceNumber,
-        totalAmount: invoice.totalAmount
-      }
+        totalAmount: invoice.totalAmount,
+      },
     });
   } catch (error) {
     logger.error('Download invoice error:', error);
@@ -248,18 +248,18 @@ export const getUserInvoices = async (req: Request, res: Response, next: NextFun
 
     // Filter berdasarkan peran user
     const filter: any = {};
-    
+
     if (req.user!.role === 'CUSTOMER') {
       filter.booking = {
         customer: {
-          userId
-        }
+          userId,
+        },
       };
     } else if (req.user!.role === 'PROVIDER') {
       filter.booking = {
         provider: {
-          userId
-        }
+          userId,
+        },
       };
     }
 
@@ -270,7 +270,7 @@ export const getUserInvoices = async (req: Request, res: Response, next: NextFun
 
     // Hitung total
     const totalInvoices = await prisma.invoice.count({
-      where: filter
+      where: filter,
     });
 
     // Ambil data dengan pagination
@@ -284,23 +284,23 @@ export const getUserInvoices = async (req: Request, res: Response, next: NextFun
             status: true,
             customer: {
               select: {
-                fullName: true
-              }
+                fullName: true,
+              },
             },
             provider: {
               select: {
                 fullName: true,
-                businessName: true
-              }
-            }
-          }
-        }
+                businessName: true,
+              },
+            },
+          },
+        },
       },
       skip,
       take: Number(limit),
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: 'desc',
+      },
     });
 
     res.status(200).json({
@@ -311,12 +311,12 @@ export const getUserInvoices = async (req: Request, res: Response, next: NextFun
           total: totalInvoices,
           page: Number(page),
           limit: Number(limit),
-          pages: Math.ceil(totalInvoices / Number(limit))
-        }
-      }
+          pages: Math.ceil(totalInvoices / Number(limit)),
+        },
+      },
     });
   } catch (error) {
     logger.error('Get user invoices error:', error);
     next(error);
   }
-}; 
+};

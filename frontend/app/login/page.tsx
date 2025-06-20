@@ -1,6 +1,7 @@
 'use client';
 
 import type React from 'react';
+import type { Route } from 'next';
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -28,7 +29,7 @@ export default function LoginPage() {
   // Check if user is already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.push(redirectTo || '/dashboard');
+      router.push((redirectTo || '/dashboard') as unknown as Route);
     }
   }, [isAuthenticated, router, redirectTo]);
 
@@ -76,18 +77,18 @@ export default function LoginPage() {
       if (result.success) {
         toast.success('Login berhasil!');
         if (result.redirectTo) {
-          router.push(result.redirectTo);
+          router.push(result.redirectTo as unknown as Route);
         } else {
-          router.push(redirectTo || '/dashboard');
+          router.push((redirectTo || '/dashboard') as unknown as Route);
         }
       } else if (result.requireOtp) {
         // Redirect to OTP verification
         router.push(
-          `/verify-otp?email=${encodeURIComponent(email)}&token=${encodeURIComponent(result.partialToken || '')}`
+          (`/verify-otp?email=${encodeURIComponent(email)}&token=${encodeURIComponent(result.partialToken || '')}`) as unknown as Route
         );
       } else if (result.needVerification) {
         // Redirect to email verification
-        router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+        router.push((`/verify-email?email=${encodeURIComponent(email)}`) as unknown as Route);
       } else {
         toast.error(result.message || 'Login gagal');
         setPasswordError(result.message || 'Email atau password salah');
@@ -101,83 +102,12 @@ export default function LoginPage() {
     }
   };
 
-  // Handle Google login
+  // Handle Google login via backend
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
-
     try {
-      // Memuat Google Auth script jika belum ada
-      if (!window.google) {
-        await loadGoogleAuthScript();
-      }
-
-      window.google.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-        callback: handleGoogleResponse,
-      });
-
-      window.google.accounts.id.prompt();
-    } catch (error) {
-      console.error('Google auth error:', error);
-      toast.error('Gagal memuat autentikasi Google');
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
-
-  // Load Google Auth script
-  const loadGoogleAuthScript = () => {
-    return new Promise<void>((resolve, reject) => {
-      try {
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error('Failed to load Google script'));
-        document.head.appendChild(script);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
-
-  // Handle Google response
-  const handleGoogleResponse = async (response: any) => {
-    if (!response || !response.credential) {
-      console.error('Invalid Google response');
-      toast.error('Autentikasi Google gagal');
-      return;
-    }
-
-    setIsGoogleLoading(true);
-    try {
-      const result = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/auth/google`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            token: response.credential,
-          }),
-        }
-      ).then(res => res.json());
-
-      if (result.success) {
-        // Save token
-        localStorage.setItem('accessToken', result.token);
-        localStorage.setItem('user', JSON.stringify(result.data));
-
-        toast.success('Login dengan Google berhasil!');
-        router.push(result.redirectTo || redirectTo || '/dashboard');
-      } else {
-        toast.error(result.message || 'Login dengan Google gagal');
-      }
-    } catch (error) {
-      console.error('Google login API error:', error);
-      toast.error('Terjadi kesalahan saat login dengan Google');
+      // Redirect ke endpoint backend yang handle Google OAuth
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL || ''}/auth/google/login?redirectTo=${encodeURIComponent(window.location.origin + '/auth/callback')}`;
     } finally {
       setIsGoogleLoading(false);
     }

@@ -12,6 +12,7 @@ import {
   toggleTwoFactor,
   googleAuth,
   verifyResetOtp,
+  getCurrentUser,
 } from '../controllers/authController';
 import {
   validateRegister,
@@ -46,5 +47,8 @@ router.post('/google', googleAuth);
 // Protected routes
 router.use(authMiddleware);
 router.post('/toggle-two-factor', toggleTwoFactor);
+
+// Get current user
+router.get('/me', getCurrentUser);
 
 export default router;

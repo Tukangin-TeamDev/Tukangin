@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { Secret } from 'jsonwebtoken';
 import crypto from 'crypto';
 import prisma from '../config/prisma';
 import { AppError } from '../middleware/errorHandler';
@@ -10,16 +10,21 @@ import logger from '../utils/logger';
 
 // Helpers
 const generateToken = (userId: string, role: string): string => {
-  return jwt.sign({ id: userId, role }, process.env.JWT_SECRET || 'secret', {
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
-  });
+  const secret = process.env.JWT_SECRET!;
+  const expiresIn = process.env.JWT_EXPIRES_IN ?? '7d';
+
+  return jwt.sign(
+    { id: userId, role },
+    secret,
+    { expiresIn: expiresIn as jwt.SignOptions['expiresIn'] }
+  );
 };
 
 // Generate partial token (untuk 2FA)
 const generatePartialToken = (userId: string, role: string): string => {
   return jwt.sign(
     { id: userId, role, partial: true },
-    process.env.JWT_SECRET || 'secret',
+    process.env.JWT_SECRET as Secret,
     { expiresIn: '15m' } // Token sementara hanya berlaku 15 menit
   );
 };
@@ -46,6 +51,17 @@ const storeOTP = async (
       type,
       expiresAt,
     },
+  });
+};
+
+// Helper untuk set JWT cookie
+const setAuthCookie = (res: Response, token: string) => {
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 hari
+    path: '/',
   });
 };
 
@@ -93,7 +109,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
           },
         });
       } else if (role === 'PROVIDER') {
-        await prismaClient.provider.create({
+        await prismaClient.serviceProvider.create({
           data: {
             userId: user.id,
             fullName,
@@ -123,6 +139,9 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
 
     // Generate token untuk akses sementara
     const token = generateToken(result.id, result.role);
+
+    // Set cookie JWT
+    setAuthCookie(res, token);
 
     // Return user data (tanpa password) dan token
     return res.status(201).json({
@@ -200,6 +219,9 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
 
     // Generate token
     const token = generateToken(user.id, user.role);
+
+    // Set cookie JWT
+    setAuthCookie(res, token);
 
     // Determine where to redirect based on role
     let redirectTo = '/dashboard';
@@ -280,7 +302,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       where: { email },
       include: {
         customer: true,
-        provider: true,
+        serviceProvider: true,
         admin: true,
       },
     });
@@ -325,12 +347,12 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         fullName: user.customer.fullName,
         avatarUrl: user.customer.avatarUrl,
       };
-    } else if (user.role === 'PROVIDER' && user.provider) {
+    } else if (user.role === 'PROVIDER' && user.serviceProvider) {
       profileData = {
-        fullName: user.provider.fullName,
-        businessName: user.provider.businessName,
-        isVerified: user.provider.isVerified,
-        avatarUrl: user.provider.avatarUrl,
+        fullName: user.serviceProvider.fullName,
+        businessName: user.serviceProvider.businessName,
+        isVerified: user.serviceProvider.isVerified,
+        avatarUrl: user.serviceProvider.avatarUrl,
       };
     } else if (user.role === 'ADMIN' && user.admin) {
       profileData = {
@@ -362,6 +384,9 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
     // Generate token
     const token = generateToken(user.id, user.role);
+
+    // Set cookie JWT
+    setAuthCookie(res, token);
 
     // Determine where to redirect based on role
     let redirectTo = '/dashboard';
@@ -421,7 +446,7 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
       },
       include: {
         customer: true,
-        provider: true,
+        serviceProvider: true,
         admin: true,
       },
     });
@@ -460,12 +485,12 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
         fullName: user.customer.fullName,
         avatarUrl: user.customer.avatarUrl,
       };
-    } else if (user.role === 'PROVIDER' && user.provider) {
+    } else if (user.role === 'PROVIDER' && user.serviceProvider) {
       profileData = {
-        fullName: user.provider.fullName,
-        businessName: user.provider.businessName,
-        isVerified: user.provider.isVerified,
-        avatarUrl: user.provider.avatarUrl,
+        fullName: user.serviceProvider.fullName,
+        businessName: user.serviceProvider.businessName,
+        isVerified: user.serviceProvider.isVerified,
+        avatarUrl: user.serviceProvider.avatarUrl,
       };
     } else if (user.role === 'ADMIN' && user.admin) {
       profileData = {
@@ -476,6 +501,9 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
 
     // Generate full token
     const token = generateToken(user.id, user.role);
+
+    // Set cookie JWT
+    setAuthCookie(res, token);
 
     // Determine where to redirect based on role
     let redirectTo = '/dashboard';
@@ -509,6 +537,10 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
  */
 export const toggleTwoFactor = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    // Pastikan req.user tidak undefined
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
     const userId = req.user.id;
 
     const user = await prisma.user.findUnique({
@@ -554,7 +586,7 @@ export const googleAuth = async (req: Request, res: Response, next: NextFunction
       where: { email: profile.email },
       include: {
         customer: true,
-        provider: true,
+        serviceProvider: true,
         admin: true,
       },
     });
@@ -571,7 +603,7 @@ export const googleAuth = async (req: Request, res: Response, next: NextFunction
           },
           include: {
             customer: true,
-            provider: true,
+            serviceProvider: true,
             admin: true,
           },
         });
@@ -607,7 +639,7 @@ export const googleAuth = async (req: Request, res: Response, next: NextFunction
           where: { id: newUser.id },
           include: {
             customer: true,
-            provider: true,
+            serviceProvider: true,
             admin: true,
           },
         });
@@ -625,17 +657,20 @@ export const googleAuth = async (req: Request, res: Response, next: NextFunction
         fullName: user.customer.fullName,
         avatarUrl: user.customer.avatarUrl,
       };
-    } else if (user.role === 'PROVIDER' && user.provider) {
+    } else if (user.role === 'PROVIDER' && user.serviceProvider) {
       profileData = {
-        fullName: user.provider.fullName,
-        businessName: user.provider.businessName,
-        isVerified: user.provider.isVerified,
-        avatarUrl: user.provider.avatarUrl,
+        fullName: user.serviceProvider.fullName,
+        businessName: user.serviceProvider.businessName,
+        isVerified: user.serviceProvider.isVerified,
+        avatarUrl: user.serviceProvider.avatarUrl,
       };
     }
 
     // Generate JWT token
     const jwtToken = generateToken(user.id, user.role);
+
+    // Set cookie JWT
+    setAuthCookie(res, jwtToken);
 
     // Determine where to redirect
     let redirectTo = '/dashboard';
@@ -705,11 +740,30 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
  * Logout user
  */
 export const logoutUser = (req: Request, res: Response) => {
-  // Client-side should remove token
+  // Hapus cookie JWT
+  res.clearCookie('token', { path: '/' });
   return res.status(200).json({
     success: true,
     message: 'Logout berhasil',
   });
+};
+
+/**
+ * Get current user (auth/me)
+ */
+export const getCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // Pastikan req.user tidak undefined
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+    const user = req.user;
+    // Fetch user detail dari DB jika perlu
+    // const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+    return res.status(200).json({ success: true, user });
+  } catch (error) {
+    next(error);
+  }
 };
 
 /**

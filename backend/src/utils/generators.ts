@@ -9,7 +9,7 @@ export const generateBookingNumber = (): string => {
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const day = date.getDate().toString().padStart(2, '0');
   const random = Math.floor(10000 + Math.random() * 90000);
-  
+
   return `BK-${year}${month}${day}-${random}`;
 };
 
@@ -24,7 +24,7 @@ export const generateInvoiceNumber = (): string => {
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const day = date.getDate().toString().padStart(2, '0');
   const random = Math.floor(1000 + Math.random() * 9000);
-  
+
   return `INV-${year}${month}${day}-${random}`;
 };
 
@@ -38,14 +38,14 @@ export const generateTransactionId = (): string => {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const day = date.getDate().toString().padStart(2, '0');
-  
+
   // Generate random alphanumeric string
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let random = '';
   for (let i = 0; i < 6; i++) {
     random += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  
+
   return `TRX-${year}${month}${day}-${random}`;
 };
 

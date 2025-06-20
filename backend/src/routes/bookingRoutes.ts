@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import * as BookingController from '../controllers/bookingController';
-import * as PaymentController from '../controllers/paymentController';
-import * as MessageController from '../controllers/messageController';
-import * as ReviewController from '../controllers/reviewController';
-import * as DisputeController from '../controllers/disputeController';
-import * as TrackingController from '../controllers/trackingController';
-import * as InvoiceController from '../controllers/invoiceController';
+import * as BookingController from '@controllers/bookingController';
+import * as PaymentController from '@controllers/paymentController';
+import * as MessageController from '@controllers/messageController';
+import * as ReviewController from '@controllers/reviewController';
+import * as DisputeController from '@controllers/disputeController';
+import * as TrackingController from '@controllers/trackingController';
+import * as InvoiceController from '@controllers/invoiceController';
 import { authMiddleware as authenticate, authorize } from '../middleware/authMiddleware';
 import { upload } from '../middleware/multerMiddleware';
 import * as BookingSchema from '../schemas/bookingSchema';
@@ -14,6 +14,7 @@ import * as MessageSchema from '../schemas/messageSchema';
 import * as ReviewSchema from '../schemas/reviewSchema';
 import * as DisputeSchema from '../schemas/disputeSchema';
 import * as TrackingSchema from '../schemas/trackingSchema';
+import { Role } from '@prisma/client';
 
 // Function untuk validasi request menggunakan schema
 const validateRequest = (schema: any) => {
@@ -22,7 +23,7 @@ const validateRequest = (schema: any) => {
       schema.parse({
         body: req.body,
         query: req.query,
-        params: req.params
+        params: req.params,
       });
       next();
     } catch (error: any) {
@@ -40,7 +41,7 @@ const router = Router();
 router.post(
   '/',
   authenticate,
-  authorize(['CUSTOMER']),
+  authorize(Role.CUSTOMER),
   validateRequest(BookingSchema.createBookingSchema),
   BookingController.createBooking
 );
@@ -71,7 +72,7 @@ router.post(
 router.post(
   '/:bookingId/requote',
   authenticate,
-  authorize(['PROVIDER']),
+  authorize(Role.PROVIDER),
   validateRequest(BookingSchema.createRequoteSchema),
   BookingController.createRequote
 );
@@ -80,7 +81,7 @@ router.post(
 router.patch(
   '/requote/:requoteId',
   authenticate,
-  authorize(['CUSTOMER']),
+  authorize(Role.CUSTOMER),
   validateRequest(BookingSchema.respondRequoteSchema),
   BookingController.respondRequote
 );
@@ -95,7 +96,7 @@ router.get('/payment/:paymentId', authenticate, PaymentController.getPaymentDeta
 router.post(
   '/payment/:paymentId/process',
   authenticate,
-  authorize(['CUSTOMER']),
+  authorize(Role.CUSTOMER),
   validateRequest(PaymentSchema.processPaymentSchema),
   PaymentController.processPayment
 );
@@ -107,7 +108,7 @@ router.post('/payment/:paymentId/release', authenticate, PaymentController.relea
 router.post(
   '/payment/:paymentId/refund',
   authenticate,
-  authorize(['ADMIN']),
+  authorize(Role.ADMIN),
   validateRequest(PaymentSchema.refundPaymentSchema),
   PaymentController.refundPayment
 );
@@ -119,7 +120,7 @@ router.get('/wallet', authenticate, PaymentController.getWallet);
 router.post(
   '/wallet/withdraw',
   authenticate,
-  authorize(['PROVIDER']),
+  authorize(Role.PROVIDER),
   validateRequest(PaymentSchema.withdrawWalletSchema),
   PaymentController.withdrawWallet
 );
@@ -128,7 +129,7 @@ router.post(
 router.patch(
   '/transaction/:transactionId/process',
   authenticate,
-  authorize(['ADMIN']),
+  authorize(Role.ADMIN),
   validateRequest(PaymentSchema.processWithdrawalSchema),
   PaymentController.processWithdrawal
 );
@@ -172,7 +173,7 @@ router.post(
 router.post(
   '/review',
   authenticate,
-  authorize(['CUSTOMER']),
+  authorize(Role.CUSTOMER),
   validateRequest(ReviewSchema.createReviewSchema),
   ReviewController.createReview
 );
@@ -187,7 +188,7 @@ router.get('/provider/:providerId/reviews', ReviewController.getProviderReviews)
 router.post(
   '/review/:reviewId/respond',
   authenticate,
-  authorize(['PROVIDER']),
+  authorize(Role.PROVIDER),
   validateRequest(ReviewSchema.respondToReviewSchema),
   ReviewController.respondToReview
 );
@@ -204,7 +205,7 @@ router.post(
 router.delete(
   '/review/:reviewId',
   authenticate,
-  authorize(['ADMIN']),
+  authorize(Role.ADMIN),
   validateRequest(ReviewSchema.deleteReviewSchema),
   ReviewController.deleteReview
 );
@@ -225,7 +226,7 @@ router.post(
 router.get('/:bookingId/dispute', authenticate, DisputeController.getDisputeByBooking);
 
 // Mendapatkan semua dispute (admin)
-router.get('/disputes', authenticate, authorize(['ADMIN']), DisputeController.getAllDisputes);
+router.get('/disputes', authenticate, authorize(Role.ADMIN), DisputeController.getAllDisputes);
 
 // Mendapatkan dispute berdasarkan user
 router.get('/disputes/user', authenticate, DisputeController.getUserDisputes);
@@ -234,7 +235,7 @@ router.get('/disputes/user', authenticate, DisputeController.getUserDisputes);
 router.patch(
   '/dispute/:disputeId/resolve',
   authenticate,
-  authorize(['ADMIN']),
+  authorize(Role.ADMIN),
   validateRequest(DisputeSchema.resolveDisputeSchema),
   DisputeController.resolveDispute
 );
@@ -254,47 +255,27 @@ router.post(
 router.post(
   '/:bookingId/tracking/location',
   authenticate,
-  authorize(['PROVIDER']),
+  authorize(Role.PROVIDER),
   validateRequest(TrackingSchema.updateLocationSchema),
   TrackingController.updateProviderLocation
 );
 
 // Get tracking data
-router.get(
-  '/:bookingId/tracking',
-  authenticate,
-  TrackingController.getTrackingData
-);
+router.get('/:bookingId/tracking', authenticate, TrackingController.getTrackingData);
 
 /**
  * Invoice Routes
  */
 // Generate invoice for booking
-router.post(
-  '/:bookingId/invoice',
-  authenticate,
-  InvoiceController.generateInvoice
-);
+router.post('/:bookingId/invoice', authenticate, InvoiceController.generateInvoice);
 
 // Get invoice by ID
-router.get(
-  '/invoice/:invoiceId',
-  authenticate,
-  InvoiceController.getInvoiceById
-);
+router.get('/invoice/:invoiceId', authenticate, InvoiceController.getInvoiceById);
 
 // Download invoice as PDF
-router.get(
-  '/invoice/:invoiceId/download',
-  authenticate,
-  InvoiceController.downloadInvoice
-);
+router.get('/invoice/:invoiceId/download', authenticate, InvoiceController.downloadInvoice);
 
 // Get all invoices for current user
-router.get(
-  '/invoices',
-  authenticate,
-  InvoiceController.getUserInvoices
-);
+router.get('/invoices', authenticate, InvoiceController.getUserInvoices);
 
 export default router;

@@ -5,12 +5,12 @@ import { z } from 'zod';
  */
 export const updateLocationSchema = z.object({
   params: z.object({
-    bookingId: z.string().uuid('Format ID booking tidak valid')
+    bookingId: z.string().uuid('Format ID booking tidak valid'),
   }),
   body: z.object({
     latitude: z.number().min(-90).max(90),
-    longitude: z.number().min(-180).max(180)
-  })
+    longitude: z.number().min(-180).max(180),
+  }),
 });
 
 /**
@@ -18,6 +18,6 @@ export const updateLocationSchema = z.object({
  */
 export const getTrackingSchema = z.object({
   params: z.object({
-    bookingId: z.string().uuid('Format ID booking tidak valid')
-  })
-}); 
+    bookingId: z.string().uuid('Format ID booking tidak valid'),
+  }),
+});

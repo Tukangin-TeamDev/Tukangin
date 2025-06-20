@@ -26,7 +26,7 @@ model User {
   verificationToken String?
   verifiedAt        DateTime?
   // OAuth fields
-  provider          Provider  @default(EMAIL)
+  provider          Provider?
   providerAccountId String?
   // Reset password
   resetToken        String?
@@ -34,13 +34,14 @@ model User {
 
   // One-to-one relationships
   customer     Customer?
-  provider     Provider?
+  serviceProvider     ServiceProvider?
   admin        Admin?
 
   // Other relationships
   notifications Notification[]
   devices       Device[]
   otpCodes      OtpCode[]
+  wallet        Wallet?
 }
 
 // Login Provider Types
@@ -88,7 +89,7 @@ model Customer {
 }
 
 // Provider (Teknisi/Tukang) profile
-model Provider {
+model ServiceProvider {
   id              String   @id @default(uuid())
   userId          String   @unique
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -130,7 +131,7 @@ model Admin {
 model Service {
   id          String   @id @default(uuid())
   providerId  String
-  provider    Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  provider    ServiceProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
   name        String
   description String
   price       Float
@@ -166,7 +167,7 @@ model Booking {
   customerId    String
   customer      Customer       @relation(fields: [customerId], references: [id])
   providerId    String
-  provider      Provider       @relation(fields: [providerId], references: [id])
+  provider      ServiceProvider @relation(fields: [providerId], references: [id])
   status        BookingStatus  @default(PENDING)
   totalAmount   Float
   address       String
@@ -274,7 +275,7 @@ model Review {
   customerId  String
   customer    Customer @relation(fields: [customerId], references: [id])
   providerId  String
-  provider    Provider @relation(fields: [providerId], references: [id])
+  provider    ServiceProvider @relation(fields: [providerId], references: [id])
   rating      Int
   comment     String?
   response    String?
@@ -309,7 +310,7 @@ enum DisputeStatus {
 model Document {
   id          String   @id @default(uuid())
   providerId  String
-  provider    Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  provider    ServiceProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
   type        String   // e.g., "KTP", "CERTIFICATE"
   fileUrl     String
   status      String   @default("PENDING") // "PENDING", "APPROVED", "REJECTED"
@@ -321,7 +322,7 @@ model Document {
 model Withdrawal {
   id          String   @id @default(uuid())
   providerId  String
-  provider    Provider @relation(fields: [providerId], references: [id])
+  provider    ServiceProvider @relation(fields: [providerId], references: [id])
   amount      Float
   status      String   @default("PENDING") // "PENDING", "PROCESSED", "REJECTED"
   bankAccount String
@@ -430,6 +431,7 @@ model Transaction {
 model Wallet {
   id          String   @id @default(uuid())
   userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
   balance     Float    @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -453,4 +455,4 @@ enum RequoteStatus {
   PENDING
   ACCEPTED
   REJECTED
-} 
+}

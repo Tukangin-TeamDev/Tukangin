@@ -6,7 +6,12 @@
  * @param lon2 Longitude of point 2
  * @returns Distance in kilometers
  */
-export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+export const calculateDistance = (
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number => {
   const R = 6371; // Radius of Earth in kilometers
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -74,11 +79,11 @@ export const calculateETA = (
 
   // Calculate travel time in milliseconds
   const travelTimeMs = (distance / avgSpeedKmh) * 60 * 60 * 1000;
-  
+
   // Add travel time to current time to get ETA
   const eta = new Date();
   eta.setTime(eta.getTime() + travelTimeMs);
-  
+
   return eta;
 };
 

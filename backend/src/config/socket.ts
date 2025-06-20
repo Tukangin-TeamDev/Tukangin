@@ -61,7 +61,7 @@ export const initSocketIO = (httpServer: HTTPServer): void => {
     socket.join(`user_${userId}`);
 
     // Event untuk tracking lokasi provider
-    socket.on('provider:location', (data) => {
+    socket.on('provider:location', data => {
       // Validasi data
       if (!data || !data.bookingId || !data.latitude || !data.longitude) {
         return;
@@ -77,17 +77,17 @@ export const initSocketIO = (httpServer: HTTPServer): void => {
     });
 
     // Event untuk join ke room booking
-    socket.on('booking:join', (bookingId) => {
+    socket.on('booking:join', bookingId => {
       if (!bookingId) return;
-      
+
       socket.join(`booking_${bookingId}`);
       logger.info(`User ${userId} joined booking room ${bookingId}`);
     });
 
     // Event untuk leave room booking
-    socket.on('booking:leave', (bookingId) => {
+    socket.on('booking:leave', bookingId => {
       if (!bookingId) return;
-      
+
       socket.leave(`booking_${bookingId}`);
       logger.info(`User ${userId} left booking room ${bookingId}`);
     });
@@ -104,11 +104,7 @@ export const initSocketIO = (httpServer: HTTPServer): void => {
 /**
  * Kirim event booking update ke room booking
  */
-export const sendBookingUpdate = (
-  bookingId: string,
-  status: string,
-  data: any = {}
-): void => {
+export const sendBookingUpdate = (bookingId: string, status: string, data: any = {}): void => {
   if (!io) {
     logger.warn('Socket.IO not initialized, cannot send booking update');
     return;

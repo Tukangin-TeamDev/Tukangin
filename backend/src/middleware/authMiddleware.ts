@@ -46,7 +46,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       where: { id: decoded.id },
       include: {
         customer: true,
-        provider: true,
+        serviceProvider: true,
         admin: true,
       },
     });
@@ -67,12 +67,12 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         fullName: user.customer.fullName,
         avatarUrl: user.customer.avatarUrl,
       };
-    } else if (user.role === 'PROVIDER' && user.provider) {
+    } else if (user.role === 'PROVIDER' && user.serviceProvider) {
       profileData = {
-        fullName: user.provider.fullName,
-        businessName: user.provider.businessName,
-        isVerified: user.provider.isVerified,
-        avatarUrl: user.provider.avatarUrl,
+        fullName: user.serviceProvider.fullName,
+        businessName: user.serviceProvider.businessName,
+        isVerified: user.serviceProvider.isVerified,
+        avatarUrl: user.serviceProvider.avatarUrl,
       };
     } else if (user.role === 'ADMIN' && user.admin) {
       profileData = {

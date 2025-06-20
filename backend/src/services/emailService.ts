@@ -20,12 +20,12 @@ export const sendEmail = async (options: EmailOptions): Promise<boolean> => {
   try {
     // Konfigurasi transporter berdasarkan environment
     let transporter;
-    
+
     // Di development tanpa SMTP, gunakan ethereal untuk testing
     if (process.env.NODE_ENV === 'development' && !process.env.SMTP_HOST) {
       // Generate test account dari ethereal
       const testAccount = await nodemailer.createTestAccount();
-      
+
       transporter = nodemailer.createTransport({
         host: 'smtp.ethereal.email',
         port: 587,
@@ -73,4 +73,4 @@ export const sendEmail = async (options: EmailOptions): Promise<boolean> => {
     logger.error('Error sending email:', error);
     return false;
   }
-}; 
+};

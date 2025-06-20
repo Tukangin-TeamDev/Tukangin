@@ -34,16 +34,16 @@ export const createBooking = async (req: Request, res: Response, next: NextFunct
         isActive: true,
       },
       include: {
-        provider: true,
+        serviceProvider: true,
       },
     });
 
-    if (!provider || !provider.provider) {
+    if (!provider || !provider.serviceProvider) {
       return next(new AppError('Provider tidak ditemukan', 404));
     }
 
     // Cek availability provider
-    if (!provider.provider.availability) {
+    if (!provider.serviceProvider.isAvailable) {
       return next(new AppError('Provider sedang tidak tersedia', 400));
     }
 
@@ -57,7 +57,7 @@ export const createBooking = async (req: Request, res: Response, next: NextFunct
     const availableServices = await prisma.service.findMany({
       where: {
         id: { in: serviceIds },
-        providerId: provider.provider.id,
+        providerId: provider.serviceProvider.id,
         isActive: true,
       },
     });
@@ -99,9 +99,9 @@ export const createBooking = async (req: Request, res: Response, next: NextFunct
 
     // Perhitungan estimated arrival jika koordinat lokasi diberikan
     let estimatedArrival = null;
-    if (locationCoordinates && provider.provider.location) {
+    if (locationCoordinates && provider.serviceProvider.latitude && provider.serviceProvider.longitude) {
       const customerCoords = locationCoordinates.split(',').map(Number);
-      const providerCoords = provider.provider.location.split(',').map(Number);
+      const providerCoords = [provider.serviceProvider.latitude, provider.serviceProvider.longitude];
 
       // Hitung estimasi waktu berdasarkan jarak dan kecepatan rata-rata
       if (customerCoords.length === 2 && providerCoords.length === 2) {
