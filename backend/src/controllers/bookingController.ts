@@ -99,9 +99,16 @@ export const createBooking = async (req: Request, res: Response, next: NextFunct
 
     // Perhitungan estimated arrival jika koordinat lokasi diberikan
     let estimatedArrival = null;
-    if (locationCoordinates && provider.serviceProvider.latitude && provider.serviceProvider.longitude) {
+    if (
+      locationCoordinates &&
+      provider.serviceProvider.latitude &&
+      provider.serviceProvider.longitude
+    ) {
       const customerCoords = locationCoordinates.split(',').map(Number);
-      const providerCoords = [provider.serviceProvider.latitude, provider.serviceProvider.longitude];
+      const providerCoords = [
+        provider.serviceProvider.latitude,
+        provider.serviceProvider.longitude,
+      ];
 
       // Hitung estimasi waktu berdasarkan jarak dan kecepatan rata-rata
       if (customerCoords.length === 2 && providerCoords.length === 2) {

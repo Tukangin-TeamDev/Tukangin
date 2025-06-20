@@ -25,18 +25,10 @@ const router = Router();
  * Service Routes - untuk Provider (teknisi/tukang)
  */
 // Mendapatkan semua service yang dimiliki provider
-router.get(
-  '/provider',
-  authenticate,
-  authorize('PROVIDER'),
-  ServiceController.getProviderServices
-);
+router.get('/provider', authenticate, authorize('PROVIDER'), ServiceController.getProviderServices);
 
 // Mendapatkan service provider berdasarkan id service
-router.get(
-  '/:serviceId',
-  ServiceController.getServiceById
-);
+router.get('/:serviceId', ServiceController.getServiceById);
 
 // Menambah service baru
 router.post(
@@ -57,12 +49,7 @@ router.patch(
 );
 
 // Menghapus/menonaktifkan service
-router.delete(
-  '/:serviceId',
-  authenticate,
-  authorize('PROVIDER'),
-  ServiceController.deleteService
-);
+router.delete('/:serviceId', authenticate, authorize('PROVIDER'), ServiceController.deleteService);
 
 // Mengaktifkan service
 router.patch(
@@ -73,15 +60,9 @@ router.patch(
 );
 
 // Mencari service berdasarkan kategori dan/atau lokasi
-router.get(
-  '/search',
-  ServiceController.searchServices
-);
+router.get('/search', ServiceController.searchServices);
 
 // Mendapatkan service dengan rating tertinggi
-router.get(
-  '/top-rated',
-  ServiceController.getTopRatedServices
-);
+router.get('/top-rated', ServiceController.getTopRatedServices);
 
-export default router; 
+export default router;

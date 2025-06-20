@@ -115,7 +115,9 @@ export const validatePromoCode = async (req: Request, res: Response, next: NextF
       return res.status(404).json({ success: false, message: 'Promo code not valid or expired' });
     }
     if (promo.minOrderAmount && totalAmount < promo.minOrderAmount) {
-      return res.status(400).json({ success: false, message: `Minimum order amount is ${promo.minOrderAmount}` });
+      return res
+        .status(400)
+        .json({ success: false, message: `Minimum order amount is ${promo.minOrderAmount}` });
     }
     res.json({ success: true, data: promo });
   } catch (error) {

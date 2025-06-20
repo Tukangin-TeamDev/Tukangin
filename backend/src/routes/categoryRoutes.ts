@@ -27,22 +27,13 @@ const router = Router();
  * Category Routes
  */
 // Mendapatkan semua kategori
-router.get(
-  '/',
-  CategoryController.getAllCategories
-);
+router.get('/', CategoryController.getAllCategories);
 
 // Mendapatkan kategori berdasarkan id
-router.get(
-  '/:categoryId',
-  CategoryController.getCategoryById
-);
+router.get('/:categoryId', CategoryController.getCategoryById);
 
 // Mendapatkan sub-kategori dari kategori tertentu
-router.get(
-  '/:categoryId/subcategories',
-  CategoryController.getSubcategories
-);
+router.get('/:categoryId/subcategories', CategoryController.getSubcategories);
 
 // Menambahkan kategori baru (admin only)
 router.post(
@@ -72,4 +63,4 @@ router.delete(
   CategoryController.deleteCategory
 );
 
-export default router; 
+export default router;

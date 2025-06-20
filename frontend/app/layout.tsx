@@ -14,7 +14,6 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: 'Tukangin - Platform Jasa Profesional',
   description: 'Temukan jasa profesional terpercaya untuk kebutuhan rumah dan bisnis Anda',
-
 };
 
 export default function RootLayout({
@@ -25,9 +24,7 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <body className={`${inter.variable} ${poppins.variable} font-sans`} suppressHydrationWarning>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

@@ -47,12 +47,7 @@ const handleZodError = (error: ZodError) => {
 /**
  * Menangani error secara umum
  */
-export const handleError = (
-  error: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const handleError = (error: any, req: Request, res: Response, next: NextFunction) => {
   // Log error
   logger.error(`${error.stack || error}`);
 
@@ -72,7 +67,10 @@ export const handleError = (
   }
 
   // Untuk error yang tidak dikenali
-  const defaultError = new AppError(error.message || 'Terjadi kesalahan server', error.statusCode || 500);
+  const defaultError = new AppError(
+    error.message || 'Terjadi kesalahan server',
+    error.statusCode || 500
+  );
   return sendError(defaultError, req, res);
 };
 
@@ -102,11 +100,6 @@ const sendError = (error: AppError, req: Request, res: Response) => {
 /**
  * Middleware untuk menangkap error di Express
  */
-export const errorMiddleware = (
-  error: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const errorMiddleware = (error: any, req: Request, res: Response, next: NextFunction) => {
   handleError(error, req, res, next);
-}; 
+};

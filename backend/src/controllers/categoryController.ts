@@ -12,12 +12,10 @@ export const getAllCategories = async (req: Request, res: Response, next: NextFu
   try {
     // Parameter query untuk filter
     const { parentId } = req.query;
-    
+
     // Filter kategori berdasarkan parentId jika ada
-    const where = parentId 
-      ? { parentId: parentId as string } 
-      : { parentId: null }; // Jika tidak ada parentId, ambil kategori utama (tanpa parent)
-    
+    const where = parentId ? { parentId: parentId as string } : { parentId: null }; // Jika tidak ada parentId, ambil kategori utama (tanpa parent)
+
     const categories = await prisma.category.findMany({
       where,
       include: {
@@ -49,7 +47,7 @@ export const getAllCategories = async (req: Request, res: Response, next: NextFu
 export const getCategoryById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { categoryId } = req.params;
-    
+
     const category = await prisma.category.findUnique({
       where: { id: categoryId },
       include: {
@@ -91,7 +89,7 @@ export const getCategoryById = async (req: Request, res: Response, next: NextFun
 export const getSubcategories = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { categoryId } = req.params;
-    
+
     // Cek apakah kategori parent ada
     const parentExists = await prisma.category.findUnique({
       where: { id: categoryId },
@@ -128,7 +126,7 @@ export const getSubcategories = async (req: Request, res: Response, next: NextFu
 export const createCategory = async (req: any, res: Response, next: NextFunction) => {
   try {
     const { name, description, parentId } = req.body;
-    
+
     // Cek apakah ada kategori dengan nama yang sama
     const existingCategory = await prisma.category.findFirst({
       where: { name: { equals: name, mode: 'insensitive' } },
@@ -190,7 +188,7 @@ export const updateCategory = async (req: any, res: Response, next: NextFunction
   try {
     const { categoryId } = req.params;
     const { name, description, parentId } = req.body;
-    
+
     // Cek apakah kategori yang akan diupdate ada
     const existingCategory = await prisma.category.findUnique({
       where: { id: categoryId },
@@ -206,7 +204,7 @@ export const updateCategory = async (req: any, res: Response, next: NextFunction
     // Cek apakah nama kategori sudah dipakai oleh kategori lain
     if (name && name !== existingCategory.name) {
       const nameExists = await prisma.category.findFirst({
-        where: { 
+        where: {
           name: { equals: name, mode: 'insensitive' },
           id: { not: categoryId },
         },
@@ -255,7 +253,7 @@ export const updateCategory = async (req: any, res: Response, next: NextFunction
     let imageUrl = undefined;
     if (req.file) {
       imageUrl = `${process.env.BASE_URL}/uploads/categories/${req.file.filename}`;
-      
+
       // Hapus file lama jika ada
       // (implementasi fungsi hapus file dilakukan di service terpisah)
     }
@@ -266,7 +264,7 @@ export const updateCategory = async (req: any, res: Response, next: NextFunction
       data: {
         name: name !== undefined ? name : undefined,
         description: description !== undefined ? description : undefined,
-        parentId: parentId !== undefined ? (parentId || null) : undefined,
+        parentId: parentId !== undefined ? parentId || null : undefined,
         imageUrl: imageUrl !== undefined ? imageUrl : undefined,
       },
     });
@@ -288,7 +286,7 @@ export const updateCategory = async (req: any, res: Response, next: NextFunction
 export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { categoryId } = req.params;
-    
+
     // Cek apakah kategori yang akan dihapus ada
     const existingCategory = await prisma.category.findUnique({
       where: { id: categoryId },
@@ -345,27 +343,27 @@ export const deleteCategory = async (req: Request, res: Response, next: NextFunc
  */
 async function isCircularReference(categoryId: string, parentId: string): Promise<boolean> {
   let currentParentId = parentId;
-  
+
   // Follow the parent chain
   while (currentParentId) {
     // If we find the original category id in the chain, we have a circular reference
     if (currentParentId === categoryId) {
       return true;
     }
-    
+
     // Get the next parent in the chain
     const parent = await prisma.category.findUnique({
       where: { id: currentParentId },
       select: { parentId: true },
     });
-    
+
     // Break the loop if we reach the top level or the parent doesn't exist
     if (!parent || !parent.parentId) {
       break;
     }
-    
+
     currentParentId = parent.parentId;
   }
-  
+
   return false;
-} 
+}

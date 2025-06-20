@@ -84,11 +84,11 @@ export default function LoginPage() {
       } else if (result.requireOtp) {
         // Redirect to OTP verification
         router.push(
-          (`/verify-otp?email=${encodeURIComponent(email)}&token=${encodeURIComponent(result.partialToken || '')}`) as unknown as Route
+          `/verify-otp?email=${encodeURIComponent(email)}&token=${encodeURIComponent(result.partialToken || '')}` as unknown as Route
         );
       } else if (result.needVerification) {
         // Redirect to email verification
-        router.push((`/verify-email?email=${encodeURIComponent(email)}`) as unknown as Route);
+        router.push(`/verify-email?email=${encodeURIComponent(email)}` as unknown as Route);
       } else {
         toast.error(result.message || 'Login gagal');
         setPasswordError(result.message || 'Email atau password salah');

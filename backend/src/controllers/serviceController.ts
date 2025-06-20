@@ -27,8 +27,8 @@ export const getProviderServices = async (req: any, res: Response, next: NextFun
 
     // Dapatkan semua service yang dimiliki provider
     const services = await prisma.service.findMany({
-      where: { 
-        providerId: provider.id 
+      where: {
+        providerId: provider.id,
       },
       include: {
         category: {
@@ -462,15 +462,16 @@ export const searchServices = async (req: Request, res: Response, next: NextFunc
         }
 
         // Konversi ke radian
-        const lat1 = Number(latitude) * Math.PI / 180;
-        const lon1 = Number(longitude) * Math.PI / 180;
-        const lat2 = service.provider.latitude * Math.PI / 180;
-        const lon2 = service.provider.longitude * Math.PI / 180;
+        const lat1 = (Number(latitude) * Math.PI) / 180;
+        const lon1 = (Number(longitude) * Math.PI) / 180;
+        const lat2 = (service.provider.latitude * Math.PI) / 180;
+        const lon2 = (service.provider.longitude * Math.PI) / 180;
 
         // Rumus Haversine
         const dlon = lon2 - lon1;
         const dlat = lat2 - lat1;
-        const a = Math.sin(dlat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
+        const a =
+          Math.sin(dlat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
         const c = 2 * Math.asin(Math.sqrt(a));
         const r = 6371; // Radius Bumi dalam km
         const distance = c * r;
@@ -567,4 +568,4 @@ export const getTopRatedServices = async (req: Request, res: Response, next: Nex
     logger.error(`Error in getTopRatedServices: ${error}`);
     return handleError(error, req, res, next);
   }
-}; 
+};

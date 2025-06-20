@@ -49,7 +49,7 @@ const startServer = async () => {
   try {
     // Connect to database
     await connectDB();
-    
+
     // Start server
     server.listen(PORT, () => {
       logger.info(`Server running in ${NODE_ENV} mode on port ${PORT}`);

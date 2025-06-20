@@ -3,9 +3,11 @@ import { z } from 'zod';
 // Schema untuk validasi saat membuat promo baru
 export const createPromoSchema = z.object({
   body: z.object({
-    code: z.string({
-      required_error: 'Kode promo wajib diisi',
-    }).min(3, 'Kode promo minimal 3 karakter'),
+    code: z
+      .string({
+        required_error: 'Kode promo wajib diisi',
+      })
+      .min(3, 'Kode promo minimal 3 karakter'),
     name: z.string({
       required_error: 'Nama promo wajib diisi',
     }),
@@ -13,9 +15,11 @@ export const createPromoSchema = z.object({
     discountType: z.enum(['PERCENTAGE', 'FIXED_AMOUNT'], {
       required_error: 'Tipe diskon wajib diisi (PERCENTAGE/FIXED_AMOUNT)',
     }),
-    discountValue: z.number({
-      required_error: 'Nilai diskon wajib diisi',
-    }).min(0, 'Nilai diskon tidak boleh negatif'),
+    discountValue: z
+      .number({
+        required_error: 'Nilai diskon wajib diisi',
+      })
+      .min(0, 'Nilai diskon tidak boleh negatif'),
     maxDiscount: z.number().optional(),
     minOrderAmount: z.number().optional(),
     startDate: z.string({
@@ -54,12 +58,14 @@ export const updatePromoSchema = z.object({
     endDate: z.string().optional(),
     isActive: z.boolean().optional(),
     usageLimit: z.number().optional(),
-    applicableTo: z.object({
-      allServices: z.boolean().optional(),
-      categoryIds: z.array(z.string()).optional(),
-      serviceIds: z.array(z.string()).optional(),
-      providerIds: z.array(z.string()).optional(),
-    }).optional(),
+    applicableTo: z
+      .object({
+        allServices: z.boolean().optional(),
+        categoryIds: z.array(z.string()).optional(),
+        serviceIds: z.array(z.string()).optional(),
+        providerIds: z.array(z.string()).optional(),
+      })
+      .optional(),
   }),
 });
 
@@ -81,11 +87,13 @@ export const validatePromoSchema = z.object({
 // Schema untuk validasi penukaran loyalty points
 export const redeemLoyaltySchema = z.object({
   body: z.object({
-    pointsToRedeem: z.number({
-      required_error: 'Jumlah poin yang akan ditukar wajib diisi',
-    }).min(1, 'Minimal poin yang ditukar adalah 1'),
+    pointsToRedeem: z
+      .number({
+        required_error: 'Jumlah poin yang akan ditukar wajib diisi',
+      })
+      .min(1, 'Minimal poin yang ditukar adalah 1'),
     voucherType: z.enum(['FIXED_AMOUNT', 'PERCENTAGE'], {
       required_error: 'Tipe voucher wajib diisi (FIXED_AMOUNT/PERCENTAGE)',
     }),
   }),
-}); 
+});

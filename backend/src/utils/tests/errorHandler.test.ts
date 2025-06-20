@@ -29,12 +29,7 @@ describe('Error Handler', () => {
     const errorCode = 400;
     const appError = new AppError(errorMessage, errorCode);
 
-    handleError(
-      appError,
-      mockRequest as Request,
-      mockResponse as Response,
-      mockNext
-    );
+    handleError(appError, mockRequest as Request, mockResponse as Response, mockNext);
 
     expect(logger.error).toHaveBeenCalled();
     expect(mockResponse.status).toHaveBeenCalledWith(errorCode);
@@ -50,12 +45,7 @@ describe('Error Handler', () => {
     const errorMessage = 'Unknown error';
     const error = new Error(errorMessage);
 
-    handleError(
-      error,
-      mockRequest as Request,
-      mockResponse as Response,
-      mockNext
-    );
+    handleError(error, mockRequest as Request, mockResponse as Response, mockNext);
 
     expect(logger.error).toHaveBeenCalled();
     expect(mockResponse.status).toHaveBeenCalledWith(500);
@@ -66,4 +56,4 @@ describe('Error Handler', () => {
       })
     );
   });
-}); 
+});

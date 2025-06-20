@@ -27,17 +27,10 @@ const router = Router();
  * Promo Routes
  */
 // Mendapatkan semua promo yang aktif
-router.get(
-  '/',
-  PromoController.getActivePromos
-);
+router.get('/', PromoController.getActivePromos);
 
 // Mendapatkan promo berdasarkan id
-router.get(
-  '/:promoId',
-  authenticate,
-  PromoController.getPromoById
-);
+router.get('/:promoId', authenticate, PromoController.getPromoById);
 
 // Membuat promo baru (admin only)
 router.post(
@@ -58,12 +51,7 @@ router.patch(
 );
 
 // Menghapus promo (admin only)
-router.delete(
-  '/:promoId',
-  authenticate,
-  authorize(Role.ADMIN),
-  PromoController.deletePromo
-);
+router.delete('/:promoId', authenticate, authorize(Role.ADMIN), PromoController.deletePromo);
 
 // Mengaktifkan promo (admin only)
 router.patch(
@@ -117,4 +105,4 @@ router.get(
   LoyaltyController.getLoyaltyHistory
 );
 
-export default router; 
+export default router;

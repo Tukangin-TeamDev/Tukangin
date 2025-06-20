@@ -10,4 +10,4 @@ const corsOptions = {
   maxAge: 86400, // 24 jam
 };
 
-export const corsMiddleware = cors(corsOptions); 
+export const corsMiddleware = cors(corsOptions);

@@ -3,9 +3,11 @@ import { z } from 'zod';
 // Schema untuk validasi saat membuat kategori baru
 export const createCategorySchema = z.object({
   body: z.object({
-    name: z.string({
-      required_error: 'Nama kategori wajib diisi',
-    }).min(3, 'Nama kategori minimal 3 karakter'),
+    name: z
+      .string({
+        required_error: 'Nama kategori wajib diisi',
+      })
+      .min(3, 'Nama kategori minimal 3 karakter'),
     description: z.string().optional(),
     parentId: z.string().nullable().optional(),
   }),
@@ -23,4 +25,4 @@ export const updateCategorySchema = z.object({
     description: z.string().optional(),
     parentId: z.string().nullable().optional(),
   }),
-}); 
+});

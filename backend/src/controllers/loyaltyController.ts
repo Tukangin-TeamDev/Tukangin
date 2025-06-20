@@ -143,7 +143,7 @@ export const redeemLoyaltyPoints = async (req: any, res: Response, next: NextFun
     // Generate kode promo unik
     const date = new Date();
     const voucherCode = `LOYAL${userId.substring(0, 4)}${date.getTime().toString().substring(8)}`;
-    
+
     // Set tanggal kedaluwarsa voucher (30 hari dari sekarang)
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 30);
@@ -152,9 +152,10 @@ export const redeemLoyaltyPoints = async (req: any, res: Response, next: NextFun
     const voucher = await prisma.promo.create({
       data: {
         code: voucherCode,
-        name: voucherType === 'FIXED_AMOUNT' 
-          ? `Voucher Diskon Rp${discountValue.toLocaleString()}`
-          : `Voucher Diskon ${discountValue}%`,
+        name:
+          voucherType === 'FIXED_AMOUNT'
+            ? `Voucher Diskon Rp${discountValue.toLocaleString()}`
+            : `Voucher Diskon ${discountValue}%`,
         description: `Voucher dari penukaran ${pointsToRedeem} poin loyalty`,
         discountType: voucherType,
         discountValue,
@@ -224,7 +225,7 @@ export const getLoyaltyHistory = async (req: any, res: Response, next: NextFunct
     const skip = (pageNum - 1) * limitNum;
 
     // Filter berdasarkan tipe (opsional)
-    const typeFilter = type 
+    const typeFilter = type
       ? { type: { in: Array.isArray(type) ? type : [type] } }
       : { type: { in: ['EARNING_POINTS', 'REDEEMING_POINTS'] } };
 
@@ -277,4 +278,4 @@ export const getLoyaltyHistory = async (req: any, res: Response, next: NextFunct
     logger.error(`Error in getLoyaltyHistory: ${error}`);
     return handleError(error, req, res, next);
   }
-}; 
+};
