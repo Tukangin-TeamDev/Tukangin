@@ -1,99 +1,144 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Session, User } from '@supabase/supabase-js';
+import { supabase } from '@/services/authService';
 
-interface User {
+interface UserProfile {
   id: string;
   email: string;
   role: string;
-  profile?: {
-    fullName: string;
-    avatarUrl?: string;
-    businessName?: string;
-    isVerified?: boolean;
-    adminRole?: string;
-  };
+  fullName?: string;
+  avatarUrl?: string;
   phoneNumber?: string;
-  twoFactorEnabled?: boolean;
-  emailVerified?: boolean;
+  metadata?: any;
 }
 
 interface AuthContextType {
-  user: User | null;
+  user: UserProfile | null;
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<any>;
   register: (userData: any) => Promise<any>;
   logout: () => Promise<void>;
-  verifyOtp: (email: string, otp: string, token: string) => Promise<any>;
-  verifyEmail: (email: string, otp: string) => Promise<any>;
+  updateUserState: (session: Session) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const router = useRouter();
 
-  // Fetch user from backend on mount
+  // Helper function to process user data from Supabase
+  const processUserData = (authUser: User | null): UserProfile | null => {
+    if (!authUser) return null;
+
+    // Extract role from user metadata or default to CUSTOMER
+    const role = authUser.user_metadata?.role || 'CUSTOMER';
+    const fullName = authUser.user_metadata?.full_name || '';
+    const avatarUrl = authUser.user_metadata?.avatar_url;
+    const phoneNumber = authUser.user_metadata?.phone_number;
+
+    return {
+      id: authUser.id,
+      email: authUser.email || '',
+      role: role,
+      fullName,
+      avatarUrl,
+      phoneNumber,
+      metadata: authUser.user_metadata
+    };
+  };
+
+  // Initialize user session on mount
   useEffect(() => {
-    const fetchUser = async () => {
+    const initializeAuth = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-          credentials: 'include',
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
+        // Get session from Supabase
+        const { data } = await supabase.auth.getSession();
+        if (data.session) {
+          const userData = processUserData(data.session.user);
+          setUser(userData);
           setIsAuthenticated(true);
-        } else {
-          setUser(null);
-          setIsAuthenticated(false);
         }
-      } catch {
-        setUser(null);
-        setIsAuthenticated(false);
+      } catch (error) {
+        console.error('Auth initialization error:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchUser();
+
+    // Set up auth state change listener
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        const userData = processUserData(session.user);
+        setUser(userData);
+        setIsAuthenticated(true);
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+    });
+
+    initializeAuth();
+
+    // Cleanup subscription
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
   }, []);
+
+  // Update user state with session data
+  const updateUserState = (session: Session) => {
+    const userData = processUserData(session.user);
+    setUser(userData);
+    setIsAuthenticated(!!userData);
+  };
 
   const login = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
       });
-      const result = await res.json();
-      if (res.ok && result.success) {
-        // Fetch user after login
-        const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-          credentials: 'include',
-        });
-        if (meRes.ok) {
-          const meData = await meRes.json();
-          setUser(meData.user);
-          setIsAuthenticated(true);
-        }
+
+      if (error) {
+        setError(error.message);
+        return { success: false, message: error.message };
       }
+
+      if (data.user) {
+        const userData = processUserData(data.user);
+        setUser(userData);
+        setIsAuthenticated(true);
+        
+        // Determine redirect URL based on role
+        const role = userData?.role || 'CUSTOMER';
+        let redirectTo = '/dashboard';
+        if (role === 'PROVIDER') {
+          redirectTo = '/provider/dashboard';
+        } else if (role === 'ADMIN') {
+          redirectTo = '/admin/dashboard';
+        }
+        
+        return { success: true, redirectTo };
+      }
+      
+      return { success: false, message: 'Login gagal' };
+    } catch (error: any) {
+      setError(error.message || 'Login gagal');
+      return { success: false, message: error.message || 'Login gagal' };
+    } finally {
       setLoading(false);
-      return result;
-    } catch (err) {
-      setLoading(false);
-      setError('Login gagal. Silakan coba lagi.');
-      return { success: false, message: 'Login gagal. Silakan coba lagi.' };
     }
   };
 
@@ -101,107 +146,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(userData),
-      });
-      const result = await res.json();
-      if (res.ok && result.success) {
-        // Fetch user after register
-        const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-          credentials: 'include',
-        });
-        if (meRes.ok) {
-          const meData = await meRes.json();
-          setUser(meData.user);
-          setIsAuthenticated(true);
+      const { data, error } = await supabase.auth.signUp({
+        email: userData.email,
+        password: userData.password,
+        options: {
+          data: {
+            full_name: userData.fullName,
+            phone_number: userData.phoneNumber,
+            role: userData.role,
+          }
         }
+      });
+
+      if (error) {
+        setError(error.message);
+        return { success: false, message: error.message };
       }
+
+      // For sign-up, Supabase usually sends a confirmation email
+      // We don't immediately authenticate the user
+      return { 
+        success: true, 
+        message: 'Registrasi berhasil. Silakan cek email Anda untuk konfirmasi.',
+        needVerification: true
+      };
+    } catch (error: any) {
+      setError(error.message || 'Registrasi gagal');
+      return { success: false, message: error.message || 'Registrasi gagal' };
+    } finally {
       setLoading(false);
-      return result;
-    } catch (err) {
-      setLoading(false);
-      setError('Registrasi gagal. Silakan coba lagi.');
-      return { success: false, message: 'Registrasi gagal. Silakan coba lagi.' };
     }
   };
 
   const logout = async () => {
     setLoading(true);
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-    } finally {
+      await supabase.auth.signOut();
       setUser(null);
       setIsAuthenticated(false);
-      setLoading(false);
       router.push('/login');
-    }
-  };
-
-  const verifyOtp = async (email: string, otp: string, token: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email, otp, token }),
-      });
-      const result = await res.json();
-      if (res.ok && result.success) {
-        // Fetch user after OTP
-        const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-          credentials: 'include',
-        });
-        if (meRes.ok) {
-          const meData = await meRes.json();
-          setUser(meData.user);
-          setIsAuthenticated(true);
-        }
-      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
       setLoading(false);
-      return result;
-    } catch (err) {
-      setLoading(false);
-      setError('Verifikasi OTP gagal. Silakan coba lagi.');
-      return { success: false, message: 'Verifikasi OTP gagal. Silakan coba lagi.' };
-    }
-  };
-
-  const verifyEmail = async (email: string, otp: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify-email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email, otp }),
-      });
-      const result = await res.json();
-      if (res.ok && result.success) {
-        // Fetch user after email verification
-        const meRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-          credentials: 'include',
-        });
-        if (meRes.ok) {
-          const meData = await meRes.json();
-          setUser(meData.user);
-          setIsAuthenticated(true);
-        }
-      }
-      setLoading(false);
-      return result;
-    } catch (err) {
-      setLoading(false);
-      setError('Verifikasi email gagal. Silakan coba lagi.');
-      return { success: false, message: 'Verifikasi email gagal. Silakan coba lagi.' };
     }
   };
 
@@ -215,8 +202,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login,
         register,
         logout,
-        verifyOtp,
-        verifyEmail,
+        updateUserState
       }}
     >
       {children}

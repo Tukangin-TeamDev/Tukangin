@@ -36,7 +36,7 @@ router.get('/:promoId', authenticate, PromoController.getPromoById);
 router.post(
   '/',
   authenticate,
-  authorize(Role.ADMIN),
+  authorize([Role.ADMIN]),
   validateRequest(PromoSchema.createPromoSchema),
   PromoController.createPromo
 );
@@ -45,19 +45,19 @@ router.post(
 router.patch(
   '/:promoId',
   authenticate,
-  authorize(Role.ADMIN),
+  authorize([Role.ADMIN]),
   validateRequest(PromoSchema.updatePromoSchema),
   PromoController.updatePromo
 );
 
 // Menghapus promo (admin only)
-router.delete('/:promoId', authenticate, authorize(Role.ADMIN), PromoController.deletePromo);
+router.delete('/:promoId', authenticate, authorize([Role.ADMIN]), PromoController.deletePromo);
 
 // Mengaktifkan promo (admin only)
 router.patch(
   '/:promoId/activate',
   authenticate,
-  authorize(Role.ADMIN),
+  authorize([Role.ADMIN]),
   PromoController.activatePromo
 );
 
@@ -65,7 +65,7 @@ router.patch(
 router.patch(
   '/:promoId/deactivate',
   authenticate,
-  authorize(Role.ADMIN),
+  authorize([Role.ADMIN]),
   PromoController.deactivatePromo
 );
 
@@ -84,7 +84,7 @@ router.post(
 router.get(
   '/loyalty/points',
   authenticate,
-  authorize(Role.CUSTOMER),
+  authorize([Role.CUSTOMER]),
   LoyaltyController.getCustomerLoyaltyPoints
 );
 
@@ -92,7 +92,7 @@ router.get(
 router.post(
   '/loyalty/redeem',
   authenticate,
-  authorize(Role.CUSTOMER),
+  authorize([Role.CUSTOMER]),
   validateRequest(PromoSchema.redeemLoyaltySchema),
   LoyaltyController.redeemLoyaltyPoints
 );
@@ -101,7 +101,7 @@ router.post(
 router.get(
   '/loyalty/history',
   authenticate,
-  authorize(Role.CUSTOMER),
+  authorize([Role.CUSTOMER]),
   LoyaltyController.getLoyaltyHistory
 );
 

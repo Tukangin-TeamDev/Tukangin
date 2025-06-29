@@ -318,7 +318,7 @@ export const activateService = async (req: any, res: Response, next: NextFunctio
     const { serviceId } = req.params;
 
     // Dapatkan provider yang sedang login
-    const provider = await prisma.provider.findUnique({
+    const provider = await prisma.serviceProvider.findUnique({
       where: { userId },
       select: { id: true },
     });

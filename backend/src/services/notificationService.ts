@@ -40,7 +40,7 @@ export const sendNotification = async (
       title,
       message,
       type,
-      metadata,
+      metadata: notification.metadata,
       createdAt: notification.createdAt,
     });
 

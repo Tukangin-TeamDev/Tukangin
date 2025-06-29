@@ -44,7 +44,7 @@ export const getCustomerLoyaltyPoints = async (req: any, res: Response, next: Ne
     const pointHistory = await prisma.transaction.findMany({
       where: {
         userId,
-        type: {
+        transactionType: {
           in: ['EARNING_POINTS', 'REDEEMING_POINTS'],
         },
       },
@@ -152,7 +152,7 @@ export const redeemLoyaltyPoints = async (req: any, res: Response, next: NextFun
     const voucher = await prisma.promo.create({
       data: {
         code: voucherCode,
-        name:
+        title:
           voucherType === 'FIXED_AMOUNT'
             ? `Voucher Diskon Rp${discountValue.toLocaleString()}`
             : `Voucher Diskon ${discountValue}%`,
@@ -226,8 +226,8 @@ export const getLoyaltyHistory = async (req: any, res: Response, next: NextFunct
 
     // Filter berdasarkan tipe (opsional)
     const typeFilter = type
-      ? { type: { in: Array.isArray(type) ? type : [type] } }
-      : { type: { in: ['EARNING_POINTS', 'REDEEMING_POINTS'] } };
+      ? { transactionType: { in: Array.isArray(type) ? type : [type] } }
+      : { transactionType: { in: ['EARNING_POINTS', 'REDEEMING_POINTS'] } };
 
     // Dapatkan histori transaksi
     const transactions = await prisma.transaction.findMany({
@@ -251,13 +251,15 @@ export const getLoyaltyHistory = async (req: any, res: Response, next: NextFunct
     });
 
     // Hitung total poin yang didapat dan ditukar
-    const pointStats = await prisma.$queryRaw`
+    const pointStats = await prisma.$queryRaw<
+      { totalEarned: number; totalRedeemed: number }[]
+    >`
       SELECT 
-        SUM(CASE WHEN type = 'EARNING_POINTS' THEN amount ELSE 0 END) as totalEarned,
-        SUM(CASE WHEN type = 'REDEEMING_POINTS' THEN amount ELSE 0 END) as totalRedeemed
+        SUM(CASE WHEN "transactionType" = 'EARNING_POINTS' THEN amount ELSE 0 END) as "totalEarned",
+        SUM(CASE WHEN "transactionType" = 'REDEEMING_POINTS' THEN amount ELSE 0 END) as "totalRedeemed"
       FROM "Transaction"
       WHERE "userId" = ${userId}
-        AND type IN ('EARNING_POINTS', 'REDEEMING_POINTS')
+        AND "transactionType" IN ('EARNING_POINTS', 'REDEEMING_POINTS')
         AND status = 'COMPLETED'
     `;
 

@@ -25,7 +25,7 @@ const router = Router();
  * Service Routes - untuk Provider (teknisi/tukang)
  */
 // Mendapatkan semua service yang dimiliki provider
-router.get('/provider', authenticate, authorize('PROVIDER'), ServiceController.getProviderServices);
+router.get('/provider', authenticate, authorize(['PROVIDER']), ServiceController.getProviderServices);
 
 // Mendapatkan service provider berdasarkan id service
 router.get('/:serviceId', ServiceController.getServiceById);
@@ -34,7 +34,7 @@ router.get('/:serviceId', ServiceController.getServiceById);
 router.post(
   '/',
   authenticate,
-  authorize('PROVIDER'),
+  authorize(['PROVIDER']),
   validateRequest(ServiceSchema.createServiceSchema),
   ServiceController.createService
 );
@@ -43,19 +43,19 @@ router.post(
 router.patch(
   '/:serviceId',
   authenticate,
-  authorize('PROVIDER'),
+  authorize(['PROVIDER']),
   validateRequest(ServiceSchema.updateServiceSchema),
   ServiceController.updateService
 );
 
 // Menghapus/menonaktifkan service
-router.delete('/:serviceId', authenticate, authorize('PROVIDER'), ServiceController.deleteService);
+router.delete('/:serviceId', authenticate, authorize(['PROVIDER']), ServiceController.deleteService);
 
 // Mengaktifkan service
 router.patch(
   '/:serviceId/activate',
   authenticate,
-  authorize('PROVIDER'),
+  authorize(['PROVIDER']),
   ServiceController.activateService
 );
 

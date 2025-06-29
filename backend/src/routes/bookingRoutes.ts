@@ -41,7 +41,7 @@ const router = Router();
 router.post(
   '/',
   authenticate,
-  authorize(Role.CUSTOMER),
+  authorize([Role.CUSTOMER]),
   validateRequest(BookingSchema.createBookingSchema),
   BookingController.createBooking
 );
@@ -72,7 +72,7 @@ router.post(
 router.post(
   '/:bookingId/requote',
   authenticate,
-  authorize(Role.PROVIDER),
+  authorize([Role.PROVIDER]),
   validateRequest(BookingSchema.createRequoteSchema),
   BookingController.createRequote
 );
@@ -81,7 +81,7 @@ router.post(
 router.patch(
   '/requote/:requoteId',
   authenticate,
-  authorize(Role.CUSTOMER),
+  authorize([Role.CUSTOMER]),
   validateRequest(BookingSchema.respondRequoteSchema),
   BookingController.respondRequote
 );
@@ -96,7 +96,7 @@ router.get('/payment/:paymentId', authenticate, PaymentController.getPaymentDeta
 router.post(
   '/payment/:paymentId/process',
   authenticate,
-  authorize(Role.CUSTOMER),
+  authorize([Role.CUSTOMER]),
   validateRequest(PaymentSchema.processPaymentSchema),
   PaymentController.processPayment
 );
@@ -108,7 +108,7 @@ router.post('/payment/:paymentId/release', authenticate, PaymentController.relea
 router.post(
   '/payment/:paymentId/refund',
   authenticate,
-  authorize(Role.ADMIN),
+  authorize([Role.ADMIN]),
   validateRequest(PaymentSchema.refundPaymentSchema),
   PaymentController.refundPayment
 );
@@ -120,7 +120,7 @@ router.get('/wallet', authenticate, PaymentController.getWallet);
 router.post(
   '/wallet/withdraw',
   authenticate,
-  authorize(Role.PROVIDER),
+  authorize([Role.PROVIDER]),
   validateRequest(PaymentSchema.withdrawWalletSchema),
   PaymentController.withdrawWallet
 );
@@ -129,7 +129,7 @@ router.post(
 router.patch(
   '/transaction/:transactionId/process',
   authenticate,
-  authorize(Role.ADMIN),
+  authorize([Role.ADMIN]),
   validateRequest(PaymentSchema.processWithdrawalSchema),
   PaymentController.processWithdrawal
 );
@@ -173,7 +173,7 @@ router.post(
 router.post(
   '/review',
   authenticate,
-  authorize(Role.CUSTOMER),
+  authorize([Role.CUSTOMER]),
   validateRequest(ReviewSchema.createReviewSchema),
   ReviewController.createReview
 );
@@ -188,7 +188,7 @@ router.get('/provider/:providerId/reviews', ReviewController.getProviderReviews)
 router.post(
   '/review/:reviewId/respond',
   authenticate,
-  authorize(Role.PROVIDER),
+  authorize([Role.PROVIDER]),
   validateRequest(ReviewSchema.respondToReviewSchema),
   ReviewController.respondToReview
 );
@@ -205,7 +205,7 @@ router.post(
 router.delete(
   '/review/:reviewId',
   authenticate,
-  authorize(Role.ADMIN),
+  authorize([Role.ADMIN]),
   validateRequest(ReviewSchema.deleteReviewSchema),
   ReviewController.deleteReview
 );
@@ -226,7 +226,7 @@ router.post(
 router.get('/:bookingId/dispute', authenticate, DisputeController.getDisputeByBooking);
 
 // Mendapatkan semua dispute (admin)
-router.get('/disputes', authenticate, authorize(Role.ADMIN), DisputeController.getAllDisputes);
+router.get('/disputes', authenticate, authorize([Role.ADMIN]), DisputeController.getAllDisputes);
 
 // Mendapatkan dispute berdasarkan user
 router.get('/disputes/user', authenticate, DisputeController.getUserDisputes);
@@ -235,7 +235,7 @@ router.get('/disputes/user', authenticate, DisputeController.getUserDisputes);
 router.patch(
   '/dispute/:disputeId/resolve',
   authenticate,
-  authorize(Role.ADMIN),
+  authorize([Role.ADMIN]),
   validateRequest(DisputeSchema.resolveDisputeSchema),
   DisputeController.resolveDispute
 );
@@ -255,7 +255,7 @@ router.post(
 router.post(
   '/:bookingId/tracking/location',
   authenticate,
-  authorize(Role.PROVIDER),
+  authorize([Role.PROVIDER]),
   validateRequest(TrackingSchema.updateLocationSchema),
   TrackingController.updateProviderLocation
 );

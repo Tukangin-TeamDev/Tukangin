@@ -39,7 +39,7 @@ router.get('/:categoryId/subcategories', CategoryController.getSubcategories);
 router.post(
   '/',
   authenticate,
-  authorize(Role.ADMIN),
+  authorize([Role.ADMIN]),
   upload.single('image'),
   validateRequest(CategorySchema.createCategorySchema),
   CategoryController.createCategory
@@ -49,7 +49,7 @@ router.post(
 router.patch(
   '/:categoryId',
   authenticate,
-  authorize(Role.ADMIN),
+  authorize([Role.ADMIN]),
   upload.single('image'),
   validateRequest(CategorySchema.updateCategorySchema),
   CategoryController.updateCategory
@@ -59,7 +59,7 @@ router.patch(
 router.delete(
   '/:categoryId',
   authenticate,
-  authorize(Role.ADMIN),
+  authorize([Role.ADMIN]),
   CategoryController.deleteCategory
 );
 

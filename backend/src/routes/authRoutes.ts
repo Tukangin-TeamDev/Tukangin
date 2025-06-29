@@ -11,6 +11,7 @@ import {
   verifyOtp,
   toggleTwoFactor,
   googleAuth,
+  googleCallback,
   verifyResetOtp,
   getCurrentUser,
 } from '../controllers/authController';
@@ -41,8 +42,9 @@ router.post('/resend-verification', validateForgotPassword, resendVerification);
 router.post('/verify-otp', validateOtp, verifyOtp);
 router.post('/verify-reset-otp', verifyResetOtp);
 
-// OAuth
-router.post('/google', googleAuth);
+// OAuth routes - Google Auth
+router.get('/google', googleAuth);
+router.get('/google/callback', googleCallback);
 
 // Protected routes
 router.use(authMiddleware);

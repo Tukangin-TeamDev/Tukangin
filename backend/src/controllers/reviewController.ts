@@ -10,7 +10,7 @@ import logger from '../utils/logger';
 export const createReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId, rating, comment } = req.body;
-    const reviewerId = req.user!.id;
+    const userId = req.user!.id;
 
     // Validasi rating
     if (rating < 1 || rating > 5) {
@@ -32,12 +32,12 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Cek apakah user adalah customer dari booking ini
-    if (booking.customerId !== reviewerId) {
+    if (booking.customerId !== userId) {
       return next(new AppError('Hanya customer yang dapat memberikan review', 403));
     }
 
     // Cek apakah sudah ada review untuk booking ini
-    const existingReview = await prisma.review.findUnique({
+    const existingReview = await prisma.review.findFirst({
       where: { bookingId },
     });
 
@@ -46,38 +46,28 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Buat review dengan transaction
-    const review = await prisma.$transaction(async prisma => {
+    const review = await prisma.$transaction(async (prisma) => {
       // 1. Buat review
       const newReview = await prisma.review.create({
         data: {
           bookingId,
-          reviewerId,
-          receiverId: booking.providerId,
+          customerId: userId,
+          providerId: booking.providerId,
           rating,
           comment,
         },
       });
 
-      // 2. Update booking status ke REVIEWED
-      await prisma.booking.update({
-        where: { id: bookingId },
-        data: {
-          status: 'REVIEWED',
-          hasFeedback: true,
-        },
+      // 2. Update provider average rating and total reviews
+      const serviceProvider = await prisma.serviceProvider.findUnique({
+        where: { userId: booking.providerId },
       });
 
-      // 3. Update provider average rating
-      const provider = await prisma.user.findUnique({
-        where: { id: booking.providerId },
-        include: { provider: true },
-      });
-
-      if (provider?.provider) {
+      if (serviceProvider) {
         // Get all reviews for this provider
         const providerReviews = await prisma.review.findMany({
           where: {
-            receiverId: booking.providerId,
+            providerId: booking.providerId,
           },
         });
 
@@ -86,10 +76,11 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
         const averageRating = totalRating / providerReviews.length;
 
         // Update provider
-        await prisma.provider.update({
-          where: { id: provider.provider.id },
+        await prisma.serviceProvider.update({
+          where: { id: serviceProvider.id },
           data: {
-            averageRating,
+            rating: averageRating,
+            totalReviews: providerReviews.length,
           },
         });
       }
@@ -142,30 +133,30 @@ export const getReviewByBooking = async (req: Request, res: Response, next: Next
     }
 
     // Get review
-    const review = await prisma.review.findUnique({
+    const review = await prisma.review.findFirst({
       where: { bookingId },
       include: {
-        reviewer: {
+        customer: {
           select: {
             id: true,
-            email: true,
-            customer: {
+            fullName: true,
+            avatarUrl: true,
+            user: {
               select: {
-                fullName: true,
-                avatarUrl: true,
+                email: true,
               },
             },
           },
         },
-        receiver: {
+        provider: {
           select: {
             id: true,
-            email: true,
-            provider: {
+            fullName: true,
+            businessName: true,
+            avatarUrl: true,
+            user: {
               select: {
-                fullName: true,
-                businessName: true,
-                avatarUrl: true,
+                email: true,
               },
             },
           },
@@ -210,23 +201,19 @@ export const getProviderReviews = async (req: Request, res: Response, next: Next
     // Get reviews
     const reviews = await prisma.review.findMany({
       where: {
-        receiverId: providerId,
+        providerId: providerId,
       },
       include: {
         booking: {
           select: {
             bookingNumber: true,
-            bookingDate: true,
+            createdAt: true,
           },
         },
-        reviewer: {
+        customer: {
           select: {
-            customer: {
-              select: {
-                fullName: true,
-                avatarUrl: true,
-              },
-            },
+            fullName: true,
+            avatarUrl: true,
           },
         },
       },
@@ -239,12 +226,12 @@ export const getProviderReviews = async (req: Request, res: Response, next: Next
 
     // Hitung total
     const total = await prisma.review.count({
-      where: { receiverId: providerId },
+      where: { providerId: providerId },
     });
 
     // Hitung rata-rata rating
     const ratingData = await prisma.review.aggregate({
-      where: { receiverId: providerId },
+      where: { providerId: providerId },
       _avg: { rating: true },
       _count: true,
     });
@@ -292,7 +279,7 @@ export const respondToReview = async (req: Request, res: Response, next: NextFun
     }
 
     // Cek apakah user adalah provider yang direview
-    if (review.receiverId !== userId) {
+    if (review.providerId !== userId) {
       return next(
         new AppError('Hanya provider yang direview yang dapat memberikan tanggapan', 403)
       );
@@ -308,13 +295,12 @@ export const respondToReview = async (req: Request, res: Response, next: NextFun
       where: { id: reviewId },
       data: {
         response,
-        responseAt: new Date(),
       },
     });
 
-    // Kirim notifikasi ke customer (reviewer)
+    // Kirim notifikasi ke customer
     await sendNotification(
-      review.reviewerId,
+      review.customerId,
       'Tanggapan Review',
       `Provider telah menanggapi review Anda untuk booking #${review.booking.bookingNumber}`,
       'review_response',
@@ -345,12 +331,12 @@ export const reportReview = async (req: Request, res: Response, next: NextFuncti
       where: { id: reviewId },
       include: {
         booking: true,
-        reviewer: {
+        customer: {
           select: {
-            email: true,
-            customer: {
+            fullName: true,
+            user: {
               select: {
-                fullName: true,
+                email: true,
               },
             },
           },
@@ -363,7 +349,7 @@ export const reportReview = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Cek apakah user adalah provider yang direview
-    if (review.receiverId !== userId && req.user!.role !== 'ADMIN') {
+    if (review.providerId !== userId && req.user!.role !== 'ADMIN') {
       return next(new AppError('Anda tidak berhak melaporkan review ini', 403));
     }
 
@@ -371,9 +357,6 @@ export const reportReview = async (req: Request, res: Response, next: NextFuncti
     const admins = await prisma.user.findMany({
       where: {
         role: 'ADMIN',
-        admin: {
-          adminRole: 'MODERATOR',
-        },
       },
     });
 
@@ -428,32 +411,22 @@ export const deleteReview = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Hapus review dengan transaction
-    await prisma.$transaction(async prisma => {
+    await prisma.$transaction(async (prisma) => {
       // 1. Hapus review
       await prisma.review.delete({
         where: { id: reviewId },
       });
 
-      // 2. Update booking, tandai tidak memiliki feedback
-      await prisma.booking.update({
-        where: { id: review.bookingId },
-        data: {
-          hasFeedback: false,
-          status: 'COMPLETED', // Kembali ke status COMPLETED
-        },
+      // 2. Update provider average rating
+      const serviceProvider = await prisma.serviceProvider.findUnique({
+        where: { userId: review.providerId },
       });
 
-      // 3. Update provider average rating
-      const provider = await prisma.user.findUnique({
-        where: { id: review.receiverId },
-        include: { provider: true },
-      });
-
-      if (provider?.provider) {
-        // Get all reviews for this provider
+      if (serviceProvider) {
+        // Get all remaining reviews for this provider
         const providerReviews = await prisma.review.findMany({
           where: {
-            receiverId: review.receiverId,
+            providerId: review.providerId,
           },
         });
 
@@ -465,10 +438,11 @@ export const deleteReview = async (req: Request, res: Response, next: NextFuncti
         }
 
         // Update provider
-        await prisma.provider.update({
-          where: { id: provider.provider.id },
+        await prisma.serviceProvider.update({
+          where: { id: serviceProvider.id },
           data: {
-            averageRating,
+            rating: averageRating,
+            totalReviews: providerReviews.length,
           },
         });
       }
@@ -476,7 +450,7 @@ export const deleteReview = async (req: Request, res: Response, next: NextFuncti
 
     // Kirim notifikasi ke customer dan provider
     await sendNotification(
-      review.reviewerId,
+      review.customerId,
       'Review Dihapus',
       `Review Anda untuk booking #${review.booking.bookingNumber} telah dihapus oleh admin: ${reason}`,
       'review_deleted',
@@ -484,7 +458,7 @@ export const deleteReview = async (req: Request, res: Response, next: NextFuncti
     );
 
     await sendNotification(
-      review.receiverId,
+      review.providerId,
       'Review Dihapus',
       `Review untuk booking #${review.booking.bookingNumber} telah dihapus oleh admin: ${reason}`,
       'review_deleted',

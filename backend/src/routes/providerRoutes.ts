@@ -7,7 +7,7 @@ const router = express.Router();
 router.use(authMiddleware);
 
 // Only provider and admin can access these routes
-router.use(authorize('PROVIDER', 'ADMIN'));
+router.use(authorize(['PROVIDER', 'ADMIN']));
 
 // Provider routes (placeholder)
 router.get('/profile', (req, res) => {
@@ -25,3 +25,4 @@ router.get('/services', (req, res) => {
 });
 
 export default router;
+
