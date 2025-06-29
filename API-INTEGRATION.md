@@ -299,41 +299,41 @@ Integrasi Supabase Auth dengan Google menggunakan pendekatan client-side (langsu
 
 ```typescript
 // services/authService.ts
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export const signInWithGoogle = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       redirectTo: `${window.location.origin}/auth/callback`,
-    }
+    },
   });
-  
+
   if (error) {
     throw error;
   }
-  
+
   // Arahkan ke URL login Google
   if (data?.url) {
     window.location.href = data.url;
   }
-}
+};
 
 // Fungsi untuk memeriksa dan mengatur sesi setelah callback
 export const handleAuthCallback = async () => {
   const { data, error } = await supabase.auth.getSession();
-  
+
   if (error) {
     throw error;
   }
-  
+
   return data.session;
-}
+};
 ```
 
 ## Implementasi Callback di Next.js
@@ -351,7 +351,7 @@ export default function AuthCallbackPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { setSession } = useAuth();
-  
+
   useEffect(() => {
     const setupAuth = async () => {
       try {
@@ -368,14 +368,14 @@ export default function AuthCallbackPage() {
         setTimeout(() => router.push('/login'), 2000);
       }
     };
-    
+
     setupAuth();
   }, [router, setSession]);
-  
+
   if (error) {
     return <div className="text-center p-4">Error: {error}</div>;
   }
-  
+
   return <div className="text-center p-4">Memuat...</div>;
 }
 ```
@@ -395,13 +395,10 @@ export default function LoginPage() {
       console.error('Google login failed:', error);
     }
   };
-  
+
   return (
     <div>
-      <button 
-        onClick={handleGoogleLogin}
-        className="flex items-center gap-2 rounded-lg border p-2"
-      >
+      <button onClick={handleGoogleLogin} className="flex items-center gap-2 rounded-lg border p-2">
         <svg className="w-5 h-5" viewBox="0 0 24 24">
           {/* Google icon paths */}
         </svg>
@@ -431,25 +428,22 @@ Jika Anda perlu memvalidasi sesi di backend:
 // Contoh middleware backend untuk validasi token
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
 export const authMiddleware = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
-  
+
   if (!token) {
     return res.status(401).json({ message: 'Token tidak ditemukan' });
   }
-  
+
   try {
     const { data, error } = await supabase.auth.getUser(token);
-    
+
     if (error || !data.user) {
       return res.status(401).json({ message: 'Token tidak valid' });
     }
-    
+
     req.user = data.user;
     next();
   } catch (err) {

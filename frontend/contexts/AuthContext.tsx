@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       fullName,
       avatarUrl,
       phoneNumber,
-      metadata: authUser.user_metadata
+      metadata: authUser.user_metadata,
     };
   };
 
@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       });
 
       if (error) {
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const userData = processUserData(data.user);
         setUser(userData);
         setIsAuthenticated(true);
-        
+
         // Determine redirect URL based on role
         const role = userData?.role || 'CUSTOMER';
         let redirectTo = '/dashboard';
@@ -129,10 +129,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } else if (role === 'ADMIN') {
           redirectTo = '/admin/dashboard';
         }
-        
+
         return { success: true, redirectTo };
       }
-      
+
       return { success: false, message: 'Login gagal' };
     } catch (error: any) {
       setError(error.message || 'Login gagal');
@@ -154,8 +154,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             full_name: userData.fullName,
             phone_number: userData.phoneNumber,
             role: userData.role,
-          }
-        }
+          },
+        },
       });
 
       if (error) {
@@ -165,10 +165,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       // For sign-up, Supabase usually sends a confirmation email
       // We don't immediately authenticate the user
-      return { 
-        success: true, 
+      return {
+        success: true,
         message: 'Registrasi berhasil. Silakan cek email Anda untuk konfirmasi.',
-        needVerification: true
+        needVerification: true,
       };
     } catch (error: any) {
       setError(error.message || 'Registrasi gagal');
@@ -202,7 +202,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login,
         register,
         logout,
-        updateUserState
+        updateUserState,
       }}
     >
       {children}

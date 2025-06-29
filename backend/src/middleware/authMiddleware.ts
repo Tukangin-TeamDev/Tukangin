@@ -25,10 +25,10 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     // Check for token in Authorization header
     let token: string | undefined;
     const authHeader = req.headers.authorization;
-    
+
     if (authHeader && authHeader.startsWith('Bearer ')) {
       token = authHeader.split(' ')[1];
-    } 
+    }
     // Check for token in cookies as fallback
     else if (req.cookies && req.cookies.accessToken) {
       token = req.cookies.accessToken;
@@ -47,26 +47,26 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
           const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession({
             refresh_token: req.cookies.refreshToken,
           });
-          
+
           if (refreshError || !refreshData.session || !refreshData.user) {
             return next(new AppError('Session expired. Please login again', 401));
           }
-          
+
           // Set new cookies
           res.cookie('accessToken', refreshData.session.access_token, {
-            httpOnly: true, 
+            httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
           });
-          
+
           res.cookie('refreshToken', refreshData.session.refresh_token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
           });
-          
+
           // Use the new user data
           data.user = refreshData.user;
         } catch (refreshError) {
@@ -118,11 +118,11 @@ export const authorize = (allowedRoles: string[]) => {
     if (!req.user) {
       return next(new AppError('Authentication required', 401));
     }
-    
+
     if (!allowedRoles.includes(req.user.role)) {
       return next(new AppError('You are not authorized to access this resource', 403));
     }
-    
+
     next();
   };
 };

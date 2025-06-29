@@ -251,9 +251,7 @@ export const getLoyaltyHistory = async (req: any, res: Response, next: NextFunct
     });
 
     // Hitung total poin yang didapat dan ditukar
-    const pointStats = await prisma.$queryRaw<
-      { totalEarned: number; totalRedeemed: number }[]
-    >`
+    const pointStats = await prisma.$queryRaw<{ totalEarned: number; totalRedeemed: number }[]>`
       SELECT 
         SUM(CASE WHEN "transactionType" = 'EARNING_POINTS' THEN amount ELSE 0 END) as "totalEarned",
         SUM(CASE WHEN "transactionType" = 'REDEEMING_POINTS' THEN amount ELSE 0 END) as "totalRedeemed"

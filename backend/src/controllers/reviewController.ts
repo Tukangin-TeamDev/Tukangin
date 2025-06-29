@@ -46,7 +46,7 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Buat review dengan transaction
-    const review = await prisma.$transaction(async (prisma) => {
+    const review = await prisma.$transaction(async prisma => {
       // 1. Buat review
       const newReview = await prisma.review.create({
         data: {
@@ -411,7 +411,7 @@ export const deleteReview = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Hapus review dengan transaction
-    await prisma.$transaction(async (prisma) => {
+    await prisma.$transaction(async prisma => {
       // 1. Hapus review
       await prisma.review.delete({
         where: { id: reviewId },

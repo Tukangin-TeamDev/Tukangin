@@ -7,7 +7,7 @@ let supabase;
 try {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  
+
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error(
       'Supabase credentials missing! Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local file.'
@@ -18,7 +18,7 @@ try {
       alert('Supabase credentials missing! Check console for more details.');
     }
   }
-  
+
   supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
 } catch (error) {
   console.error('Failed to initialize Supabase client:', error);
@@ -84,13 +84,13 @@ const authService = {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       });
 
       if (error) {
-        return { 
-          success: false, 
-          message: error.message 
+        return {
+          success: false,
+          message: error.message,
         };
       }
 
@@ -98,7 +98,7 @@ const authService = {
       const { user } = data;
       const role = user?.user_metadata?.role || 'CUSTOMER';
       let redirectTo = '/dashboard';
-      
+
       if (role === 'PROVIDER') {
         redirectTo = '/provider/dashboard';
       } else if (role === 'ADMIN') {
@@ -111,14 +111,14 @@ const authService = {
           id: user?.id || '',
           email: user?.email || '',
           role: role,
-          profile: user?.user_metadata || {}
+          profile: user?.user_metadata || {},
         },
         redirectTo,
       };
     } catch (error: any) {
       return {
         success: false,
-        message: error.message || 'Login gagal'
+        message: error.message || 'Login gagal',
       };
     }
   },
@@ -138,14 +138,14 @@ const authService = {
             full_name: userData.fullName,
             phone_number: userData.phoneNumber,
             role: userData.role,
-          }
-        }
+          },
+        },
       });
 
       if (error) {
         return {
           success: false,
-          message: error.message
+          message: error.message,
         };
       }
 
@@ -155,12 +155,12 @@ const authService = {
           id: data.user?.id || '',
           email: data.user?.email || '',
           role: userData.role,
-        }
+        },
       };
     } catch (error: any) {
       return {
         success: false,
-        message: error.message || 'Registrasi gagal'
+        message: error.message || 'Registrasi gagal',
       };
     }
   },
@@ -174,30 +174,30 @@ const authService = {
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-      }
+      },
     });
-    
+
     if (error) {
       throw error;
     }
-    
+
     // Supabase returns URL to redirect to
     if (data?.url) {
       window.location.href = data.url;
     }
   },
-  
+
   /**
    * Handle auth callback after OAuth login
    * @returns Supabase session
    */
   handleAuthCallback: async () => {
     const { data, error } = await supabase.auth.getSession();
-    
+
     if (error) {
       throw error;
     }
-    
+
     return data.session;
   },
 
@@ -232,10 +232,10 @@ const authService = {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
-    
+
     return {
       success: !error,
-      message: error ? error.message : 'Email untuk reset password telah dikirim'
+      message: error ? error.message : 'Email untuk reset password telah dikirim',
     };
   },
 
@@ -247,25 +247,25 @@ const authService = {
     const { error } = await supabase.auth.updateUser({
       password: password,
     });
-    
+
     return {
       success: !error,
-      message: error ? error.message : 'Password berhasil diubah'
+      message: error ? error.message : 'Password berhasil diubah',
     };
   },
-  
+
   /**
    * Get user session data
    */
   getSession: async () => {
     const { data, error } = await supabase.auth.getSession();
-    
+
     if (error) {
       throw error;
     }
-    
+
     return data.session;
-  }
+  },
 };
 
 export default authService;

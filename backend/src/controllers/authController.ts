@@ -112,9 +112,7 @@ export const googleCallback = async (req: Request, res: Response, next: NextFunc
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error || !data.session || !data.user) {
-      return next(
-        new AppError(error?.message || 'Failed to exchange code for session', 401)
-      );
+      return next(new AppError(error?.message || 'Failed to exchange code for session', 401));
     }
 
     // Get user details from the session
@@ -190,7 +188,7 @@ export const googleCallback = async (req: Request, res: Response, next: NextFunc
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
-    
+
     res.cookie('refreshToken', refresh_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -274,25 +272,25 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { refreshToken } = req.body;
-    
+
     if (!refreshToken) {
       return next(new AppError('Refresh token diperlukan', 400));
     }
-    
+
     const { data, error } = await supabase.auth.refreshSession({
       refresh_token: refreshToken,
     });
-    
+
     if (error || !data.session) {
       return next(new AppError('Gagal memperbarui token', 401));
     }
-    
+
     res.status(200).json({
       success: true,
       data: {
         accessToken: data.session.access_token,
         refreshToken: data.session.refresh_token,
-      }
+      },
     });
   } catch (error) {
     next(error);
@@ -305,11 +303,11 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
 export const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     await supabase.auth.signOut();
-    
+
     // Clear cookies if using them
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
-    
+
     res.status(200).json({
       success: true,
       message: 'Logout berhasil',
@@ -328,7 +326,7 @@ export const getCurrentUser = async (req: Request, res: Response, next: NextFunc
     if (!req.user) {
       return next(new AppError('User not authenticated', 401));
     }
-    
+
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
       include: {
@@ -341,11 +339,11 @@ export const getCurrentUser = async (req: Request, res: Response, next: NextFunc
         admin: true,
       },
     });
-    
+
     if (!user) {
       return next(new AppError('User not found', 404));
     }
-    
+
     res.status(200).json({
       success: true,
       data: {
@@ -366,15 +364,15 @@ export const getCurrentUser = async (req: Request, res: Response, next: NextFunc
 export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email } = req.body;
-    
+
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${process.env.FRONTEND_URL}/reset-password`,
     });
-    
+
     if (error) {
       return next(new AppError(error.message, 400));
     }
-    
+
     res.status(200).json({
       success: true,
       message: 'Instruksi reset password telah dikirim ke email Anda',
@@ -390,15 +388,15 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { password } = req.body;
-    
+
     const { error } = await supabase.auth.updateUser({
       password,
     });
-    
+
     if (error) {
       return next(new AppError(error.message, 400));
     }
-    
+
     res.status(200).json({
       success: true,
       message: 'Password berhasil direset',

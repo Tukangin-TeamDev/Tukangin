@@ -25,4 +25,3 @@ router.get('/services', (req, res) => {
 });
 
 export default router;
-
