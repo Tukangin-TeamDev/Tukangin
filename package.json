@@ -25,7 +25,7 @@
     "fe:add:dev": "npm install --workspace=frontend --save-dev",
     "be:add:dev": "npm install --workspace=backend --save-dev",
     "prepare": "husky",
-    "postinstall": "npm run setup:husky",
+    "postinstall": "husky",
     "setup:husky": "husky install",
     "check": "node check-errors.js",
     "db:test": "cd backend && ts-node src/test/db-test.ts",

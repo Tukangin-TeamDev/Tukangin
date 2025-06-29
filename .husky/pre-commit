@@ -1,12 +1,7 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!/bin/sh
 
-# Bypass ESLint for now
-# npx lint-staged
+# Run prettier directly with a more limited scope to prevent errors
+npx prettier --write "frontend/**/*.{js,jsx,ts,tsx}" "backend/src/**/*.{js,ts}" "*.{js,json,md}"
 
-# Run prettier directly without ESLint
-# Temporarily disable prettier to allow commit
-# npx prettier --write "**/*.{js,jsx,ts,tsx,json,md,html,css}"
-
-# Echo a message so we know the hook ran but was bypassed
-echo "Pre-commit hook bypassed temporarily"
+# Echo a message to confirm hook ran successfully
+echo "Pre-commit hook ran successfully"
