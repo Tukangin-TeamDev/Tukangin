@@ -3,9 +3,14 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
-  testMatch: ['**/__tests__/**/*.ts?(x)', '**/?(*.)+(spec|test).ts?(x)'],
+  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.ts$': 'ts-jest',
+  },
+  globals: {
+    'ts-jest': {
+      useESM: true,
+    },
   },
   moduleNameMapper: {
     '@/(.*)': '<rootDir>/src/$1',
@@ -20,4 +25,5 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
+  // setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'] // Optional
 };

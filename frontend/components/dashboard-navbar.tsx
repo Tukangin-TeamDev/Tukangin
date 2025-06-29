@@ -19,14 +19,14 @@ export function DashboardNavbar() {
   };
 
   return (
-    <div className="sticky top-0 z-50 px-4 py-3">
+    <div className="fixed top-0 w-full z-50 px-4 py-3">
       <header className="bg-white/80 backdrop-blur-md shadow-lg rounded-2xl py-4 px-6 mx-auto max-w-7xl">
         <div className="container mx-auto">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/dashboard" className="flex items-center gap-2">
               <Image
-                src="/placeholder.svg?height=48&width=48"
+                src="/logo-tukangin.png?height=48&width=48"
                 alt="Tukangin Logo"
                 width={48}
                 height={48}
@@ -42,7 +42,7 @@ export function DashboardNavbar() {
               <Link
                 href="/dashboard"
                 className={`text-gray-700 hover:text-blue-600 transition-colors border-b-2 font-medium ${
-                  pathname === '/dashboard'
+                  pathname.startsWith('/dashboard')
                     ? 'border-blue-600 text-blue-600'
                     : 'border-transparent hover:border-blue-600'
                 }`}
@@ -52,7 +52,7 @@ export function DashboardNavbar() {
               <Link
                 href="/marketplace"
                 className={`text-gray-700 hover:text-blue-600 transition-colors border-b-2 font-medium ${
-                  pathname === '/marketplace'
+                  pathname.startsWith('/marketplace')
                     ? 'border-blue-600 text-blue-600'
                     : 'border-transparent hover:border-blue-600'
                 }`}

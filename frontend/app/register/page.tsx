@@ -421,26 +421,54 @@ export default function RegisterPage() {
 
                         <div className="space-y-0.5">
                           <div className="relative group">
-                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-blue-500 pointer-events-none">
                               <Briefcase className="h-4 w-4" />
                             </div>
                             <select
                               id="serviceType"
                               value={serviceType}
                               onChange={e => setServiceType(e.target.value)}
-                              className={`h-9 w-full appearance-none rounded-xl border bg-white/70 py-2 pl-9 pr-3 text-xs transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 ${
+                              className={`h-9 w-full appearance-none rounded-xl border bg-white/80 py-2 pl-9 pr-10 text-xs font-medium shadow-sm transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:h-10 ${
                                 errors.serviceType
                                   ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50'
                                   : 'border-gray-200'
                               }`}
+                              style={{
+                                WebkitAppearance: 'none',
+                                MozAppearance: 'none',
+                                appearance: 'none',
+                                backgroundImage:
+                                  "url(\"data:image/svg+xml,%3Csvg width='16' height='16' fill='none' stroke='%239CA3AF' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")",
+                                backgroundRepeat: 'no-repeat',
+                                backgroundPosition: 'right 0.75rem center',
+                                backgroundSize: '1.25em 1.25em',
+                              }}
                             >
-                              <option value="">Pilih Layanan</option>
+                              <option value="" disabled>
+                                Pilih Kategori Layanan
+                              </option>
                               <option value="perbaikan_listrik">Perbaikan Listrik</option>
                               <option value="servis_ac">Servis AC</option>
                               <option value="renovasi_rumah">Renovasi Rumah</option>
                               <option value="tukang_ledeng">Tukang Ledeng</option>
                               <option value="lainnya">Lainnya</option>
                             </select>
+                            {/* Custom chevron for modern dropdown */}
+                            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
+                              <svg
+                                className="h-4 w-4 text-gray-400 group-focus-within:text-blue-500 transition-colors"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  d="M6 9l6 6 6-6"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </div>
                           </div>
                           {errors.serviceType && (
                             <p className="ml-1 text-[10px] text-red-500">{errors.serviceType}</p>

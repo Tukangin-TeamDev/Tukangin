@@ -21,7 +21,7 @@ export default function HowItWorksPage() {
       <NavbarGuest />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-blue-400/30 to-blue-400/5 py-16 md:py-24">
+      <section className="bg-gradient-to-b from-blue-400/40 to-transparent pt-40 pb-16">
         <div className="container mx-auto px-4 md:px-8">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Cara Kerja Tukangin</h1>
@@ -54,14 +54,14 @@ export default function HowItWorksPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Step 1 */}
             <div className="relative">
-              <div className="bg-white/70 backdrop-blur-md border border-white/20 rounded-xl p-6 shadow-lg h-full flex flex-col items-center text-center">
+              <div className="bg-white/70 backdrop-blur-md border border-white/20 rounded-xl p-6 shadow-lg flex flex-col h-full">
                 <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
                   <Search className="h-8 w-8 text-blue-600" />
                 </div>
                 <div className="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
                   1
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Pilih Layanan</h3>
+                <h3 className="text-xl font-semibold mb-3 flex-1">Pilih Layanan</h3>
                 <p className="text-gray-700">
                   Jelajahi berbagai kategori layanan dan pilih yang sesuai dengan kebutuhan Anda.
                   Filter berdasarkan lokasi, harga, dan rating.
@@ -71,14 +71,14 @@ export default function HowItWorksPage() {
 
             {/* Step 2 */}
             <div className="relative">
-              <div className="bg-white/70 backdrop-blur-md border border-white/20 rounded-xl p-6 shadow-lg h-full flex flex-col items-center text-center">
+              <div className="bg-white/70 backdrop-blur-md border border-white/20 rounded-xl p-6 shadow-lg flex flex-col h-full">
                 <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
                   <Calendar className="h-8 w-8 text-blue-600" />
                 </div>
                 <div className="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
                   2
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Jadwalkan Layanan</h3>
+                <h3 className="text-xl font-semibold mb-3 flex-1">Jadwalkan Layanan</h3>
                 <p className="text-gray-700">
                   Pilih tanggal dan waktu yang nyaman untuk Anda. Dapatkan konfirmasi instan atau
                   dalam waktu maksimal 1 jam.
@@ -88,14 +88,14 @@ export default function HowItWorksPage() {
 
             {/* Step 3 */}
             <div className="relative">
-              <div className="bg-white/70 backdrop-blur-md border border-white/20 rounded-xl p-6 shadow-lg h-full flex flex-col items-center text-center">
+              <div className="bg-white/70 backdrop-blur-md border border-white/20 rounded-xl p-6 shadow-lg flex flex-col h-full">
                 <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
                   <CheckCircle className="h-8 w-8 text-blue-600" />
                 </div>
                 <div className="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
                   3
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Terima Layanan</h3>
+                <h3 className="text-xl font-semibold mb-3 flex-1">Terima Layanan</h3>
                 <p className="text-gray-700">
                   Profesional kami akan datang tepat waktu dan menyelesaikan pekerjaan sesuai
                   standar kualitas Tukangin.
@@ -105,14 +105,14 @@ export default function HowItWorksPage() {
 
             {/* Step 4 */}
             <div className="relative">
-              <div className="bg-white/70 backdrop-blur-md border border-white/20 rounded-xl p-6 shadow-lg h-full flex flex-col items-center text-center">
+              <div className="bg-white/70 backdrop-blur-md border border-white/20 rounded-xl p-6 shadow-lg flex flex-col h-full">
                 <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
                   <Star className="h-8 w-8 text-blue-600" />
                 </div>
                 <div className="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
                   4
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Nilai & Bayar</h3>
+                <h3 className="text-xl font-semibold mb-3 flex-1">Nilai & Bayar</h3>
                 <p className="text-gray-700">
                   Bayar setelah puas dengan layanan dan berikan ulasan untuk membantu komunitas
                   Tukangin.
@@ -432,7 +432,7 @@ export default function HowItWorksPage() {
             <div className="space-y-6">
               {/* FAQ Item 1 */}
               <div className="bg-white rounded-xl p-6 shadow-md">
-                <h3 className="text-xl font-semibold mb-3">
+                <h3 className="text-xl font-semibold mb-3 flex-1">
                   Bagaimana cara menjamin kualitas layanan?
                 </h3>
                 <p className="text-gray-700">
@@ -445,7 +445,7 @@ export default function HowItWorksPage() {
 
               {/* FAQ Item 2 */}
               <div className="bg-white rounded-xl p-6 shadow-md">
-                <h3 className="text-xl font-semibold mb-3">
+                <h3 className="text-xl font-semibold mb-3 flex-1">
                   Berapa biaya menggunakan platform Tukangin?
                 </h3>
                 <p className="text-gray-700">
@@ -458,7 +458,7 @@ export default function HowItWorksPage() {
 
               {/* FAQ Item 3 */}
               <div className="bg-white rounded-xl p-6 shadow-md">
-                <h3 className="text-xl font-semibold mb-3">
+                <h3 className="text-xl font-semibold mb-3 flex-1">
                   Bagaimana jika saya perlu membatalkan pesanan?
                 </h3>
                 <p className="text-gray-700">
@@ -471,7 +471,7 @@ export default function HowItWorksPage() {
 
               {/* FAQ Item 4 */}
               <div className="bg-white rounded-xl p-6 shadow-md">
-                <h3 className="text-xl font-semibold mb-3">
+                <h3 className="text-xl font-semibold mb-3 flex-1">
                   Apakah Tukangin tersedia di kota saya?
                 </h3>
                 <p className="text-gray-700">
@@ -484,7 +484,7 @@ export default function HowItWorksPage() {
 
               {/* FAQ Item 5 */}
               <div className="bg-white rounded-xl p-6 shadow-md">
-                <h3 className="text-xl font-semibold mb-3">
+                <h3 className="text-xl font-semibold mb-3 flex-1">
                   Bagaimana cara membayar untuk layanan?
                 </h3>
                 <p className="text-gray-700">

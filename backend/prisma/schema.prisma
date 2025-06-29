@@ -16,11 +16,12 @@ model User {
   id                String    @id @default(uuid())
   email             String    @unique
   password          String?   // Boleh null untuk OAuth
-  phoneNumber       String    @unique
+  phoneNumber       String?   @unique
   isActive          Boolean   @default(true)
   role              Role
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+  lastLogin         DateTime? // Track last login time
   // Auth fields
   twoFactorEnabled  Boolean   @default(false)
   emailVerified     Boolean   @default(false)
@@ -43,6 +44,8 @@ model User {
   devices       Device[]
   otpCodes      OtpCode[]
   wallet        Wallet?
+
+  @@unique([provider, providerAccountId])
 }
 
 // Login Provider Types
@@ -297,6 +300,9 @@ model Dispute {
   resolution  String?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  // Tambahkan relasi ke DisputeAttachment
+  attachments DisputeAttachment[]
 }
 
 // Status Dispute
@@ -456,4 +462,15 @@ enum RequoteStatus {
   PENDING
   ACCEPTED
   REJECTED
+}
+
+// DisputeAttachment model
+model DisputeAttachment {
+  id          String   @id @default(uuid())
+  disputeId   String
+  dispute     Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  fileUrl     String
+  fileName    String
+  fileType    String
+  createdAt   DateTime @default(now())
 }

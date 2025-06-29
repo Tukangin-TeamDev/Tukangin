@@ -68,7 +68,7 @@ export const createBooking = async (req: Request, res: Response, next: NextFunct
 
     // Calculate total amount
     let totalAmount = 0;
-    const bookingItems = [];
+    const bookingItems: { serviceId: string; quantity: number; price: number }[] = [];
 
     for (const serviceItem of services) {
       const service = availableServices.find(s => s.id === serviceItem.serviceId);
@@ -79,11 +79,6 @@ export const createBooking = async (req: Request, res: Response, next: NextFunct
       }
 
       const quantity = serviceItem.quantity || 1;
-      if (quantity < service.minimumOrder) {
-        return next(
-          new AppError(`Minimal order untuk ${service.name} adalah ${service.minimumOrder}`, 400)
-        );
-      }
 
       const itemTotalPrice = service.price * quantity;
       totalAmount += itemTotalPrice;
@@ -91,9 +86,7 @@ export const createBooking = async (req: Request, res: Response, next: NextFunct
       bookingItems.push({
         serviceId: service.id,
         quantity: quantity,
-        unitPrice: service.price,
-        totalPrice: itemTotalPrice,
-        notes: serviceItem.notes,
+        price: service.price,
       });
     }
 
@@ -138,31 +131,28 @@ export const createBooking = async (req: Request, res: Response, next: NextFunct
           providerId,
           totalAmount,
           notes,
-          scheduledDate: scheduledDate ? new Date(scheduledDate) : null,
-          locationAddress,
-          locationCoordinates,
+          scheduledAt: scheduledDate ? new Date(scheduledDate) : null,
+          address: locationAddress,
+          latitude: locationCoordinates ? Number(locationCoordinates.split(',')[0]) : 0,
+          longitude: locationCoordinates ? Number(locationCoordinates.split(',')[1]) : 0,
           estimatedArrival,
-          bookingItems: {
+          services: {
             createMany: {
               data: bookingItems,
             },
           },
         },
         include: {
-          bookingItems: true,
+          services: true,
         },
       });
 
       // 2. Buat payment record dengan status PENDING
-      const paymentNumber = `PAY-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}${Math.floor(10000 + Math.random() * 90000)}`;
-
-      // Platform fee adalah 10% dari total amount
       const platformFee = totalAmount * 0.1;
 
       await prisma.payment.create({
         data: {
           bookingId: newBooking.id,
-          paymentNumber,
           amount: totalAmount,
           platformFee,
           status: 'PENDING',
@@ -210,7 +200,7 @@ export const getBookingDetails = async (req: Request, res: Response, next: NextF
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
       include: {
-        bookingItems: {
+        services: {
           include: {
             service: true,
           },
@@ -218,31 +208,21 @@ export const getBookingDetails = async (req: Request, res: Response, next: NextF
         customer: {
           select: {
             id: true,
-            email: true,
-            customer: {
-              select: {
-                fullName: true,
-                avatarUrl: true,
-              },
-            },
+            fullName: true,
+            avatarUrl: true,
           },
         },
         provider: {
           select: {
             id: true,
-            email: true,
-            provider: {
-              select: {
-                fullName: true,
-                businessName: true,
-                avatarUrl: true,
-                isVerified: true,
-              },
-            },
+            fullName: true,
+            businessName: true,
+            avatarUrl: true,
+            isVerified: true,
           },
         },
-        payment: true,
-        trackingUpdates: {
+        payments: true,
+        statusUpdates: {
           orderBy: {
             createdAt: 'desc',
           },
@@ -315,29 +295,19 @@ export const getUserBookings = async (req: Request, res: Response, next: NextFun
         customer: {
           select: {
             id: true,
-            email: true,
-            customer: {
-              select: {
-                fullName: true,
-                avatarUrl: true,
-              },
-            },
+            fullName: true,
+            avatarUrl: true,
           },
         },
         provider: {
           select: {
             id: true,
-            email: true,
-            provider: {
-              select: {
-                fullName: true,
-                businessName: true,
-                avatarUrl: true,
-              },
-            },
+            fullName: true,
+            businessName: true,
+            avatarUrl: true,
           },
         },
-        payment: {
+        payments: {
           select: {
             status: true,
             amount: true,
@@ -345,7 +315,7 @@ export const getUserBookings = async (req: Request, res: Response, next: NextFun
         },
       },
       orderBy: {
-        bookingDate: 'desc',
+        createdAt: 'desc',
       },
       skip,
       take: Number(limit),
@@ -384,7 +354,7 @@ export const updateBookingStatus = async (req: Request, res: Response, next: Nex
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
       include: {
-        payment: true,
+        payments: true,
       },
     });
 
@@ -413,7 +383,7 @@ export const updateBookingStatus = async (req: Request, res: Response, next: Nex
     if (isProvider) {
       if (
         (currentStatus === 'PENDING' && status === 'ACCEPTED') ||
-        (currentStatus === 'PENDING' && status === 'DECLINED') ||
+        (currentStatus === 'PENDING' && status === 'CANCELLED') ||
         (currentStatus === 'ACCEPTED' && status === 'EN_ROUTE') ||
         (currentStatus === 'EN_ROUTE' && status === 'ON_SITE') ||
         (currentStatus === 'ON_SITE' && status === 'IN_PROGRESS') ||
@@ -427,8 +397,7 @@ export const updateBookingStatus = async (req: Request, res: Response, next: Nex
     if (isCustomer) {
       if (
         (currentStatus === 'PENDING' && status === 'CANCELLED') ||
-        (currentStatus === 'ACCEPTED' && status === 'CANCELLED') ||
-        (currentStatus === 'COMPLETED' && status === 'REVIEWED')
+        (currentStatus === 'ACCEPTED' && status === 'CANCELLED')
       ) {
         isValidTransition = true;
       }
@@ -455,13 +424,14 @@ export const updateBookingStatus = async (req: Request, res: Response, next: Nex
         },
       });
 
-      // 2. Tambah tracking update
-      await prisma.trackingUpdate.create({
+      // 2. Tambah status update
+      await prisma.statusUpdate.create({
         data: {
           bookingId,
           status: status as any,
-          location,
           notes,
+          latitude: location?.latitude,
+          longitude: location?.longitude,
         },
       });
 
@@ -470,7 +440,7 @@ export const updateBookingStatus = async (req: Request, res: Response, next: Nex
         await prisma.booking.update({
           where: { id: bookingId },
           data: {
-            completionTime: new Date(),
+            completedAt: new Date(),
           },
         });
       }
@@ -480,15 +450,16 @@ export const updateBookingStatus = async (req: Request, res: Response, next: Nex
         await prisma.booking.update({
           where: { id: bookingId },
           data: {
-            actualArrival: new Date(),
+            estimatedArrival: new Date(),
           },
         });
       }
 
       // 5. Update payment status jika perlu
-      if (status === 'COMPLETED' && booking.payment?.status === 'ESCROW') {
+      const payment = booking.payments[0];
+      if (status === 'COMPLETED' && payment?.status === 'ESCROW') {
         await prisma.payment.update({
-          where: { bookingId },
+          where: { id: payment.id },
           data: {
             status: 'COMPLETED',
             releaseDate: new Date(),
@@ -496,7 +467,7 @@ export const updateBookingStatus = async (req: Request, res: Response, next: Nex
         });
 
         // Hitung jumlah yang diterima provider (setelah dipotong platform fee)
-        const netAmount = booking.payment.amount - booking.payment.platformFee;
+        const netAmount = payment.amount - payment.platformFee;
 
         // Tambahkan ke wallet provider
         const providerWallet = await prisma.wallet.findFirst({
@@ -522,7 +493,7 @@ export const updateBookingStatus = async (req: Request, res: Response, next: Nex
         // Catat transaksi
         await prisma.transaction.create({
           data: {
-            paymentId: booking.payment.id,
+            paymentId: payment.id,
             userId: booking.providerId,
             transactionType: 'ESCROW_OUT',
             amount: netAmount,
@@ -602,7 +573,7 @@ export const cancelBooking = async (req: Request, res: Response, next: NextFunct
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
       include: {
-        payment: true,
+        payments: true,
       },
     });
 
@@ -623,7 +594,6 @@ export const cancelBooking = async (req: Request, res: Response, next: NextFunct
     // Hitung cancellation fee jika ada
     let cancellationFee = 0;
     if (booking.status === 'ACCEPTED') {
-      // Cancellation fee 5% dari total amount jika sudah diterima provider
       cancellationFee = booking.totalAmount * 0.05;
     }
 
@@ -634,13 +604,11 @@ export const cancelBooking = async (req: Request, res: Response, next: NextFunct
         where: { id: bookingId },
         data: {
           status: 'CANCELLED',
-          cancellationReason: reason,
-          cancellationFee,
         },
       });
 
-      // 2. Tambah tracking update
-      await prisma.trackingUpdate.create({
+      // 2. Tambah status update
+      await prisma.statusUpdate.create({
         data: {
           bookingId,
           status: 'CANCELLED',
@@ -649,25 +617,23 @@ export const cancelBooking = async (req: Request, res: Response, next: NextFunct
       });
 
       // 3. Update payment status jika perlu
-      if (booking.payment) {
-        if (booking.payment.status === 'ESCROW') {
+      const payment = booking.payments[0];
+      if (payment) {
+        if (payment.status === 'ESCROW') {
           // Refund dengan potongan cancellation fee
-          const refundAmount = booking.payment.amount - cancellationFee;
+          const refundAmount = payment.amount - cancellationFee;
 
           await prisma.payment.update({
-            where: { id: booking.payment.id },
+            where: { id: payment.id },
             data: {
               status: 'REFUNDED',
-              refundAmount,
-              refundReason: 'Booking dibatalkan oleh customer',
-              refundDate: new Date(),
             },
           });
 
           // Catat transaksi refund
           await prisma.transaction.create({
             data: {
-              paymentId: booking.payment.id,
+              paymentId: payment.id,
               userId: booking.customerId,
               transactionType: 'REFUND',
               amount: refundAmount,
@@ -675,9 +641,9 @@ export const cancelBooking = async (req: Request, res: Response, next: NextFunct
               description: `Refund untuk pembatalan booking #${booking.bookingNumber}`,
             },
           });
-        } else if (booking.payment.status === 'PENDING') {
+        } else if (payment.status === 'PENDING') {
           await prisma.payment.update({
-            where: { id: booking.payment.id },
+            where: { id: payment.id },
             data: {
               status: 'FAILED',
             },
@@ -717,7 +683,7 @@ export const cancelBooking = async (req: Request, res: Response, next: NextFunct
 export const createRequote = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId } = req.params;
-    const { newAmount, reason } = req.body;
+    const { amount, reason, description } = req.body;
     const userId = req.user!.id;
 
     // Validasi booking
@@ -740,7 +706,7 @@ export const createRequote = async (req: Request, res: Response, next: NextFunct
     }
 
     // Validasi jumlah baru
-    if (newAmount <= 0 || newAmount <= booking.totalAmount) {
+    if (amount <= 0 || amount <= booking.totalAmount) {
       return next(new AppError('Jumlah baru harus lebih besar dari jumlah awal', 400));
     }
 
@@ -748,9 +714,10 @@ export const createRequote = async (req: Request, res: Response, next: NextFunct
     const requote = await prisma.requote.create({
       data: {
         bookingId,
-        originalAmount: booking.totalAmount,
-        newAmount,
+        amount,
         reason,
+        description,
+        status: 'PENDING',
       },
     });
 
@@ -814,7 +781,6 @@ export const respondRequote = async (req: Request, res: Response, next: NextFunc
           where: { id: requoteId },
           data: {
             status: newStatus,
-            respondedAt: new Date(),
           },
         });
 
@@ -822,12 +788,12 @@ export const respondRequote = async (req: Request, res: Response, next: NextFunc
         await prisma.booking.update({
           where: { id: requote.bookingId },
           data: {
-            totalAmount: requote.newAmount,
+            totalAmount: requote.amount,
           },
         });
 
         // 3. Update payment
-        const payment = await prisma.payment.findUnique({
+        const payment = await prisma.payment.findFirst({
           where: { bookingId: requote.bookingId },
         });
 
@@ -837,20 +803,19 @@ export const respondRequote = async (req: Request, res: Response, next: NextFunc
             await prisma.payment.update({
               where: { id: payment.id },
               data: {
-                amount: requote.newAmount,
+                amount: requote.amount,
               },
             });
           }
           // Jika payment sudah ESCROW, perlu tambahan untuk selisih
           else if (payment.status === 'ESCROW') {
-            const additionalAmount = requote.newAmount - requote.originalAmount;
-            // Tetapkan platform fee pada tambahan (10%)
+            const additionalAmount = requote.amount - requote.booking.totalAmount;
             const additionalPlatformFee = additionalAmount * 0.1;
 
             await prisma.payment.update({
               where: { id: payment.id },
               data: {
-                amount: requote.newAmount,
+                amount: requote.amount,
                 platformFee: payment.platformFee + additionalPlatformFee,
               },
             });
@@ -875,7 +840,6 @@ export const respondRequote = async (req: Request, res: Response, next: NextFunc
         where: { id: requoteId },
         data: {
           status: newStatus,
-          respondedAt: new Date(),
         },
       });
     }

@@ -9,7 +9,7 @@ export default function AboutPage() {
       <NavbarGuest />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-blue-400/30 to-blue-400/5 py-16 md:py-24">
+      <section className="bg-gradient-to-b from-blue-400/40 to-transparent pt-40 pb-16">
         <div className="container mx-auto px-4 md:px-8">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Tentang Tukangin</h1>
@@ -103,7 +103,7 @@ export default function AboutPage() {
           <div className="flex flex-col md:flex-row gap-12 items-center">
             <div className="md:w-1/2 flex justify-center">
               <Image
-                src="/placeholder.svg?height=400&width=500"
+                src="/kantor.png?height=400&width=500"
                 alt="Perjalanan Tukangin dari startup hingga platform terpercaya"
                 width={500}
                 height={400}
@@ -155,13 +155,13 @@ export default function AboutPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
+            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow flex flex-col h-full">
               <div className="flex justify-center mb-4">
                 <div className="p-3 rounded-full bg-blue-100">
                   <Shield className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-center mb-3">Verifikasi 7 Tahap</h3>
+              <h3 className="text-xl font-semibold text-center mb-3 flex-1">Verifikasi 7 Tahap</h3>
               <p className="text-gray-700 text-center mb-4">
                 Setiap penyedia jasa melalui 7 tahap verifikasi ketat: dokumen identitas, sertifikat
                 keahlian, tes praktik, background check, referensi, pelatihan platform, dan evaluasi
@@ -172,13 +172,15 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
+            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow flex flex-col h-full">
               <div className="flex justify-center mb-4">
                 <div className="p-3 rounded-full bg-blue-100">
                   <Star className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-center mb-3">Garansi Kepuasan 100%</h3>
+              <h3 className="text-xl font-semibold text-center mb-3 flex-1">
+                Garansi Kepuasan 100%
+              </h3>
               <p className="text-gray-700 text-center mb-4">
                 Jaminan uang kembali jika tidak puas, asuransi kerusakan hingga Rp 10 juta, dan tim
                 customer success 24/7 yang siap membantu menyelesaikan masalah apapun.
@@ -188,13 +190,13 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
+            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow flex flex-col h-full">
               <div className="flex justify-center mb-4">
                 <div className="p-3 rounded-full bg-blue-100">
                   <Zap className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-center mb-3">Respons Super Cepat</h3>
+              <h3 className="text-xl font-semibold text-center mb-3 flex-1">Respons Super Cepat</h3>
               <p className="text-gray-700 text-center mb-4">
                 AI matching system kami mencarikan penyedia jasa terbaik dalam 3 menit, dengan
                 rata-rata waktu kedatangan 45 menit untuk layanan darurat.

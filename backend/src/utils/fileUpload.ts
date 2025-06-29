@@ -1,33 +1,20 @@
 /**
  * Upload file helpers
  */
-import { Storage } from '@google-cloud/storage';
+import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import logger from './logger';
 
-// Inisialisasi Google Cloud Storage
-let storage: Storage;
+// Inisialisasi Supabase client
+const supabaseUrl = process.env.SUPABASE_URL || 'https://qydbluusjxksvitwlrao.supabase.co';
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-try {
-  if (process.env.GOOGLE_CLOUD_PROJECT) {
-    storage = new Storage({
-      projectId: process.env.GOOGLE_CLOUD_PROJECT,
-      keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    });
-  } else {
-    // Mock storage untuk development
-    // Ini dapat dimodifikasi dengan implementasi lain seperti local file system
-    storage = {} as Storage;
-  }
-} catch (error) {
-  logger.error('Failed to initialize cloud storage:', error);
-}
-
-// Nama bucket di Google Cloud Storage
+// Nama bucket di Supabase Storage
 const bucketName = process.env.STORAGE_BUCKET || 'tukangin-uploads';
 
 /**
- * Upload file ke cloud storage
+ * Upload file ke Supabase Storage
  * @param fileBuffer File buffer
  * @param destination Path tujuan di bucket
  * @param contentType MIME type
@@ -39,27 +26,20 @@ export const uploadFileToStorage = async (
   contentType: string
 ): Promise<{ url: string }> => {
   try {
-    // Cek apakah menggunakan Google Cloud Storage
-    if (process.env.GOOGLE_CLOUD_PROJECT && storage.bucket) {
-      const bucket = storage.bucket(bucketName);
-      const file = bucket.file(destination);
+    // Upload file ke Supabase Storage
+    const { error } = await supabase.storage.from(bucketName).upload(destination, fileBuffer, {
+      contentType,
+      upsert: true,
+    });
 
-      // Upload file
-      await file.save(fileBuffer, {
-        contentType,
-        public: true,
-      });
-
-      // Return public URL
-      const publicUrl = `https://storage.googleapis.com/${bucketName}/${destination}`;
-      return { url: publicUrl };
-    } else {
-      // Mock upload untuk development
-      // Di sini bisa diganti dengan upload ke filesystem lokal
-      const mockUrl = `http://localhost:8080/uploads/${destination}`;
-      logger.info(`Mock upload: ${mockUrl}`);
-      return { url: mockUrl };
+    if (error) {
+      logger.error('Supabase upload error:', error);
+      throw new Error('Failed to upload file');
     }
+
+    // Dapatkan public URL
+    const { publicUrl } = supabase.storage.from(bucketName).getPublicUrl(destination).data;
+    return { url: publicUrl };
   } catch (error) {
     logger.error('File upload error:', error);
     throw new Error('Failed to upload file');
@@ -67,39 +47,27 @@ export const uploadFileToStorage = async (
 };
 
 /**
- * Hapus file dari cloud storage
+ * Hapus file dari Supabase Storage
  * @param fileUrl URL file yang akan dihapus
  * @returns Boolean indicating success
  */
 export const deleteFileFromStorage = async (fileUrl: string): Promise<boolean> => {
   try {
-    // Extract path dari URL
-    const urlParts = fileUrl.split(`${bucketName}/`);
-    if (urlParts.length < 2) {
+    // Ekstrak path file dari URL
+    const url = new URL(fileUrl);
+    const pathIndex = url.pathname.indexOf(`/${bucketName}/`);
+    if (pathIndex === -1) {
       return false;
     }
+    const filePath = url.pathname.substring(pathIndex + bucketName.length + 2);
 
-    const filePath = urlParts[1];
-
-    // Cek apakah menggunakan Google Cloud Storage
-    if (process.env.GOOGLE_CLOUD_PROJECT && storage.bucket) {
-      const bucket = storage.bucket(bucketName);
-      const file = bucket.file(filePath);
-
-      // Check if file exists
-      const [exists] = await file.exists();
-      if (!exists) {
-        return false;
-      }
-
-      // Delete file
-      await file.delete();
-      return true;
-    } else {
-      // Mock delete untuk development
-      logger.info(`Mock delete: ${fileUrl}`);
-      return true;
+    // Hapus file dari Supabase Storage
+    const { error } = await supabase.storage.from(bucketName).remove([filePath]);
+    if (error) {
+      logger.error('Supabase delete error:', error);
+      return false;
     }
+    return true;
   } catch (error) {
     logger.error('File delete error:', error);
     return false;

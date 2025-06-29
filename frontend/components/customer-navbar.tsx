@@ -25,14 +25,14 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
   };
 
   return (
-    <div className="sticky top-0 z-50 px-4 sm:px-5 py-3 sm:py-4">
+    <div className="fixed top-0 w-full z-50 px-4 py-3">
       <header className="bg-white/80 backdrop-blur-md shadow-lg rounded-2xl py-3 px-4 sm:py-4 sm:px-6 mx-auto max-w-7xl">
         <div className="container mx-auto">
           <div className="flex items-center">
             {/* Logo */}
             <Link href="/home" className="flex items-center gap-2 flex-shrink-0 mr-5 md:mr-8">
               <Image
-                src="/placeholder.svg?height=48&width=48"
+                src="/logo-tukangin.png?height=48&width=48"
                 alt="Tukangin Logo"
                 width={36}
                 height={36}
@@ -48,26 +48,28 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
               <Link
                 href="/home"
                 className={`text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap ${
-                  pathname === '/home' ? 'text-blue-600' : ''
+                  pathname.startsWith('/home') ? 'text-blue-600' : ''
                 }`}
               >
                 <span className="relative z-10">Home</span>
                 <span
                   className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
-                    pathname === '/home' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                    pathname.startsWith('/home')
+                      ? 'scale-x-100'
+                      : 'scale-x-0 group-hover:scale-x-100'
                   }`}
                 ></span>
               </Link>
               <Link
                 href="/marketplace"
                 className={`text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap ${
-                  pathname === '/marketplace' ? 'text-blue-600' : ''
+                  pathname.startsWith('/marketplace') ? 'text-blue-600' : ''
                 }`}
               >
                 <span className="relative z-10">Marketplace</span>
                 <span
                   className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
-                    pathname === '/marketplace'
+                    pathname.startsWith('/marketplace')
                       ? 'scale-x-100'
                       : 'scale-x-0 group-hover:scale-x-100'
                   }`}
@@ -76,13 +78,15 @@ export function CustomerNavbar({ userName }: CustomerNavbarProps) {
               <Link
                 href="/dashboard"
                 className={`text-gray-700 hover:text-blue-600 transition-all py-2 px-3 font-medium relative group text-sm whitespace-nowrap ${
-                  pathname === '/dashboard' ? 'text-blue-600' : ''
+                  pathname.startsWith('/dashboard') ? 'text-blue-600' : ''
                 }`}
               >
                 <span className="relative z-10">Dashboard</span>
                 <span
                   className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transition-transform duration-300 ${
-                    pathname === '/dashboard' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                    pathname.startsWith('/dashboard')
+                      ? 'scale-x-100'
+                      : 'scale-x-0 group-hover:scale-x-100'
                   }`}
                 ></span>
               </Link>

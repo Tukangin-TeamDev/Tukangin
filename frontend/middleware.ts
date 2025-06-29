@@ -22,6 +22,12 @@ const publicPages = [
   '/about',
   '/how-it-works',
   '/marketplace',
+  '/terms',
+  '/privacy',
+  '/faq',
+  '/blog',
+  '/career',
+  '/contact',
 ];
 
 // Page yang hanya boleh diakses oleh role tertentu

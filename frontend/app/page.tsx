@@ -11,7 +11,7 @@ export default function HomePage() {
       <NavbarGuest />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-blue-400/40 to-transparent py-16">
+      <section className="bg-gradient-to-b from-blue-400/40 to-transparent pt-40 pb-16">
         <div className="container mx-auto px-4 md:px-8">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-10 md:mb-0">
@@ -56,7 +56,7 @@ export default function HomePage() {
             </div>
             <div className="md:w-1/2 flex justify-center">
               <Image
-                src="/placeholder.svg?height=500&width=500"
+                src="/icon-1.png?height=500&width=500"
                 alt="Handyman Illustration"
                 width={500}
                 height={500}
@@ -77,8 +77,8 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Service Card 1 */}
-            <div className="border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="p-6">
+            <div className="border rounded-lg shadow-sm hover:shadow-md transition-shadow flex flex-col h-full min-h-[380px]">
+              <div className="p-6 flex flex-col h-full">
                 <div className="flex justify-center mb-6">
                   <div className="p-4 rounded-lg bg-gray-100">
                     <Zap className="w-12 h-12 text-gray-800" />
@@ -88,7 +88,7 @@ export default function HomePage() {
                 <p className="text-gray-600 text-center mb-6">
                   Perbaikan instalasi listrik rumah dan kantor
                 </p>
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-auto">
                   <Link
                     href="#"
                     className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
@@ -100,8 +100,8 @@ export default function HomePage() {
             </div>
 
             {/* Service Card 2 */}
-            <div className="border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="p-6">
+            <div className="border rounded-lg shadow-sm hover:shadow-md transition-shadow flex flex-col h-full min-h-[380px]">
+              <div className="p-6 flex flex-col h-full">
                 <div className="flex justify-center mb-6">
                   <div className="p-4 rounded-lg bg-gray-100">
                     <svg
@@ -126,7 +126,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-xl font-semibold text-center mb-2">Servis AC</h3>
                 <p className="text-gray-600 text-center mb-6">Pemasangan dan perbaikan unit AC</p>
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-auto">
                   <Link
                     href="#"
                     className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
@@ -138,8 +138,8 @@ export default function HomePage() {
             </div>
 
             {/* Service Card 3 */}
-            <div className="border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="p-6">
+            <div className="border rounded-lg shadow-sm hover:shadow-md transition-shadow flex flex-col h-full min-h-[380px]">
+              <div className="p-6 flex flex-col h-full">
                 <div className="flex justify-center mb-6">
                   <div className="p-4 rounded-lg bg-gray-100">
                     <Home className="w-12 h-12 text-gray-800" />
@@ -149,7 +149,7 @@ export default function HomePage() {
                 <p className="text-gray-600 text-center mb-6">
                   Renovasi dan perbaikan bagian rumah
                 </p>
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-auto">
                   <Link
                     href="#"
                     className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
@@ -161,8 +161,8 @@ export default function HomePage() {
             </div>
 
             {/* Service Card 4 */}
-            <div className="border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="p-6">
+            <div className="border rounded-lg shadow-sm hover:shadow-md transition-shadow flex flex-col h-full min-h-[380px]">
+              <div className="p-6 flex flex-col h-full">
                 <div className="flex justify-center mb-6">
                   <div className="p-4 rounded-lg bg-gray-100">
                     <svg
@@ -186,7 +186,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-xl font-semibold text-center mb-2">Tukang Ledeng</h3>
                 <p className="text-gray-600 text-center mb-6">Perbaikan pipa dan sanitasi</p>
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-auto">
                   <Link
                     href="#"
                     className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"

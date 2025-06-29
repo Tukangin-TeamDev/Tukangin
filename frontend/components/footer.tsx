@@ -78,17 +78,17 @@ export function Footer() {
             <h4 className="text-xl font-medium mb-6">Bantuan</h4>
             <ul className="space-y-4">
               <li>
-                <Link href="#" className="text-gray-800 hover:text-blue-600">
+                <Link href="/faq" className="text-gray-800 hover:text-blue-600">
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-800 hover:text-blue-600">
+                <Link href="/terms" className="text-gray-800 hover:text-blue-600">
                   Syarat & Ketentuan
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-800 hover:text-blue-600">
+                <Link href="/privacy" className="text-gray-800 hover:text-blue-600">
                   Kebijakan Privasi
                 </Link>
               </li>

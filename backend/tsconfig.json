@@ -10,7 +10,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "typeRoots": ["./node_modules/@types", "./src/types"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
@@ -23,6 +22,6 @@
       "@routes/*": ["src/routes/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/types/**/*.d.ts"],
+  "include": ["src/**/*.ts", "src/types/**/*.d.ts", "src/**/*", "**/*.test.ts", "**/*.spec.ts"],
   "exclude": ["node_modules", "dist"]
 }
